@@ -8,22 +8,306 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Corsair_Effects_Engine.Properties
-{
-
-
+namespace Corsair_Effects_Engine.Properties {
+    
+    
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "11.0.0.0")]
-    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
-    {
-
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+        
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-
-        public static Settings Default
-        {
-            get
-            {
+        
+        public static Settings Default {
+            get {
                 return defaultInstance;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public string KeyboardModel {
+            get {
+                return ((string)(this["KeyboardModel"]));
+            }
+            set {
+                this["KeyboardModel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public string KeyboardLayout {
+            get {
+                return ((string)(this["KeyboardLayout"]));
+            }
+            set {
+                this["KeyboardLayout"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public string MouseModel {
+            get {
+                return ((string)(this["MouseModel"]));
+            }
+            set {
+                this["MouseModel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0: Default")]
+        public string LogLevel {
+            get {
+                return ((string)(this["LogLevel"]));
+            }
+            set {
+                this["LogLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public string ForegroundEffect {
+            get {
+                return ((string)(this["ForegroundEffect"]));
+            }
+            set {
+                this["ForegroundEffect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public string BackgroundEffect {
+            get {
+                return ((string)(this["BackgroundEffect"]));
+            }
+            set {
+                this["BackgroundEffect"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public string StaticProfileName {
+            get {
+                return ((string)(this["StaticProfileName"]));
+            }
+            set {
+                this["StaticProfileName"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ForegroundEffectEnabled {
+            get {
+                return ((bool)(this["ForegroundEffectEnabled"]));
+            }
+            set {
+                this["ForegroundEffectEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool BackgroundEffectEnabled {
+            get {
+                return ((bool)(this["BackgroundEffectEnabled"]));
+            }
+            set {
+                this["BackgroundEffectEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StaticProfileEnabled {
+            get {
+                return ((bool)(this["StaticProfileEnabled"]));
+            }
+            set {
+                this["StaticProfileEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public string AudioOutputDevice {
+            get {
+                return ((string)(this["AudioOutputDevice"]));
+            }
+            set {
+                this["AudioOutputDevice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Headphones (Realtek High Definition Audio)")]
+        public string AudioInputDevice {
+            get {
+                return ((string)(this["AudioInputDevice"]));
+            }
+            set {
+                this["AudioInputDevice"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OptMinimizeToTray {
+            get {
+                return ((bool)(this["OptMinimizeToTray"]));
+            }
+            set {
+                this["OptMinimizeToTray"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptMinimizeOnClose {
+            get {
+                return ((bool)(this["OptMinimizeOnClose"]));
+            }
+            set {
+                this["OptMinimizeOnClose"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptStartMinimized {
+            get {
+                return ((bool)(this["OptStartMinimized"]));
+            }
+            set {
+                this["OptStartMinimized"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OptStartEffectsOnLoad {
+            get {
+                return ((bool)(this["OptStartEffectsOnLoad"]));
+            }
+            set {
+                this["OptStartEffectsOnLoad"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OptLiveKeyboardPreview {
+            get {
+                return ((bool)(this["OptLiveKeyboardPreview"]));
+            }
+            set {
+                this["OptLiveKeyboardPreview"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OptWarnIfCueRunning {
+            get {
+                return ((bool)(this["OptWarnIfCueRunning"]));
+            }
+            set {
+                this["OptWarnIfCueRunning"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptLaunchCueOnExit {
+            get {
+                return ((bool)(this["OptLaunchCueOnExit"]));
+            }
+            set {
+                this["OptLaunchCueOnExit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OptRestoreLightingOnExit {
+            get {
+                return ((bool)(this["OptRestoreLightingOnExit"]));
+            }
+            set {
+                this["OptRestoreLightingOnExit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OptCuePath {
+            get {
+                return ((string)(this["OptCuePath"]));
+            }
+            set {
+                this["OptCuePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptStartWithWindows {
+            get {
+                return ((bool)(this["OptStartWithWindows"]));
+            }
+            set {
+                this["OptStartWithWindows"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptAudioFromInput {
+            get {
+                return ((bool)(this["OptAudioFromInput"]));
+            }
+            set {
+                this["OptAudioFromInput"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OptAudioFromOutput {
+            get {
+                return ((bool)(this["OptAudioFromOutput"]));
+            }
+            set {
+                this["OptAudioFromOutput"] = value;
             }
         }
     }

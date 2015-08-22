@@ -1,8 +1,89 @@
 ﻿<Application x:Class="Corsair_Effects_Engine.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <!-- Make a button look like a hyperlink -->
+        <ControlTemplate x:Key="HyperlinkLikeButtonTemplate" TargetType="{x:Type Button}">
+            <TextBlock x:Name="innerText" Foreground="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Cursor="Hand" >
+        <ContentPresenter />
+            </TextBlock>
+            <ControlTemplate.Triggers>
+                <Trigger Property="Button.IsMouseOver" Value="true">
+                    <Setter TargetName="innerText" Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
+                    <Setter TargetName="innerText" Property="TextDecorations" Value="Underline" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <Style x:Key="HyperlinkLikeButton" TargetType="{x:Type Button}">
+            <Setter Property="Template" Value="{StaticResource HyperlinkLikeButtonTemplate}" />
+        </Style>
+        
+        <!-- Settings Data -->
+        <x:Array x:Key="KeyboardModelList" 
+                 Type="sys:String">
+            <sys:String>None</sys:String>
+            <sys:String>K65-RGB</sys:String>
+            <sys:String>K70-RGB</sys:String>
+            <sys:String>K95-RGB</sys:String>
+            <sys:String>STRAFE</sys:String>
+            <sys:String>STRAFE-RGB</sys:String>
+        </x:Array>
+
+        <x:Array x:Key="KeyboardLayoutList" 
+                 Type="sys:String">
+            <sys:String>None</sys:String>
+            <sys:String>Belgium</sys:String>
+            <sys:String>Brazil</sys:String>
+            <sys:String>China</sys:String>
+            <sys:String>European Union</sys:String>
+            <sys:String>France</sys:String>
+            <sys:String>Germany</sys:String>
+            <sys:String>Italy</sys:String>
+            <sys:String>Japan</sys:String>
+            <sys:String>Korea</sys:String>
+            <sys:String>Mexico</sys:String>
+            <sys:String>North America</sys:String>
+            <sys:String>Nordic</sys:String>
+            <sys:String>Russia</sys:String>
+            <sys:String>Spain</sys:String>
+            <sys:String>Taiwan</sys:String>
+            <sys:String>United Kingdom</sys:String>
+        </x:Array>
+
+        <x:Array x:Key="MouseModelList" 
+                 Type="sys:String">
+            <sys:String>None</sys:String>
+            <sys:String>M65-RGB</sys:String>
+            <sys:String>Saber Laser</sys:String>
+            <sys:String>Saber Optical</sys:String>
+            <sys:String>Scimitar</sys:String>
+        </x:Array>
+
+        <x:Array x:Key="LogLevelList"
+                 Type="sys:String">
+            <sys:String>0: Default</sys:String>
+            <sys:String>4: Hardware Messages</sys:String>
+            <sys:String>5: Thread States</sys:String>
+            <sys:String>6: Engine Rendering Output</sys:String>
+            <sys:String>7: Interface</sys:String>
+        </x:Array>
+
+        <!-- Effects Lists -->
+        <x:Array x:Key="ForegroundEffectsList" 
+                 Type="sys:String">
+            <sys:String>None</sys:String>
+            <sys:String>Spectrograph</sys:String>
+            <sys:String>Random Lights</sys:String>
+            <sys:String>Reactive Typing</sys:String>
+            <sys:String>Heatmap</sys:String>
+        </x:Array>
+        
+        <x:Array x:Key="BackgroundEffectsList" 
+                 Type="sys:String">
+            <sys:String>None</sys:String>
+            <sys:String>Rainbow</sys:String>
+        </x:Array>
     </Application.Resources>
 </Application>
