@@ -29,6 +29,9 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const double KEYBOARD_RATIO = 0.6;
+        private KeyData[] keyData;
+
         #region MainWindow Events
         public MainWindow()
         {
@@ -39,6 +42,7 @@ namespace Corsair_Effects_Engine
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateStatusMessage.NewMsg += UpdateStatusMessage_NewMsg;
+            RefreshKeyboardPreview.ShowNewFrame += RefreshKeyboardPreview_ShowNewFrame;
 
             UpdateStatusMessage.NewMessage(4, "Searching for audio devices");
             // Refresh 
@@ -150,7 +154,7 @@ namespace Corsair_Effects_Engine
                         Properties.Settings.Default.KeyboardLayout != "")
                     {
                         string keyboardModelPath = "";
-                        double keyboardRatio = 0.6;
+                        double keyboardRatio = KEYBOARD_RATIO;
                         switch (Properties.Settings.Default.KeyboardModel)
                         {
                             case "K65-RGB": keyboardModelPath = "cgk65rgb"; break;
@@ -226,6 +230,8 @@ namespace Corsair_Effects_Engine
 
         #endregion Settings Events
 
+        #region Thread-Safe Functions
+
         /// <summary>
         /// Posts a status message to the log and to console.
         /// </summary>
@@ -275,9 +281,64 @@ namespace Corsair_Effects_Engine
 
             int LogLevel = Int32.Parse(Properties.Settings.Default.LogLevel.Substring(0, 1));
             if (messageType <= LogLevel)
-            { this.Dispatcher.Invoke(new Action(delegate { LogTextBox.AppendText(messagePrefix + messageText + "\r", logColour); })); };
+            { this.Dispatcher.Invoke(new Action(delegate { LogTextBox.AppendText(messagePrefix + messageText + "\r", logColour); } )); };
         }
 
+        /// <summary>
+        /// Updates the live keyboard preview.
+        /// </summary>
+        public void RefreshKeyboardPreview_ShowNewFrame()
+        {
+            // TODO: Output to the keyboard buttons
+            //this.Dispatcher.Invoke(new Action(delegate {StartButton.Background = new SolidColorBrush(NewLight.LightColor); } ));
+        }
+
+        #endregion Thread-Safe Functions
+
+        // Test Button
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            XmlToKeyMap xmlToKeyMap = new XmlToKeyMap();
+            keyData = xmlToKeyMap.LoadKeyLocations(KeyboardModelComboBox.Text, "na");
+
+            DrawButtonsOnKeyboard(keyData);
+            
+            for (int k = 0; k < keyData.Length; k++) {
+                keyData[k].KeyColor = new LightSolid(Color.FromRgb(255, 0, 0), 3);
+                keyboardButtons[i].Background = new SolidColorBrush(Color.FromArgb(127, 0, 0, 255));
+            }
+
+            RefreshKeyboardPreview.NewFrame();
+        }
+
+        private void DrawButtonsOnKeyboard(KeyData[] keyData)
+        {
+            int offsetX = 0;
+            int offsetY = 0;
+
+            Button[] keyboardButtons = new Button[keyData.Length];
+            
+            for (int i = 0; i < keyData.Length; i++)
+            {
+                keyboardButtons[i] = new Button();
+                keyboardButtons[i].Height = (int)(keyData[i].Coords[2].Y * KEYBOARD_RATIO) - (int)(keyData[i].Coords[0].Y * KEYBOARD_RATIO);
+                keyboardButtons[i].Width = (int)(keyData[i].Coords[1].X * KEYBOARD_RATIO) - (int)(keyData[i].Coords[0].X * KEYBOARD_RATIO);
+                keyboardButtons[i].Content = "";
+                keyboardButtons[i].Name = "keyboardButtons" + i;
+                keyboardButtons[i].Style = (Style)FindResource(ToolBar.ButtonStyleKey);
+                keyboardButtons[i].Background = new SolidColorBrush(Color.FromArgb(127, 0, 0, 255));
+
+                KeyboardImage.Children.Add(keyboardButtons[i]);
+
+                Canvas.SetLeft(keyboardButtons[i], (int)(keyData[i].Coords[0].X * KEYBOARD_RATIO + offsetX));
+                Canvas.SetTop(keyboardButtons[i], (int)(keyData[i].Coords[0].Y * KEYBOARD_RATIO + offsetY));
+                
+                /*
+                keyboardButtons[i].Click += KeyboardButton_Click;
+                 */
+            }
+            
+        }
     }
 
     #region Class Extensions
@@ -322,6 +383,30 @@ namespace Corsair_Effects_Engine
             else
             {
                 NewMsg(messageType, messageText);
+            }
+        }
+    }
+
+    public delegate void KeyboardPreviewDelegate();
+    public static class RefreshKeyboardPreview
+    {
+        public static Window MainWindow;
+        public static event KeyboardPreviewDelegate ShowNewFrame;
+
+        public static void NewFrame()
+        {
+            ThreadSafeKeyboardPreview();
+        }
+
+        private static void ThreadSafeKeyboardPreview()
+        {
+            if (MainWindow != null && MainWindow.Dispatcher.CheckAccess())
+            {
+                MainWindow.Dispatcher.Invoke(new KeyboardPreviewDelegate(ThreadSafeKeyboardPreview));
+            }
+            else
+            {
+                ShowNewFrame();
             }
         }
     }

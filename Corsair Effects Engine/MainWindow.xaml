@@ -50,13 +50,13 @@
                 <Button x:Name="KeyboardButton" Content="Keyboard" VerticalAlignment="Top" Grid.Column="1" Grid.Row="0" Click="KeyboardButton_Click" ToolTip="Show the Keyboard Configuration and Visualizer Page."/>
                 <Button x:Name="LogButton" Content="Log" VerticalAlignment="Top" Grid.Column="0" Grid.Row="1" Click="LogButton_Click" ToolTip="Display the Log and Log Settings. (Click twice for log only)"/>
                 <Button x:Name="SettingsButton" Content="Settings" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Click="SettingsButton_Click" ToolTip="Display the Settings Page."/>
-                <Button x:Name="StartButton" Content="Start" VerticalAlignment="Top"  Grid.Column="0" Grid.Row="3" ToolTip="Start the worker thread."/>
+                <Button x:Name="StartButton" Content="Start" VerticalAlignment="Top"  Grid.Column="0" Grid.Row="3" ToolTip="Start the worker thread." Click="StartButton_Click"/>
                 <Button x:Name="StopButton" Content="Stop" VerticalAlignment="Top"  Grid.Column="1" Grid.Row="3" ToolTip="Stop the worker thread."/>
             </Grid>
         </Grid>
 
         <!-- Right Content -->
-        <Grid x:Name="GridContent" Grid.Column="1" Visibility="Visible" Margin="0,0,0,10">
+        <Grid x:Name="GridContent" Grid.Column="1" Visibility="Hidden" Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="ContentLeft" Width="500*"/>
                 <ColumnDefinition x:Name="ContentRight" Width="200*"/>
@@ -126,7 +126,7 @@
                           SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=LogLevel, Mode=TwoWay}"/>
             </Grid>
             <!-- Right Grids: Settings -->
-            <Grid x:Name="GridRightSettings" Grid.Column="1" Visibility="Visible">
+            <Grid x:Name="GridRightSettings" Grid.Column="1" Visibility="Hidden">
                 <Label Content="Keyboard Model" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
                 <ComboBox x:Name="KeyboardModelComboBox" Margin="10,26,10,0" VerticalAlignment="Top" ToolTip="Select the keyboard you wish to use."
                           ItemsSource="{DynamicResource KeyboardModelList}"
@@ -163,13 +163,13 @@
         </Grid>
 
         <!-- Full Width Keyboard Grid-->
-        <Grid x:Name="GridKeyboard" Grid.Column="1" Visibility="Hidden" Margin="0,0,0,10">
+        <Grid x:Name="GridKeyboard" Grid.Column="1" Visibility="Visible" Margin="0,0,0,10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="223*"/>
                 <RowDefinition Height="87*"/>
             </Grid.RowDefinitions>
 
-            <Grid x:Name="KeyboardImage" Grid.Row="0" Visibility="Hidden" Margin="0,10,0,0" HorizontalAlignment="Left" Width="602" Height="213" VerticalAlignment="Top"/>
+            <Canvas x:Name="KeyboardImage" Grid.Row="0" Visibility="Visible" Margin="0,10,0,0" HorizontalAlignment="Left" Width="602" Height="213" VerticalAlignment="Top"/>
 
         </Grid>
     </Grid>

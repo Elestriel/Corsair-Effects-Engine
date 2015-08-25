@@ -95,6 +95,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="XmlToKeyMap.cs" />
     <Page Include="Controls\RgbSliders.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -111,6 +112,8 @@
     <Compile Include="Controls\RgbSliders.xaml.cs">
       <DependentUpon>RgbSliders.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DeviceLight.cs" />
+    <Compile Include="Engine.cs" />
     <Compile Include="RawInput\RaiseEventUtility.cs" />
     <Compile Include="RawInput\RawInputDevices.cs" />
     <Compile Include="RawInput\RawInputHook.cs" />
