@@ -29,8 +29,13 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool WindowInitialized = false;
+        private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
-        private KeyData[] keyData;
+        public KeyData[] keyData = new KeyData[144];
+        private Button[] keyboardButtons = new Button[144];
+
+        static Task EngineTask = null;
 
         #region MainWindow Events
         public MainWindow()
@@ -44,25 +49,98 @@ namespace Corsair_Effects_Engine
             UpdateStatusMessage.NewMsg += UpdateStatusMessage_NewMsg;
             RefreshKeyboardPreview.ShowNewFrame += RefreshKeyboardPreview_ShowNewFrame;
 
-            UpdateStatusMessage.NewMessage(4, "Searching for audio devices");
-            // Refresh 
+            SetWindowLayout("LogSettings");
 
-                // TODO: Start automatically when program starts
+            // Initialize buttons for Keyboard Preview
+            for (int i = 0; i < 144; i++)
+            {
+                keyboardButtons[i] = new Button();
+                keyboardButtons[i].Visibility = System.Windows.Visibility.Hidden;
+                KeyboardImage.Children.Add(keyboardButtons[i]);
 
-                UpdateStatusMessage.NewMessage(0, "Ready");
+                keyData[i] = new KeyData();
+                keyData[i].KeyColor = new LightSolid(startColor: Color.FromRgb(255, 0, 0),
+                                                       endColor: Color.FromRgb(0, 255, 0),
+                                                       duration: 1);
+            }
+
+            GetDeviceIDs();
+            StartEngine();
+
+            WindowInitialized = true;
+            UpdateStatusMessage.NewMessage(0, "Ready");
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        public void GetDeviceIDs()
         {
-            UpdateStatusMessage.NewMessage(0, "Shutting Down...");
-            // Wait for engine to shut down
-            // TODO: Engine thread stop
+            switch (Properties.Settings.Default.KeyboardModel)
+            {
+                case "K65-RGB": DeviceHID.Keyboard = 0x1B17; break;
+                case "K70-RGB": DeviceHID.Keyboard = 0x1B13; break;
+                case "K95-RGB": DeviceHID.Keyboard = 0x1B11; break;
+                case "STRAFE": DeviceHID.Keyboard = 0x1B15; break;
+                default: DeviceHID.Keyboard = 0x0; break;
+            }
 
-            // Destroy thread-safe handle
-            UpdateStatusMessage.NewMsg -= UpdateStatusMessage_NewMsg;
+            switch (Properties.Settings.Default.MouseModel)
+            {
+                case "M65 RGB": DeviceHID.Mouse = 0x1B12; break;
+                case "Sabre Optical": DeviceHID.Mouse = 0x1B14; break;
+                case "Sabre Laser": DeviceHID.Mouse = 0x1B19; break;
+                case "Scimitar": DeviceHID.Mouse = 0x1B1E; break;
+                default: DeviceHID.Mouse = 0x0; break;
+            }
+        }
 
-            // Save settings
-            Properties.Settings.Default.Save();
+        /// <summary>
+        /// Prevent the window from closing until cleanup is done.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (WindowClosing == false) 
+            {
+                e.Cancel = true;
+                WindowClosing = true;
+                UpdateStatusMessage.NewMessage(0, "Shutting Down...");
+
+                // Wait for engine to shut down
+                StopEngine();
+                await EngineTask;
+
+                // Destroy thread-safe handles
+                UpdateStatusMessage.NewMsg -= UpdateStatusMessage_NewMsg;
+                RefreshKeyboardPreview.ShowNewFrame -= RefreshKeyboardPreview_ShowNewFrame;
+
+                // Save settings
+                Properties.Settings.Default.Save();
+
+                // Close the window
+                Application.Current.Windows[0].Close(); 
+            }
+        }
+
+        private void StartEngine()
+        {
+            StopEngine();
+
+            Engine.RunEngine = true;
+            Engine.PauseEngine = false;
+
+            EngineTask = Task.Run(() => Engine.Start());
+        }
+
+        private async void StopEngine()
+        {
+            if (EngineTask != null)
+            {
+                // Ask the thread to destroy itself
+                Engine.RunEngine = false;
+
+                // Wait for the thread to end
+                await EngineTask;
+            };
         }
 
         #endregion MainWindow Events
@@ -84,7 +162,24 @@ namespace Corsair_Effects_Engine
         { SetWindowLayout("Mouse"); }
 
         private void KeyboardButton_Click(object sender, RoutedEventArgs e)
-        { SetWindowLayout("Keyboard"); }
+        {
+            bool resumeEngineAfterLoad = false;
+            if (Engine.RunEngine == true)
+            {
+                Engine.PauseEngine = true;
+                resumeEngineAfterLoad = true;
+                Thread.Sleep(200);
+            }
+
+            XmlToKeyMap xmlToKeyMap = new XmlToKeyMap();
+            keyData = xmlToKeyMap.LoadKeyLocations(KeyboardModelComboBox.Text, "na");
+
+            DrawButtonsOnKeyboard(keyData);
+
+            SetWindowLayout("Keyboard");
+
+            if (resumeEngineAfterLoad) { Engine.PauseEngine = false; };
+        }
 
         private void SetWindowLayout(string mode)
         {
@@ -127,7 +222,7 @@ namespace Corsair_Effects_Engine
                         string mouseModelPath = "";
                         switch (Properties.Settings.Default.MouseModel)
                         {
-                            case "M65-RGB": mouseModelPath = "m65rgb\\image\\m65rgb.png"; break;
+                            case "M65 RGB": mouseModelPath = "m65rgb\\image\\m65rgb.png"; break;
                             case "Saber Laser": mouseModelPath = "sabre1\\image\\sabre1-lighting.png"; break;
                             case "Saber Optical": mouseModelPath = "sabre2\\image\\sabre2-lighting.png"; break;
                             case "Scimitar": mouseModelPath = "scimitar\\image\\scimitar.png"; break;
@@ -239,6 +334,7 @@ namespace Corsair_Effects_Engine
         /// <param name="messageText">Message text</param>
         public void UpdateStatusMessage_NewMsg(int messageType, string messageText)
         {
+            if (LogTextBox == null) { return; };
             string messagePrefix;
             string logColour;
 
@@ -281,7 +377,10 @@ namespace Corsair_Effects_Engine
 
             int LogLevel = Int32.Parse(Properties.Settings.Default.LogLevel.Substring(0, 1));
             if (messageType <= LogLevel)
-            { this.Dispatcher.Invoke(new Action(delegate { LogTextBox.AppendText(messagePrefix + messageText + "\r", logColour); } )); };
+            { 
+                this.Dispatcher.Invoke(new Action(delegate { LogTextBox.AppendText(messagePrefix + messageText + "\r", logColour); } ));
+                Console.WriteLine(messagePrefix + messageText);
+            };
         }
 
         /// <summary>
@@ -289,8 +388,19 @@ namespace Corsair_Effects_Engine
         /// </summary>
         public void RefreshKeyboardPreview_ShowNewFrame()
         {
-            // TODO: Output to the keyboard buttons
-            //this.Dispatcher.Invoke(new Action(delegate {StartButton.Background = new SolidColorBrush(NewLight.LightColor); } ));
+            UpdateStatusMessage.NewMessage(5, "New Frame");
+            if (keyData == null) { return; };
+            if (Engine.RunEngine == false || Engine.PauseEngine == true) { return; };
+            UpdateStatusMessage.NewMessage(5, "Drawing Frame");
+            for (int i = 0; i < keyData.Length; i++)
+            {
+                this.Dispatcher.Invoke(new Action(delegate { 
+                            keyboardButtons[i].Background = new SolidColorBrush(
+                                Color.FromArgb(127,
+                                                keyData[i].KeyColor.LightColor.R,
+                                                keyData[i].KeyColor.LightColor.G,
+                                                keyData[i].KeyColor.LightColor.B)); } ));
+            }
         }
 
         #endregion Thread-Safe Functions
@@ -298,48 +408,101 @@ namespace Corsair_Effects_Engine
         // Test Button
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
-            XmlToKeyMap xmlToKeyMap = new XmlToKeyMap();
-            keyData = xmlToKeyMap.LoadKeyLocations(KeyboardModelComboBox.Text, "na");
-
-            DrawButtonsOnKeyboard(keyData);
             
             for (int k = 0; k < keyData.Length; k++) {
-                keyData[k].KeyColor = new LightSolid(Color.FromRgb(255, 0, 0), 3);
-                keyboardButtons[i].Background = new SolidColorBrush(Color.FromArgb(127, 0, 0, 255));
+                /*
+                keyData[k].KeyColor = new LightSolid(startColor: Color.FromRgb(255, 0, 0), 
+                                                       endColor: Color.FromRgb(0, 255, 0),
+                                                       duration: 5000);
+                */
+                keyData[k].KeyColor = new LightFade(startColor: Color.FromRgb(0, 255, 0),
+                                                    endColor: Color.FromRgb(255, 0, 0),
+                                                    solidDuration: 0,
+                                                    totalDuration: 3000);
             }
-
-            RefreshKeyboardPreview.NewFrame();
         }
+
+        #region Live Keyboard Preview
 
         private void DrawButtonsOnKeyboard(KeyData[] keyData)
         {
             int offsetX = 0;
             int offsetY = 0;
 
-            Button[] keyboardButtons = new Button[keyData.Length];
-            
+            double ButtonRatioX = KEYBOARD_RATIO;
+            double ButtonRatioY = KEYBOARD_RATIO;
+
+            if (Properties.Settings.Default.KeyboardModel == "STRAFE")
+            {
+                ButtonRatioX = .579;
+                ButtonRatioY = .58;
+            }
+
             for (int i = 0; i < keyData.Length; i++)
             {
-                keyboardButtons[i] = new Button();
-                keyboardButtons[i].Height = (int)(keyData[i].Coords[2].Y * KEYBOARD_RATIO) - (int)(keyData[i].Coords[0].Y * KEYBOARD_RATIO);
-                keyboardButtons[i].Width = (int)(keyData[i].Coords[1].X * KEYBOARD_RATIO) - (int)(keyData[i].Coords[0].X * KEYBOARD_RATIO);
+                keyboardButtons[i].Height = (int)(keyData[i].Coords[2].Y * ButtonRatioY) - (int)(keyData[i].Coords[0].Y * ButtonRatioY);
+                keyboardButtons[i].Width = (int)(keyData[i].Coords[1].X * ButtonRatioX) - (int)(keyData[i].Coords[0].X * ButtonRatioX);
                 keyboardButtons[i].Content = "";
                 keyboardButtons[i].Name = "keyboardButtons" + i;
                 keyboardButtons[i].Style = (Style)FindResource(ToolBar.ButtonStyleKey);
-                keyboardButtons[i].Background = new SolidColorBrush(Color.FromArgb(127, 0, 0, 255));
+                keyboardButtons[i].Background = new SolidColorBrush(Color.FromArgb(127, 0, 0, 0));
+                keyboardButtons[i].Visibility = System.Windows.Visibility.Visible;
 
-                KeyboardImage.Children.Add(keyboardButtons[i]);
-
-                Canvas.SetLeft(keyboardButtons[i], (int)(keyData[i].Coords[0].X * KEYBOARD_RATIO + offsetX));
-                Canvas.SetTop(keyboardButtons[i], (int)(keyData[i].Coords[0].Y * KEYBOARD_RATIO + offsetY));
-                
-                /*
-                keyboardButtons[i].Click += KeyboardButton_Click;
-                 */
+                Canvas.SetLeft(keyboardButtons[i], (int)(keyData[i].Coords[0].X * ButtonRatioX + offsetX));
+                Canvas.SetTop(keyboardButtons[i], (int)(keyData[i].Coords[0].Y * ButtonRatioY + offsetY));
             }
-            
+            for (int u = keyData.Length; u < 144; u++)
+            {
+                keyboardButtons[u].Visibility = System.Windows.Visibility.Hidden;
+            }
         }
+
+        private void DrawButtonsOnKeyboard(bool Clear)
+        {
+            if (Clear)
+            {
+                for (int u = 0; u < 144; u++)
+                {
+                    keyboardButtons[u].Visibility = System.Windows.Visibility.Hidden;
+                }
+            }
+        }
+
+        private void KeyboardAndMouseSettingsChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (WindowInitialized == false) { return; };
+            if (KeyboardModelComboBox == null || KeyboardLayoutComboBox == null) { return; };
+
+            GetDeviceIDs();
+
+            string Model = (KeyboardModelComboBox as ComboBox).SelectedItem.ToString();
+            string Region = (KeyboardLayoutComboBox as ComboBox).SelectedItem.ToString();
+            if (Model == "" || Region == "") { return; };
+            if (Model == "None" || Region == "None") { DrawButtonsOnKeyboard(Clear: true); return; };
+
+            Engine.RestartEngine = true;
+        }
+
+        #endregion Live Keyboard Preview
     }
+
+    #region Data Classes
+
+    public static class KeyboardMap
+    {
+        public static byte[] Positions;
+        public static float[] Sizes;
+        public static int CanvasWidth;
+        public static byte[,] LedMatrix = new byte[7, 104];
+    }
+
+    public static class DeviceHID
+    {
+        public static uint Keyboard;
+        public static uint Mouse;
+    }
+
+    #endregion Data Classes
 
     #region Class Extensions
 
@@ -354,6 +517,7 @@ namespace Corsair_Effects_Engine
             {
                 tr.ApplyPropertyValue(TextElement.ForegroundProperty,
                     bc.ConvertFrom(color));
+                box.ScrollToEnd();
             }
             catch (FormatException) { }
         }

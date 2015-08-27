@@ -83,27 +83,26 @@ namespace Corsair_Effects_Engine
 
             switch (KeyboardRegion)
             {
-                case "cn":
-                case "na":
-                case "tw":
+                case "ch": case "China":
+                case "na": case "North America":
+                case "tw": case "Taiwan":
                     modelRegion = "na";
                     break;
-                case "be":
-                case "ch":
-                case "de":
-                case "es":
-                case "eu":
-                case "fr":
-                case "it":
-                case "mex":
-                case "nd":
-                case "ru":
+                case "be": case "Belgium":
+                case "de": case "Germany":
+                case "es": case "Spain":
+                case "eu": case "European Union":
+                case "fr": case "France":
+                case "it": case "Italy":
+                case "mex": case "Mexico":
+                case "nd": case "Nordic":
+                case "ru": case "Russia":
                 case "uk":
                     modelRegion = "uk";
                     break;
-                case "br":
-                case "jp":
-                case "kr":
+                case "br": case "Brazil":
+                case "jp": case "Japan":
+                case "kr": case "Korea":
                     modelRegion = KeyboardRegion;
                     break;
             }

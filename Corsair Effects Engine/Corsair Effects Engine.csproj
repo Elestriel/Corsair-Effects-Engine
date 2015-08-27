@@ -95,6 +95,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="EngineComponents\DeviceOutput.cs" />
+    <Compile Include="EngineComponents\InitDevices.cs" />
     <Compile Include="XmlToKeyMap.cs" />
     <Page Include="Controls\RgbSliders.xaml">
       <SubType>Designer</SubType>
@@ -161,6 +163,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="CorsairDevices\K95-RGB.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="CorsairDevices\STRAFE.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -457,6 +460,7 @@
   <ItemGroup>
     <EmbeddedResource Include="CorsairDevices\m65rgb\profile_m65rgb.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -526,6 +530,7 @@
     <Resource Include="Resources\eyedropper.png" />
     <Resource Include="Resources\paintbucket.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

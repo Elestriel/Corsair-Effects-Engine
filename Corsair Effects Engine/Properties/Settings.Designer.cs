@@ -310,5 +310,29 @@ namespace Corsair_Effects_Engine.Properties {
                 this["OptAudioFromOutput"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte KeyboardHID {
+            get {
+                return ((byte)(this["KeyboardHID"]));
+            }
+            set {
+                this["KeyboardHID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public byte MouseHID {
+            get {
+                return ((byte)(this["MouseHID"]));
+            }
+            set {
+                this["MouseHID"] = value;
+            }
+        }
     }
 }

@@ -56,7 +56,7 @@
         </Grid>
 
         <!-- Right Content -->
-        <Grid x:Name="GridContent" Grid.Column="1" Visibility="Hidden" Margin="0,0,0,10">
+        <Grid x:Name="GridContent" Grid.Column="1" Visibility="Visible" Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="ContentLeft" Width="500*"/>
                 <ColumnDefinition x:Name="ContentRight" Width="200*"/>
@@ -126,21 +126,24 @@
                           SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=LogLevel, Mode=TwoWay}"/>
             </Grid>
             <!-- Right Grids: Settings -->
-            <Grid x:Name="GridRightSettings" Grid.Column="1" Visibility="Hidden">
+            <Grid x:Name="GridRightSettings" Grid.Column="1" Visibility="Visible">
                 <Label Content="Keyboard Model" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
                 <ComboBox x:Name="KeyboardModelComboBox" Margin="10,26,10,0" VerticalAlignment="Top" ToolTip="Select the keyboard you wish to use."
                           ItemsSource="{DynamicResource KeyboardModelList}"
-                          SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=KeyboardModel, Mode=TwoWay}"/>
+                          SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=KeyboardModel, Mode=TwoWay}" 
+                          SelectionChanged="KeyboardAndMouseSettingsChanged"/>
 
                 <Label Content="Keyboard Layout" HorizontalAlignment="Left" Margin="10,55,0,0" VerticalAlignment="Top"/>
                 <ComboBox x:Name="KeyboardLayoutComboBox" Margin="10,76,10,0" VerticalAlignment="Top" ToolTip="Select the region of your keyboard."
                           ItemsSource="{DynamicResource KeyboardLayoutList}"
-                          SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=KeyboardLayout, Mode=TwoWay}"/>
+                          SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=KeyboardLayout, Mode=TwoWay}"
+                          SelectionChanged="KeyboardAndMouseSettingsChanged"/>
 
                 <Label Content="Mouse Model" HorizontalAlignment="Left" Margin="10,105,0,0" VerticalAlignment="Top"/>
                 <ComboBox x:Name="MouseModelComboBox" Margin="10,126,10,0" VerticalAlignment="Top" ToolTip="Select the mouse you would like to use."
                           ItemsSource="{DynamicResource MouseModelList}"
-                          SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=MouseModel, Mode=TwoWay}"/>
+                          SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=MouseModel, Mode=TwoWay}"
+                          SelectionChanged="KeyboardAndMouseSettingsChanged"/>
 
                 <RadioButton x:Name="AudioOutputDeviceRadioButton" Content="Audio Output Device" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top"
                              ToolTip="Capture audio from an output device, such as your speakers or headphones."

@@ -28,8 +28,8 @@
             <sys:String>K70-RGB</sys:String>
             <sys:String>K95-RGB</sys:String>
             <sys:String>STRAFE</sys:String>
-            <sys:String>STRAFE-RGB</sys:String>
         </x:Array>
+        <!--<sys:String>STRAFE-RGB</sys:String>-->
 
         <x:Array x:Key="KeyboardLayoutList" 
                  Type="sys:String">
@@ -55,7 +55,7 @@
         <x:Array x:Key="MouseModelList" 
                  Type="sys:String">
             <sys:String>None</sys:String>
-            <sys:String>M65-RGB</sys:String>
+            <sys:String>M65 RGB</sys:String>
             <sys:String>Saber Laser</sys:String>
             <sys:String>Saber Optical</sys:String>
             <sys:String>Scimitar</sys:String>
