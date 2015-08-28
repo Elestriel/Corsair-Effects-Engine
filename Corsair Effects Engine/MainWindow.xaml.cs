@@ -32,8 +32,9 @@ namespace Corsair_Effects_Engine
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
-        public KeyData[] keyData = new KeyData[144];
+        public static KeyData[] keyData = new KeyData[149];
         private Button[] keyboardButtons = new Button[144];
+        private Button[] mouseButtons = new Button[5];
 
         static Task EngineTask = null;
 
@@ -59,9 +60,21 @@ namespace Corsair_Effects_Engine
                 KeyboardImage.Children.Add(keyboardButtons[i]);
 
                 keyData[i] = new KeyData();
-                keyData[i].KeyColor = new LightSolid(startColor: Color.FromRgb(255, 0, 0),
-                                                       endColor: Color.FromRgb(0, 255, 0),
-                                                       duration: 1);
+                keyData[i].KeyColor = new LightSolid(startColor: Color.FromRgb(255, 255, 255),
+                                                       endColor: Color.FromRgb(0, 0, 0),
+                                                       duration: 0);
+            }
+
+            for (int i = 0; i < 5; i++)
+            {
+                mouseButtons[i] = new Button();
+                mouseButtons[i].Visibility = System.Windows.Visibility.Hidden;
+
+                keyData[i + 144] = new KeyData();
+                keyData[i + 144].KeyColor = new LightSolid(startColor: Color.FromRgb(255, 255, 255),
+                                                       endColor: Color.FromRgb(0, 0, 0),
+                                                       duration: 0);
+                //KeyboardImage.Children.Add(keyboardButtons[i]);
             }
 
             GetDeviceIDs();
@@ -123,8 +136,6 @@ namespace Corsair_Effects_Engine
 
         private void StartEngine()
         {
-            StopEngine();
-
             Engine.RunEngine = true;
             Engine.PauseEngine = false;
 
@@ -404,24 +415,7 @@ namespace Corsair_Effects_Engine
         }
 
         #endregion Thread-Safe Functions
-
-        // Test Button
-        private void StartButton_Click(object sender, RoutedEventArgs e)
-        {
-            
-            for (int k = 0; k < keyData.Length; k++) {
-                /*
-                keyData[k].KeyColor = new LightSolid(startColor: Color.FromRgb(255, 0, 0), 
-                                                       endColor: Color.FromRgb(0, 255, 0),
-                                                       duration: 5000);
-                */
-                keyData[k].KeyColor = new LightFade(startColor: Color.FromRgb(0, 255, 0),
-                                                    endColor: Color.FromRgb(255, 0, 0),
-                                                    solidDuration: 0,
-                                                    totalDuration: 3000);
-            }
-        }
-
+        
         #region Live Keyboard Preview
 
         private void DrawButtonsOnKeyboard(KeyData[] keyData)
@@ -484,6 +478,11 @@ namespace Corsair_Effects_Engine
         }
 
         #endregion Live Keyboard Preview
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            Engine.PauseEngine = !Engine.PauseEngine;
+        }
     }
 
     #region Data Classes
@@ -500,6 +499,14 @@ namespace Corsair_Effects_Engine
     {
         public static uint Keyboard;
         public static uint Mouse;
+    }
+
+    public class KeyData
+    {
+        public string Name;
+        public Point[] Coords = new Point[4];
+        public int KeyID;
+        public ILight KeyColor;
     }
 
     #endregion Data Classes

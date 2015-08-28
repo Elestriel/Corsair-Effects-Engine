@@ -11,6 +11,7 @@ namespace Corsair_Effects_Engine
     public interface ILight
     {
         Color LightColor { get; set; }
+        bool EffectInProgress { get; set; }
     }
 
     /// <summary>
@@ -29,6 +30,19 @@ namespace Corsair_Effects_Engine
                 { return StartColor; }
                 else 
                 { return EndColor; };
+            }
+            set { }
+        }
+
+        public bool EffectInProgress
+        {
+            get
+            {
+                TimeSpan Difference = DateTime.Now - StartTime;
+                if ((Difference.Seconds * 1000 + Difference.Milliseconds) < (Duration))
+                { return true; }
+                else
+                { return false; };
             }
             set { }
         }
@@ -76,6 +90,19 @@ namespace Corsair_Effects_Engine
                 }
                 else
                 { return EndColor; };
+            }
+            set { }
+        }
+
+        public bool EffectInProgress
+        {
+            get
+            {
+                TimeSpan Difference = DateTime.Now - StartTime;
+                if ((Difference.Seconds * 1000 + Difference.Milliseconds) < (TotalDuration))
+                { return true; }
+                else
+                { return false; };
             }
             set { }
         }

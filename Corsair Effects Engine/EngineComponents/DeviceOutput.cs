@@ -17,10 +17,6 @@ namespace Corsair_Effects_Engine.EngineComponents
 
         private byte[][] keyboardPacket = new byte[5][];
         private byte[] mousePacket = new byte[64];
-        private byte[] redValues = new byte[144];
-        private byte[] greenValues = new byte[144];
-        private byte[] blueValues = new byte[144];
-
 
         public DeviceOutput()
         {
@@ -30,8 +26,19 @@ namespace Corsair_Effects_Engine.EngineComponents
             }
         }
 
-        public void UpdateKeyboard(IntPtr outputDevice)
+        public void UpdateKeyboard(IntPtr outputDevice, KeyData[] Keys)
         {
+            byte[] redValues = new byte[144];
+            byte[] greenValues = new byte[144];
+            byte[] blueValues = new byte[144];
+
+            for (int i = 0; i < 144; i++)
+            {
+                redValues[i] = (byte)(7 - (Keys[i].KeyColor.LightColor.R / 32));
+                greenValues[i] = (byte)(7 - (Keys[i].KeyColor.LightColor.G / 32));
+                blueValues[i] = (byte)(7 - (Keys[i].KeyColor.LightColor.B / 32));
+            }
+
             // Perform USB control message to keyboard
             //
             // Request Type:  0x21
@@ -40,54 +47,54 @@ namespace Corsair_Effects_Engine.EngineComponents
             // Index:         0x03
             // Size:          64
 
-            this.keyboardPacket[0][0] = 0x7F;
-            this.keyboardPacket[0][1] = 0x01;
-            this.keyboardPacket[0][2] = 0x3C;
+            keyboardPacket[0][0] = 0x7F;
+            keyboardPacket[0][1] = 0x01;
+            keyboardPacket[0][2] = 0x3C;
 
-            this.keyboardPacket[1][0] = 0x7F;
-            this.keyboardPacket[1][1] = 0x02;
-            this.keyboardPacket[1][2] = 0x3C;
+            keyboardPacket[1][0] = 0x7F;
+            keyboardPacket[1][1] = 0x02;
+            keyboardPacket[1][2] = 0x3C;
 
-            this.keyboardPacket[2][0] = 0x7F;
-            this.keyboardPacket[2][1] = 0x03;
-            this.keyboardPacket[2][2] = 0x3C;
+            keyboardPacket[2][0] = 0x7F;
+            keyboardPacket[2][1] = 0x03;
+            keyboardPacket[2][2] = 0x3C;
 
-            this.keyboardPacket[3][0] = 0x7F;
-            this.keyboardPacket[3][1] = 0x04;
-            this.keyboardPacket[3][2] = 0x24;
+            keyboardPacket[3][0] = 0x7F;
+            keyboardPacket[3][1] = 0x04;
+            keyboardPacket[3][2] = 0x24;
 
-            this.keyboardPacket[4][0] = 0x07;
-            this.keyboardPacket[4][1] = 0x27;
-            this.keyboardPacket[4][4] = 0xD8;
+            keyboardPacket[4][0] = 0x07;
+            keyboardPacket[4][1] = 0x27;
+            keyboardPacket[4][4] = 0xD8;
 
             for (int i = 0; i < 60; i++)
             {
-                this.keyboardPacket[0][i + 4] = (byte)(this.redValues[i * 2 + 1] << 4 | this.redValues[i * 2]);
+                keyboardPacket[0][i + 4] = (byte)(redValues[i * 2 + 1] << 4 | redValues[i * 2]);
             }
 
             for (int i = 0; i < 12; i++)
             {
-                this.keyboardPacket[1][i + 4] = (byte)(this.redValues[i * 2 + 121] << 4 | this.redValues[i * 2 + 120]);
+                keyboardPacket[1][i + 4] = (byte)(redValues[i * 2 + 121] << 4 | redValues[i * 2 + 120]);
             }
 
             for (int i = 0; i < 48; i++)
             {
-                this.keyboardPacket[1][i + 16] = (byte)(this.greenValues[i * 2 + 1] << 4 | this.greenValues[i * 2]);
+                keyboardPacket[1][i + 16] = (byte)(greenValues[i * 2 + 1] << 4 | greenValues[i * 2]);
             }
 
             for (int i = 0; i < 24; i++)
             {
-                this.keyboardPacket[2][i + 4] = (byte)(this.greenValues[i * 2 + 97] << 4 | this.greenValues[i * 2 + 96]);
+                keyboardPacket[2][i + 4] = (byte)(greenValues[i * 2 + 97] << 4 | greenValues[i * 2 + 96]);
             }
 
             for (int i = 0; i < 36; i++)
             {
-                this.keyboardPacket[2][i + 28] = (byte)(this.blueValues[i * 2 + 1] << 4 | this.blueValues[i * 2]);
+                keyboardPacket[2][i + 28] = (byte)(blueValues[i * 2 + 1] << 4 | blueValues[i * 2]);
             }
 
             for (int i = 0; i < 36; i++)
             {
-                this.keyboardPacket[3][i + 4] = (byte)(this.blueValues[i * 2 + 73] << 4 | this.blueValues[i * 2 + 72]);
+                keyboardPacket[3][i + 4] = (byte)(blueValues[i * 2 + 73] << 4 | blueValues[i * 2 + 72]);
             }
             for (int i = 36; i < 60; i++)
             {
@@ -104,8 +111,19 @@ namespace Corsair_Effects_Engine.EngineComponents
             }
         }
 
-        public void UpdateMouse(IntPtr outputDevice)
+        public void UpdateMouse(IntPtr outputDevice, KeyData[] Keys)
         {
+            byte[] redValues = new byte[5];
+            byte[] greenValues = new byte[5];
+            byte[] blueValues = new byte[5];
+
+            for (int i = 0; i < 5; i++)
+            {
+                redValues[i] = (byte)Keys[i + 143].KeyColor.LightColor.R;
+                greenValues[i] = (byte)Keys[i + 143].KeyColor.LightColor.G;
+                blueValues[i] = (byte)Keys[i + 143].KeyColor.LightColor.B;
+            }
+
             // Perform USB control message to keyboard
             //
             // Request Type:  0x21
@@ -118,9 +136,7 @@ namespace Corsair_Effects_Engine.EngineComponents
             if (Properties.Settings.Default.MouseModel != "Scimitar") { this.mousePacket[2] = 0x04; }
             else { this.mousePacket[2] = 0x05; };
             this.mousePacket[3] = 0x01;
-
-            for (int i = 0; i < 5; i++) { greenValues[i] = 0xFF; };
-
+            
                 // Light 1
                 this.mousePacket[4] = 0x01;
             this.mousePacket[5] = redValues[0];

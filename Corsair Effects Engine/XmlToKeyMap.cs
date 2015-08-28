@@ -110,14 +110,6 @@ namespace Corsair_Effects_Engine
         }
     }
 
-    public class KeyData
-    {
-        public string Name;
-        public Point[] Coords = new Point[4];
-        public int KeyID;
-        public ILight KeyColor;
-    }
-
     public class KeyLayoutInfo
     {
         private string[] layoutInfo;

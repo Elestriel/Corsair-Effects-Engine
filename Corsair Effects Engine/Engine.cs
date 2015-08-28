@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
 namespace Corsair_Effects_Engine
 {
     public static class Engine
@@ -16,6 +19,8 @@ namespace Corsair_Effects_Engine
 
         private static IntPtr KeyboardPointer;
         private static IntPtr MousePointer;
+
+        private static KeyData[] Keys = MainWindow.keyData;
         
         public static void Start()
         {
@@ -23,6 +28,8 @@ namespace Corsair_Effects_Engine
 
             EngineComponents.InitDevices DeviceInit = new EngineComponents.InitDevices();
             EngineComponents.DeviceOutput Output = new EngineComponents.DeviceOutput();
+
+            Random rnd = new Random();
 
             while (RunEngine)
             {
@@ -43,15 +50,25 @@ namespace Corsair_Effects_Engine
 
                     // Render background layer
 
+                    // Test Render
+                    int keyLight = rnd.Next(0, 149);
+                    if (Keys[keyLight].KeyColor.EffectInProgress == false)
+                    {
+                        Keys[keyLight].KeyColor = new LightFade(startColor: Color.FromRgb(0, 255, 0),
+                                                        endColor: Color.FromRgb(0, 0, 0),
+                                                        solidDuration: 2000,
+                                                        totalDuration: 3000);
+                    }
+
 
                     // Output frame to keyboard preview
 
                     // Output frame to devices
-                    Output.UpdateKeyboard(KeyboardPointer);
-                    Output.UpdateMouse(MousePointer);
+                    Output.UpdateKeyboard(KeyboardPointer, Keys);
+                    Output.UpdateMouse(MousePointer, Keys);
 
                     //UpdateStatusMessage.NewMessage(5, "Engine MainLoop");
-                    Thread.Sleep(1000);
+                    Thread.Sleep(15);
                 }
                 if (RestartEngine)
                 {
