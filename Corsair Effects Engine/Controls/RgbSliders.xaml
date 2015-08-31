@@ -6,8 +6,8 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" x:Class="Corsair_Effects_Engine.Controls.RgbSliders" 
              mc:Ignorable="d" Height="77" Width="152">
     <Grid>
-        <xctk:RangeSlider x:Name="RangeSliderR" VerticalAlignment="Top" HigherValueChanged="RangeSliderR_HigherValueChanged" LowerValueChanged="RangeSliderR_LowerValueChanged" Maximum="255" Margin="0,0,2,0"/>
-        <xctk:RangeSlider x:Name="RangeSliderG" Margin="0,0,2,28" VerticalAlignment="Bottom" LowerValueChanged="RangeSliderG_LowerValueChanged" HigherValueChanged="RangeSliderG_HigherValueChanged" Maximum="255"/>
-        <xctk:RangeSlider x:Name="RangeSliderB" Margin="0,54,2,0" VerticalAlignment="Top" HigherValueChanged="RangeSliderB_HigherValueChanged" LowerValueChanged="RangeSliderB_LowerValueChanged" Maximum="255"/>
+        <xctk:RangeSlider x:Name="RangeSliderR" VerticalAlignment="Top" Margin="0,0,2,0" HigherValueChanged="RangeSliderR_HigherValueChanged" LowerValueChanged="RangeSliderR_LowerValueChanged" Maximum="255"/>
+        <xctk:RangeSlider x:Name="RangeSliderG" VerticalAlignment="Top" Margin="0,27,2,0" HigherValueChanged="RangeSliderG_HigherValueChanged" LowerValueChanged="RangeSliderG_LowerValueChanged" Maximum="255"/>
+        <xctk:RangeSlider x:Name="RangeSliderB" VerticalAlignment="Top" Margin="0,54,2,0" HigherValueChanged="RangeSliderB_HigherValueChanged" LowerValueChanged="RangeSliderB_LowerValueChanged" Maximum="255"/>
     </Grid>
 </UserControl>

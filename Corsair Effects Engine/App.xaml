@@ -85,5 +85,25 @@
             <sys:String>None</sys:String>
             <sys:String>Rainbow</sys:String>
         </x:Array>
+        
+        <!-- Foreground: Random Keys -->
+        <x:Array x:Key="ForegroundRandomLightsStyleList"
+                 Type="sys:String">
+            <sys:String>Solid</sys:String>
+            <sys:String>Fade</sys:String>
+        </x:Array>
+        
+        <x:Array x:Key="ForegroundRandomLightsStartTypeList"
+                 Type="sys:String">
+            <sys:String>Defined Colour</sys:String>
+            <sys:String>Random Colour</sys:String>
+        </x:Array>
+        
+        <x:Array x:Key="ForegroundRandomLightsEndTypeList"
+                 Type="sys:String">
+            <sys:String>Defined Colour</sys:String>
+            <sys:String>Original Colour</sys:String>
+            <sys:String>Random Colour</sys:String>
+        </x:Array>
     </Application.Resources>
 </Application>

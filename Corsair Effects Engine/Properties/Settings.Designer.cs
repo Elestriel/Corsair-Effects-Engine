@@ -334,5 +334,161 @@ namespace Corsair_Effects_Engine.Properties {
                 this["MouseHID"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Fade")]
+        public string ForegroundRandomLightsStyle {
+            get {
+                return ((string)(this["ForegroundRandomLightsStyle"]));
+            }
+            set {
+                this["ForegroundRandomLightsStyle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int OptFrameDelay {
+            get {
+                return ((int)(this["OptFrameDelay"]));
+            }
+            set {
+                this["OptFrameDelay"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Random Colour")]
+        public string ForegroundRandomLightsStartType {
+            get {
+                return ((string)(this["ForegroundRandomLightsStartType"]));
+            }
+            set {
+                this["ForegroundRandomLightsStartType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Original Colour")]
+        public string ForegroundRandomLightsEndType {
+            get {
+                return ((string)(this["ForegroundRandomLightsEndType"]));
+            }
+            set {
+                this["ForegroundRandomLightsEndType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#000000")]
+        public string ForegroundRandomLightsColorStartLower {
+            get {
+                return ((string)(this["ForegroundRandomLightsColorStartLower"]));
+            }
+            set {
+                this["ForegroundRandomLightsColorStartLower"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF")]
+        public string ForegroundRandomLightsColorStartUpper {
+            get {
+                return ((string)(this["ForegroundRandomLightsColorStartUpper"]));
+            }
+            set {
+                this["ForegroundRandomLightsColorStartUpper"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#000000")]
+        public string ForegroundRandomLightsColorEndLower {
+            get {
+                return ((string)(this["ForegroundRandomLightsColorEndLower"]));
+            }
+            set {
+                this["ForegroundRandomLightsColorEndLower"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF")]
+        public string ForegroundRandomLightsColorEndUpper {
+            get {
+                return ((string)(this["ForegroundRandomLightsColorEndUpper"]));
+            }
+            set {
+                this["ForegroundRandomLightsColorEndUpper"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int ForegroundRandomLightsFadeSolidDuration {
+            get {
+                return ((int)(this["ForegroundRandomLightsFadeSolidDuration"]));
+            }
+            set {
+                this["ForegroundRandomLightsFadeSolidDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1500")]
+        public int ForegroundRandomLightsFadeTotalDuration {
+            get {
+                return ((int)(this["ForegroundRandomLightsFadeTotalDuration"]));
+            }
+            set {
+                this["ForegroundRandomLightsFadeTotalDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF")]
+        public string ForegroundRandomLightsSolidColorStart {
+            get {
+                return ((string)(this["ForegroundRandomLightsSolidColorStart"]));
+            }
+            set {
+                this["ForegroundRandomLightsSolidColorStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#000000")]
+        public string ForegroundRandomLightsSolidColorEnd {
+            get {
+                return ((string)(this["ForegroundRandomLightsSolidColorEnd"]));
+            }
+            set {
+                this["ForegroundRandomLightsSolidColorEnd"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
+        public int ForegroundRandomLightsSolidDuration {
+            get {
+                return ((int)(this["ForegroundRandomLightsSolidDuration"]));
+            }
+            set {
+                this["ForegroundRandomLightsSolidDuration"] = value;
+            }
+        }
     }
 }

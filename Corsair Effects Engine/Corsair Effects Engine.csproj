@@ -97,6 +97,7 @@
     </ApplicationDefinition>
     <Compile Include="EngineComponents\DeviceOutput.cs" />
     <Compile Include="EngineComponents\InitDevices.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="XmlToKeyMap.cs" />
     <Page Include="Controls\RgbSliders.xaml">
       <SubType>Designer</SubType>

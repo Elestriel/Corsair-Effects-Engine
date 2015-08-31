@@ -111,6 +111,62 @@ namespace Corsair_Effects_Engine.EngineComponents
             }
         }
 
+        public void UpdateKeyboard16M(IntPtr outputDevice, KeyData[] Keys)
+        {
+            byte[][] keyboard16MPacket = new byte[12][];
+
+            for (int i = 0; i < keyboard16MPacket.Length; i++)
+            {
+                keyboard16MPacket[i] = new byte[64];
+            }
+
+            for (int p = 0; p < 12; p += 4)
+            {
+                keyboard16MPacket[p][0] = 0x7F;
+                keyboard16MPacket[p][1] = 0x01;
+                keyboard16MPacket[p][2] = 0x3C;
+                keyboard16MPacket[p + 1][0] = 0x7F;
+                keyboard16MPacket[p + 1][1] = 0x02;
+                keyboard16MPacket[p + 1][2] = 0x3C;
+                keyboard16MPacket[p + 2][0] = 0x7F;
+                keyboard16MPacket[p + 2][1] = 0x03;
+                keyboard16MPacket[p + 2][2] = 0x18;
+                keyboard16MPacket[p + 3][0] = 0x07;
+                keyboard16MPacket[p + 3][1] = 0x28;
+                keyboard16MPacket[p + 3][3] = 0x03;
+            }
+            keyboard16MPacket[3][2] = 0x01;
+            keyboard16MPacket[3][4] = 0x01;
+            keyboard16MPacket[7][2] = 0x02;
+            keyboard16MPacket[7][4] = 0x01;
+            keyboard16MPacket[11][2] = 0x03;
+            keyboard16MPacket[11][4] = 0x02;
+            
+            for (int i = 0; i < 60; i++)
+            {
+                keyboard16MPacket[0][i + 4] = Keys[i].KeyColor.LightColor.R;
+                keyboard16MPacket[4][i + 4] = Keys[i].KeyColor.LightColor.G;
+                keyboard16MPacket[8][i + 4] = Keys[i].KeyColor.LightColor.B;
+            }
+            for (int i = 0; i < 60; i++)
+            {
+                keyboard16MPacket[1][i + 4] = Keys[i + 60].KeyColor.LightColor.R;
+                keyboard16MPacket[5][i + 4] = Keys[i + 60].KeyColor.LightColor.G;
+                keyboard16MPacket[9][i + 4] = Keys[i + 60].KeyColor.LightColor.B;
+            }
+            for (int i = 0; i < 24; i++)
+            {
+                keyboard16MPacket[2][i + 4] = Keys[i + 120].KeyColor.LightColor.R;
+                keyboard16MPacket[6][i + 4] = Keys[i + 120].KeyColor.LightColor.G;
+                keyboard16MPacket[10][i + 4] = Keys[i + 120].KeyColor.LightColor.B;
+            }
+
+            for (int p = 0; p < 12; p++)
+            {
+                this.SendUsbMessage(keyboard16MPacket[p], outputDevice, "Keyboard");
+            }
+        }
+
         public void UpdateMouse(IntPtr outputDevice, KeyData[] Keys)
         {
             byte[] redValues = new byte[5];

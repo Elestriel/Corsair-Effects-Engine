@@ -80,5 +80,44 @@
     <Setting Name="MouseHID" Type="System.Byte" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
+    <Setting Name="ForegroundRandomLightsStyle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Fade</Value>
+    </Setting>
+    <Setting Name="OptFrameDelay" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsStartType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Random Colour</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsEndType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Original Colour</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsColorStartLower" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#000000</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsColorStartUpper" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsColorEndLower" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#000000</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsColorEndUpper" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsFadeSolidDuration" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsFadeTotalDuration" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1500</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsSolidColorStart" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsSolidColorEnd" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#000000</Value>
+    </Setting>
+    <Setting Name="ForegroundRandomLightsSolidDuration" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2000</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

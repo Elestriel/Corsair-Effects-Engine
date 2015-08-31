@@ -29,8 +29,6 @@ namespace Corsair_Effects_Engine
             EngineComponents.InitDevices DeviceInit = new EngineComponents.InitDevices();
             EngineComponents.DeviceOutput Output = new EngineComponents.DeviceOutput();
 
-            Random rnd = new Random();
-
             while (RunEngine)
             {
                 UpdateStatusMessage.NewMessage(5, "Initializing Keyboard.");
@@ -47,28 +45,19 @@ namespace Corsair_Effects_Engine
                     // Render static layer
 
                     // Render foreground layer
+                    RenderForeground();
 
                     // Render background layer
-
-                    // Test Render
-                    int keyLight = rnd.Next(0, 149);
-                    if (Keys[keyLight].KeyColor.EffectInProgress == false)
-                    {
-                        Keys[keyLight].KeyColor = new LightFade(startColor: Color.FromRgb(0, 255, 0),
-                                                        endColor: Color.FromRgb(0, 0, 0),
-                                                        solidDuration: 2000,
-                                                        totalDuration: 3000);
-                    }
-
 
                     // Output frame to keyboard preview
 
                     // Output frame to devices
                     Output.UpdateKeyboard(KeyboardPointer, Keys);
+                    //Output.UpdateKeyboard16M(KeyboardPointer, Keys);
                     Output.UpdateMouse(MousePointer, Keys);
 
                     //UpdateStatusMessage.NewMessage(5, "Engine MainLoop");
-                    Thread.Sleep(15);
+                    Thread.Sleep(Properties.Settings.Default.OptFrameDelay);
                 }
                 if (RestartEngine)
                 {
@@ -90,5 +79,59 @@ namespace Corsair_Effects_Engine
             }
             UpdateStatusMessage.NewMessage(5, "Engine is shutting down.");
         }
+
+        private static void RenderForeground()
+        {
+            Random rnd = new Random();
+            Color SL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartLower);
+            Color SU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartUpper);
+            Color EL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndLower);
+            Color EU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndUpper);
+            Color startColor = Color.FromRgb(255, 255, 255);
+            Color endColor = Color.FromRgb(0, 0, 0);
+
+            // Test Render
+            int keyLight = rnd.Next(0, 149);
+            if (Keys[keyLight].KeyColor.EffectInProgress == false)
+            {
+                switch (Properties.Settings.Default.ForegroundRandomLightsStartType)
+                {
+                    case "Solid Colour":
+                        startColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSolidColorStart);
+                        break;
+                    case "Random Colour":
+                        startColor = Color.FromRgb((byte)rnd.Next(SL.R,SU.R), (byte)rnd.Next(SL.G,SU.G), (byte)rnd.Next(SL.B,SU.B));
+                        break;
+                }
+                switch (Properties.Settings.Default.ForegroundRandomLightsEndType)
+                {
+                    case "Solid Colour":
+                        endColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSolidColorEnd);
+                        break;
+                    case "Original Colour":
+
+                        break;
+                    case "Random Colour":
+                        endColor = Color.FromRgb((byte)rnd.Next(EL.R,EU.R), (byte)rnd.Next(EL.G,EU.G), (byte)rnd.Next(EL.B,EU.B));
+                        break;
+                }
+
+                switch (Properties.Settings.Default.ForegroundRandomLightsStyle)
+                {
+                    case "Solid":
+                        Keys[keyLight].KeyColor = new LightSolid(startColor: startColor,
+                                                                endColor: endColor,
+                                                                duration: Properties.Settings.Default.ForegroundRandomLightsSolidDuration);
+                        break;
+                    case "Fade":
+                        Keys[keyLight].KeyColor = new LightFade(startColor: startColor,
+                                                                endColor: endColor,
+                                                                solidDuration: Properties.Settings.Default.ForegroundRandomLightsFadeSolidDuration,
+                                                                totalDuration: Properties.Settings.Default.ForegroundRandomLightsFadeTotalDuration);
+                        break;
+                }
+            }
+        }
+
     }
 }

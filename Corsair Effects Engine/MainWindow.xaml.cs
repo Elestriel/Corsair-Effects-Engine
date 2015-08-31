@@ -36,6 +36,11 @@ namespace Corsair_Effects_Engine
         private Button[] keyboardButtons = new Button[144];
         private Button[] mouseButtons = new Button[5];
 
+        // When editing colour settings, what to return to on accept/cancel
+        private static string EditPageReturnTo = "";
+        private static string InitialLowerColor;
+        private static string InitialUpperColor;
+
         static Task EngineTask = null;
 
         #region MainWindow Events
@@ -192,11 +197,27 @@ namespace Corsair_Effects_Engine
             if (resumeEngineAfterLoad) { Engine.PauseEngine = false; };
         }
 
+        private void ForegroundEditButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetWindowLayout("ForegroundEdit");
+        }
+
+        private void BackgroundEditButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetWindowLayout("BackgroundEdit");
+        }
+
+        private void StaticEditButton_Click(object sender, RoutedEventArgs e)
+        {
+            SetWindowLayout("StaticEdit");
+        }
+
         private void SetWindowLayout(string mode)
         {
             HideAllGrids();
             switch (mode)
             {
+                #region Log
                 case "Log":
                     UpdateStatusMessage.NewMessage(7, "Log");
                     ContentLeft.Width = new GridLength(700, GridUnitType.Star);
@@ -212,6 +233,8 @@ namespace Corsair_Effects_Engine
                     GridLeftLog.Visibility = System.Windows.Visibility.Visible;
                     GridRightLog.Visibility = System.Windows.Visibility.Visible;
                     break;
+                #endregion Log
+                #region Settings
                 case "Settings":
                     UpdateStatusMessage.NewMessage(7, "Settings");
                     ContentLeft.Width = new GridLength(500, GridUnitType.Star);
@@ -220,6 +243,8 @@ namespace Corsair_Effects_Engine
                     GridLeftSettings.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
                     break;
+                #endregion Settings
+                #region Mouse
                 case "Mouse":
                     UpdateStatusMessage.NewMessage(7, "Mouse");
                     ContentLeft.Width = new GridLength(500, GridUnitType.Star);
@@ -247,6 +272,8 @@ namespace Corsair_Effects_Engine
                     }
 
                     break;
+                #endregion Mouse
+                #region Keyboard
                 case "Keyboard":
                     UpdateStatusMessage.NewMessage(7, "Keyboard");
                     ContentLeft.Width = new GridLength(500, GridUnitType.Star);
@@ -297,20 +324,54 @@ namespace Corsair_Effects_Engine
                         this.KeyboardImage.Background = new ImageBrush(keyboardImage);
                     }
                     break;
+                #endregion Keyboard
+                #region Foreground
+                case "ForegroundEdit":
+                    UpdateStatusMessage.NewMessage(7, "Foreground Edit");
+                    ContentLeft.Width = new GridLength(500, GridUnitType.Star);
+                    ContentRight.Width = new GridLength(200, GridUnitType.Star);
+                    GridContent.Visibility = System.Windows.Visibility.Visible;
+                    GridLeftForegroundEdit.Visibility = System.Windows.Visibility.Visible;
+                    GridRightSettings.Visibility = System.Windows.Visibility.Visible;
+                    // Ensure the right controls are appearing based on selections
+                    ForegroundRandomLightsStyle_SelectionChanged(null, null);
+                    ForegroundRandomLightsStartType_SelectionChanged(null, null);
+                    ForegroundRandomLightsEndType_SelectionChanged(null, null);
+                    break;
+                #endregion Foreground
+                #region Background
+                case "BackgroundEdit":
+
+                    break;
+                #endregion Foreground
+                #region Static
+                case "StaticEdit":
+
+                    break;
+                #endregion Foreground
             }
         }
 
         private void HideAllGrids()
         {
+            // Content Panel
             GridContent.Visibility = System.Windows.Visibility.Hidden;
 
+            // Content: Log
             GridLeftLog.Visibility = System.Windows.Visibility.Hidden;
-            GridLeftSettings.Visibility = System.Windows.Visibility.Hidden;
-
-            GridRightColours.Visibility = System.Windows.Visibility.Hidden;
             GridRightLog.Visibility = System.Windows.Visibility.Hidden;
+
+            // Content: Settings
+            GridLeftSettings.Visibility = System.Windows.Visibility.Hidden;
             GridRightSettings.Visibility = System.Windows.Visibility.Hidden;
 
+            // Edit: Colour
+            GridForegroundColor.Visibility = System.Windows.Visibility.Hidden;
+            
+            // Edit: Foreground
+            GridLeftForegroundEdit.Visibility = System.Windows.Visibility.Hidden;
+
+            // Full Keyboard
             GridKeyboard.Visibility = System.Windows.Visibility.Hidden;
             KeyboardImage.Visibility = System.Windows.Visibility.Hidden;
         }
@@ -479,11 +540,196 @@ namespace Corsair_Effects_Engine
 
         #endregion Live Keyboard Preview
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        private void TestButton_Click(object sender, RoutedEventArgs e)
         {
-            Engine.PauseEngine = !Engine.PauseEngine;
+        }
+
+        #region Pages
+        #region Page: ForegroundEdit
+
+        private void ForegroundRandomLightsStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!WindowInitialized) { return; };
+            switch (Properties.Settings.Default.ForegroundRandomLightsStyle)
+            {
+                case "Solid":
+                    ForegroundRandomLightsFadeSolidDurationUD.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundRandomLightsFadeTotalDurationUD.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundRandomLightsFadeSolidDurationLabel.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundRandomLightsFadeTotalDurationLabel.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundRandomLightsSolidDurationUD.Visibility = System.Windows.Visibility.Visible;
+                    break;
+                case "Fade": 
+                    ForegroundRandomLightsFadeSolidDurationUD.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundRandomLightsFadeTotalDurationUD.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundRandomLightsFadeSolidDurationLabel.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundRandomLightsFadeTotalDurationLabel.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundRandomLightsSolidDurationUD.Visibility = System.Windows.Visibility.Hidden;
+                    break;
+            }
+        }
+
+        private void ForegroundRandomLightsStartType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!WindowInitialized) { return; };
+            if (Properties.Settings.Default.ForegroundRandomLightsStartType == "Defined Colour")
+            { ForegroundStartColor.Visibility = System.Windows.Visibility.Visible; }
+            else { ForegroundStartColor.Visibility = System.Windows.Visibility.Hidden; }
+        }
+
+        private void ForegroundRandomLightsEndType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!WindowInitialized) { return; };
+            if (Properties.Settings.Default.ForegroundRandomLightsEndType == "Defined Colour")
+            { ForegroundEndColor.Visibility = System.Windows.Visibility.Visible; }
+            else { ForegroundEndColor.Visibility = System.Windows.Visibility.Hidden; }
+        }
+
+        private void ForegroundStartColorEdit_Click(object sender, RoutedEventArgs e)
+        {
+            switch (Properties.Settings.Default.ForegroundRandomLightsStartType)
+            {
+                case "Defined Colour":
+
+                    break;
+                case "Random Colour":
+                    EditPageReturnTo = "ForegroundStart";
+                    ColourLabel.Content = "Start Colour";
+                    InitialLowerColor = Properties.Settings.Default.ForegroundRandomLightsColorStartLower;
+                    InitialUpperColor = Properties.Settings.Default.ForegroundRandomLightsColorStartUpper;
+
+                    // Ugly: Assign property values to initialize sliders.
+                    // This needs to be replaced with proper binding, somehow.
+                    ColorSliders.LowerColor = (Color)ColorConverter.ConvertFromString(InitialLowerColor);
+                    ColorSliders.UpperColor = (Color)ColorConverter.ConvertFromString(InitialUpperColor);
+
+                    SetNewColorSlidersBinding("ForegroundRandomLightsColorStartLower",
+                                              "ForegroundRandomLightsColorStartUpper");
+            
+                    GridForegroundColor.Visibility = System.Windows.Visibility.Visible;
+                    GridForegroundRandomLights.IsEnabled = false;
+                    break;
+            }
+
+        }
+
+        private void ForegroundEndColorEdit_Click(object sender, RoutedEventArgs e)
+        {
+            switch (Properties.Settings.Default.ForegroundRandomLightsEndType)
+            {
+                case "Defined Colour":
+
+                    break;
+                case "Original Colour":
+                    // Do nothing
+                    break;
+                case "Random Colour":
+                    EditPageReturnTo = "ForegroundEnd";
+                    ColourLabel.Content = "End Colour";
+                    InitialLowerColor = Properties.Settings.Default.ForegroundRandomLightsColorEndLower;
+                    InitialUpperColor = Properties.Settings.Default.ForegroundRandomLightsColorEndUpper;
+
+                    // Ugly: Assign property values to initialize sliders.
+                    // This needs to be replaced with proper binding, somehow.
+                    ColorSliders.LowerColor = (Color)ColorConverter.ConvertFromString(InitialLowerColor);
+                    ColorSliders.UpperColor = (Color)ColorConverter.ConvertFromString(InitialUpperColor);
+
+                    SetNewColorSlidersBinding("ForegroundRandomLightsColorEndLower",
+                                              "ForegroundRandomLightsColorEndUpper");
+
+                    GridForegroundColor.Visibility = System.Windows.Visibility.Visible;
+                    GridForegroundRandomLights.IsEnabled = false;
+                    break;
+            }
+        }
+
+        private void SetNewColorSlidersBinding(string lowerPath, string upperPath)
+        {
+            Binding ColorSlidersBindingL = new Binding();
+            ColorSlidersBindingL.Source = Properties.Settings.Default;
+            ColorSlidersBindingL.Path = new PropertyPath(lowerPath);
+            ColorSlidersBindingL.Mode = BindingMode.TwoWay;
+            ColorSlidersBindingL.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            ColorSlidersBindingL.Converter = new ColorToStringConverter();
+            ColorSliders.SetBinding(Controls.RgbSliders.LowerProperty, ColorSlidersBindingL);
+
+            Binding ColorSlidersBindingU = new Binding();
+            ColorSlidersBindingU.Source = Properties.Settings.Default;
+            ColorSlidersBindingU.Path = new PropertyPath(upperPath);
+            ColorSlidersBindingU.Mode = BindingMode.TwoWay;
+            ColorSlidersBindingU.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+            ColorSlidersBindingU.Converter = new ColorToStringConverter();
+            ColorSliders.SetBinding(Controls.RgbSliders.UpperProperty, ColorSlidersBindingU);
+        }
+
+        #endregion ForegroundEdit
+
+        private void AcceptColourButton_Click(object sender, RoutedEventArgs e)
+        {
+            BindingOperations.ClearAllBindings(ColorSliders);
+            CloseColorsAndReEnablePage(EditPageReturnTo);
+        }
+
+        private void CancelColourButton_Click(object sender, RoutedEventArgs e)
+        {
+            BindingOperations.ClearAllBindings(ColorSliders);
+
+            switch (EditPageReturnTo)
+            {
+                case "ForegroundStart":
+                    Properties.Settings.Default.ForegroundRandomLightsColorStartLower = InitialLowerColor;
+                    Properties.Settings.Default.ForegroundRandomLightsColorStartUpper = InitialUpperColor;
+                    break;
+                case "ForegroundEnd":
+                    Properties.Settings.Default.ForegroundRandomLightsColorEndLower = InitialLowerColor;
+                    Properties.Settings.Default.ForegroundRandomLightsColorEndUpper = InitialUpperColor;
+                    break;
+            }
+            CloseColorsAndReEnablePage(EditPageReturnTo);
+        }
+
+        private void CloseColorsAndReEnablePage(string page)
+        {
+            switch (page)
+            {
+                case "ForegroundStart": case "ForegroundEnd":
+                    GridForegroundRandomLights.IsEnabled = true;
+                    break;
+            }
+            GridForegroundColor.Visibility = System.Windows.Visibility.Hidden;
+        }
+
+        #endregion Pages
+    }
+
+    #region Type Converters
+    public class ColorToBrushConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var dc = (Color)ColorConverter.ConvertFromString(value.ToString());
+            return new SolidColorBrush(new Color { A = 255, R = dc.R, G = dc.G, B = dc.B });
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.ToString();
         }
     }
+
+    public class ColorToStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return (Color)ColorConverter.ConvertFromString(value.ToString());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value.ToString();
+        }
+    }
+    #endregion Type Converters
 
     #region Data Classes
 
