@@ -15,10 +15,10 @@
       <Value Profile="(Default)">0: Default</Value>
     </Setting>
     <Setting Name="ForegroundEffect" Type="System.String" Scope="User">
-      <Value Profile="(Default)">None</Value>
+      <Value Profile="(Default)">Spectrograph</Value>
     </Setting>
     <Setting Name="BackgroundEffect" Type="System.String" Scope="User">
-      <Value Profile="(Default)">None</Value>
+      <Value Profile="(Default)">Rainbow</Value>
     </Setting>
     <Setting Name="StaticProfileName" Type="System.String" Scope="User">
       <Value Profile="(Default)">None</Value>
@@ -90,7 +90,7 @@
       <Value Profile="(Default)">Random Colour</Value>
     </Setting>
     <Setting Name="ForegroundRandomLightsEndType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Defined Colour</Value>
+      <Value Profile="(Default)">Background</Value>
     </Setting>
     <Setting Name="ForegroundRandomLightsColorStartLower" Type="System.String" Scope="User">
       <Value Profile="(Default)">#000000</Value>
@@ -123,10 +123,13 @@
       <Value Profile="(Default)">255</Value>
     </Setting>
     <Setting Name="BackgroundRepeatTime" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">3000</Value>
+      <Value Profile="(Default)">2000</Value>
     </Setting>
     <Setting Name="OptInvertM1" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="BackgroundRainbowDirection" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Right</Value>
     </Setting>
   </Settings>
 </SettingsFile>

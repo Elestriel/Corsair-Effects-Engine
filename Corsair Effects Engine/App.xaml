@@ -73,7 +73,6 @@
         <!-- Effects Lists -->
         <x:Array x:Key="ForegroundEffectsList" 
                  Type="sys:String">
-            <sys:String>None</sys:String>
             <sys:String>Spectrograph</sys:String>
             <sys:String>Random Lights</sys:String>
             <sys:String>Reactive Typing</sys:String>
@@ -82,14 +81,14 @@
         
         <x:Array x:Key="BackgroundEffectsList" 
                  Type="sys:String">
-            <sys:String>None</sys:String>
             <sys:String>Rainbow</sys:String>
+            <sys:String>Spectrum Cycle</sys:String>
         </x:Array>
         
         <!-- Foreground: Random Keys -->
         <x:Array x:Key="ForegroundRandomLightsStyleList"
                  Type="sys:String">
-            <sys:String>Solid</sys:String>
+            <sys:String>Switch</sys:String>
             <sys:String>Fade</sys:String>
         </x:Array>
         
@@ -102,7 +101,15 @@
         <x:Array x:Key="ForegroundRandomLightsEndTypeList"
                  Type="sys:String">
             <sys:String>Defined Colour</sys:String>
+            <sys:String>Background</sys:String>
             <sys:String>Random Colour</sys:String>
+        </x:Array>
+        
+        <!-- Background: Rainbow -->
+        <x:Array x:Key="BackgroundRainbowDirectionList"
+                 Type="sys:String">
+            <sys:String>Right</sys:String>
+            <sys:String>Left</sys:String>
         </x:Array>
     </Application.Resources>
 </Application>

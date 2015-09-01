@@ -73,7 +73,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Spectrograph")]
         public string ForegroundEffect {
             get {
                 return ((string)(this["ForegroundEffect"]));
@@ -85,7 +85,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Rainbow")]
         public string BackgroundEffect {
             get {
                 return ((string)(this["BackgroundEffect"]));
@@ -373,7 +373,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Defined Colour")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Background")]
         public string ForegroundRandomLightsEndType {
             get {
                 return ((string)(this["ForegroundRandomLightsEndType"]));
@@ -505,7 +505,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
         public int BackgroundRepeatTime {
             get {
                 return ((int)(this["BackgroundRepeatTime"]));
@@ -524,6 +524,18 @@ namespace Corsair_Effects_Engine.Properties {
             }
             set {
                 this["OptInvertM1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Right")]
+        public string BackgroundRainbowDirection {
+            get {
+                return ((string)(this["BackgroundRainbowDirection"]));
+            }
+            set {
+                this["BackgroundRainbowDirection"] = value;
             }
         }
     }

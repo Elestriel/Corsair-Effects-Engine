@@ -20,7 +20,7 @@ namespace Corsair_Effects_Engine
     /// <param name="startColor">Colour to light up.</param>
     /// <param name="endColor">Colour to change to when time is up.</param>
     /// <param name="duration">Time in milliseconds for the light to stay lit before reverting to off.</param>
-    class LightSolid : ILight
+    class LightSwitch : ILight
     {        
         public Color LightColor {
             get 
@@ -52,7 +52,7 @@ namespace Corsair_Effects_Engine
         private Color StartColor;
         private Color EndColor;
 
-        public LightSolid(Color startColor, Color endColor, double duration)
+        public LightSwitch(Color startColor, Color endColor, double duration)
         {
             this.StartTime = DateTime.Now;
             this.Duration = duration;
@@ -73,20 +73,23 @@ namespace Corsair_Effects_Engine
                 { return StartColor; }
                 else if ((DifferenceMS) < (TotalDuration))
                 { 
-                    double sR, sG, sB, eR, eG, eB;
+                    double sA, sR, sG, sB, eA, eR, eG, eB;
+                    sA = StartColor.A;
                     sR = StartColor.R;
                     sG = StartColor.G;
                     sB = StartColor.B;
+                    eA = EndColor.A;
                     eR = EndColor.R;
                     eG = EndColor.G;
                     eB = EndColor.B;
 
-                    byte nR, nG, nB;
+                    byte nA, nR, nG, nB;
                     double StepMultiplier = (DifferenceMS - SolidDuration) / (TotalDuration - SolidDuration);
+                    nA = (byte)(sA - ((sA - eA) * StepMultiplier));
                     nR = (byte)(sR - ((sR - eR) * StepMultiplier));
                     nG = (byte)(sG - ((sG - eG) * StepMultiplier));
                     nB = (byte)(sB - ((sB - eB) * StepMultiplier));
-                    return Color.FromRgb(nR, nG, nB);
+                    return Color.FromArgb(nA, nR, nG, nB);
                 }
                 else
                 { return EndColor; };

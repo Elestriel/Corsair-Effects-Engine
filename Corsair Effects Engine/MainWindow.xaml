@@ -58,8 +58,6 @@
                 <Button x:Name="SettingsButton" Content="Settings" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Click="SettingsButton_Click" ToolTip="Display the Settings Page."/>
                 <Button x:Name="TestButton" Content="Test" VerticalAlignment="Bottom"  Grid.Column="0" Grid.Row="3" ToolTip="Start the worker thread." Click="TestButton_Click" Margin="0,0,0,1"/>
             </Grid>
-            <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="58,194,0,0" VerticalAlignment="Top" Width="83"
-                                Value="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundBrightness, Mode=TwoWay}" Minimum="0" Maximum="255" Increment="5"/>
         </Grid>
 
         <!-- Right Content -->
@@ -159,13 +157,14 @@
                 	IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptInvertM1, Mode=TwoWay}"/>
             </Grid>
 
-            <!-- Foreground -->
-            <Grid x:Name="GridLeftForegroundEdit" Grid.Column="0" Visibility="Visible" Margin="0,0,0,0">
+            <!-- Edit Grid -->
+            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Visible" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="296*"/>
                     <ColumnDefinition Width="200*"/>
                 </Grid.ColumnDefinitions>
-                <Grid x:Name="GridForegroundColor" Grid.Column="1" Visibility="Hidden">
+                <!-- Colours Grid -->
+                <Grid x:Name="GridColor" Grid.Column="1" Visibility="Visible">
                     <Label x:Name="ColourLabel" Content="Colours" Margin="10,10,10,0" VerticalAlignment="Top" Width="auto" HorizontalContentAlignment="Center" Height="26"/>
                     <Controls:RgbSliders x:Name="ColorSliders" Margin="10,36,10,0" VerticalAlignment="Top" Width="Auto"/>
                     <Grid Height="45" Margin="10,0,10,238" VerticalAlignment="Bottom">
@@ -177,8 +176,9 @@
                         <Button x:Name="CancelColourButton" Content="Cancel" Margin="2,10,0,0" VerticalAlignment="Top" Height="23" Grid.Column="1" Click="CancelColourButton_Click"/>
                     </Grid>
                 </Grid>
-                <!-- Random Lights -->
-                <Grid x:Name="GridForegroundRandomLights" Margin="0,0,0,0"  Grid.Column="0" Visibility="Hidden">
+
+                <!-- Foreground: Random Lights -->
+                <Grid x:Name="GridForegroundRandomLights" Margin="0,0,0,0" Grid.Column="0" Visibility="Visible">
                     <Grid Margin="0,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="137*"/>
@@ -199,13 +199,15 @@
                                             VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Hidden"
                                             Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsFadeSolidDuration, Mode=TwoWay}" Increment="100"/>
                         <Label x:Name="ForegroundRandomLightsFadeSolidDurationLabel" Content="Milliseconds to remain solid" HorizontalAlignment="Left" 
-                               Margin="108,76,0,0" VerticalAlignment="Top" Height="26" Width="158" Visibility="Hidden"/>
+                               Margin="108,76,0,0" VerticalAlignment="Top" Height="26" Width="158" Visibility="Hidden"
+                               ToolTip="Time to remain solid before beginning to fade."/>
 
                         <xctk:IntegerUpDown x:Name="ForegroundRandomLightsFadeTotalDurationUD" HorizontalAlignment="Left" Margin="10,105,0,0" 
                                             VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Hidden"
                                             Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsFadeTotalDuration, Mode=TwoWay}" Increment="100"/>
                         <Label x:Name="ForegroundRandomLightsFadeTotalDurationLabel" Content="Milliseconds total" HorizontalAlignment="Left" 
-                               Margin="108,101,0,0" VerticalAlignment="Top" Height="26" Width="103" Visibility="Hidden"/>
+                               Margin="108,101,0,0" VerticalAlignment="Top" Height="26" Width="103" Visibility="Hidden"
+                               ToolTip="Total time of the effect including solid and fade."/>
                         <!-- Used for Solid and Fade -->
                         <!-- Bottom Portion: Colour Options-->
                         <Label Content="Start Colour" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Left" Width="150"/>
@@ -233,9 +235,43 @@
                                     Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
                     </Grid>
                 </Grid>
-                <!-- Reactive Typing -->
+                <!-- Foreground: Reactive Typing -->
+                <Grid x:Name="GridForegroundReactive" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden">
+                    <Label Content="Coming soon..." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="190"/>
+                </Grid>
+                
+                <!-- Foreground: Heatmap -->
+                <Grid x:Name="GridForegroundHeatmap" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden">
+                    <Label Content="Coming soon..." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="190"/>
+                </Grid>
 
-                <!-- Heatmap -->
+                <!-- Background: Rainbow -->
+                <Grid x:Name="GridBackground" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="54*"/>
+                        <RowDefinition Height="347*"/>
+                    </Grid.RowDefinitions>
+                    <Label Content="Animation Cycle Time" Grid.Column="0" VerticalAlignment="Top" 
+                           Width="151" Height="26" HorizontalAlignment="Left" Margin="10,3,0,0"/>
+                    <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" Width="65"
+                    	Value="{Binding BackgroundRepeatTime, Mode=TwoWay, Source={x:Static p:Settings.Default}}" 
+                                        Minimum="200" Maximum="60000" Increment="100" Height="20"
+                                        ToolTip="Time in milliseconds before the effect repeats."/>
+                    <Label Content="Brightness" Grid.Column="0" Margin="0,3,10,0" VerticalAlignment="Top" 
+                               Width="65" Height="26" HorizontalAlignment="Right"/>
+                    <xctk:IntegerUpDown HorizontalAlignment="Right" Margin="0,26,10,0" VerticalAlignment="Top" Width="65"
+                    	    Value="{Binding BackgroundBrightness, Mode=TwoWay, Source={x:Static p:Settings.Default}}"
+                                            Minimum="0" Maximum="255" Increment="5" Height="20"
+                                            ToolTip="Brightness of the background effect."/>
+                    <Grid x:Name="GridBackgroundRainbow" Grid.Row="1">
+                        <Label Content="Direction" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" VerticalAlignment="Top" Width="58" Height="26" HorizontalAlignment="Left"/>
+                        <ComboBox x:Name="BackgroundRainbowDirection" Grid.Row="1" Grid.Column="0" Margin="10,21,0,0" VerticalAlignment="Top" Height="24" 
+                                      ToolTip="The direction that the rainbow will travel."
+                                      ItemsSource="{DynamicResource BackgroundRainbowDirectionList}"
+                                      SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundRainbowDirection, Mode=TwoWay}"
+                                      HorizontalAlignment="Left" Width="150" SelectionChanged="ForegroundRandomLightsStyle_SelectionChanged"/>
+                    </Grid>
+                </Grid>
             </Grid>
         </Grid>
 

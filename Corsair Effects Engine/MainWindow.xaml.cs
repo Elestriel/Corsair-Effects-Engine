@@ -32,7 +32,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0.1.0.0007";
+        private const string VersionNumber = "0.1.0.0008";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -59,7 +59,8 @@ namespace Corsair_Effects_Engine
             UpdateStatusMessage.NewMsg += UpdateStatusMessage_NewMsg;
             RefreshKeyboardPreview.ShowNewFrame += RefreshKeyboardPreview_ShowNewFrame;
 
-            SetWindowLayout("LogSettings");
+            //SetWindowLayout("LogSettings");
+            SetWindowLayout("Settings");
 
             // Initialize buttons for Keyboard Preview
             for (int i = 0; i < 144; i++)
@@ -69,7 +70,7 @@ namespace Corsair_Effects_Engine
                 KeyboardImage.Children.Add(keyboardButtons[i]);
 
                 keyData[i] = new KeyData();
-                keyData[i].KeyColor = new LightSolid(startColor: Color.FromRgb(255, 255, 255),
+                keyData[i].KeyColor = new LightSwitch(startColor: Color.FromRgb(255, 255, 255),
                                                        endColor: Color.FromRgb(0, 0, 0),
                                                        duration: 0);
             }
@@ -80,7 +81,7 @@ namespace Corsair_Effects_Engine
                 mouseButtons[i].Visibility = System.Windows.Visibility.Hidden;
 
                 keyData[i + 144] = new KeyData();
-                keyData[i + 144].KeyColor = new LightSolid(startColor: Color.FromRgb(255, 255, 255),
+                keyData[i + 144].KeyColor = new LightSwitch(startColor: Color.FromRgb(255, 255, 255),
                                                        endColor: Color.FromRgb(0, 0, 0),
                                                        duration: 0);
                 //KeyboardImage.Children.Add(keyboardButtons[i]);
@@ -208,7 +209,7 @@ namespace Corsair_Effects_Engine
 
         private void BackgroundEditButton_Click(object sender, RoutedEventArgs e)
         {
-            SetWindowLayout("BackgroundEdit");
+            SetWindowLayout("BackgroundEdit", Properties.Settings.Default.BackgroundEffect);
         }
 
         private void StaticEditButton_Click(object sender, RoutedEventArgs e)
@@ -335,11 +336,13 @@ namespace Corsair_Effects_Engine
                     ContentLeft.Width = new GridLength(500, GridUnitType.Star);
                     ContentRight.Width = new GridLength(200, GridUnitType.Star);
                     GridContent.Visibility = System.Windows.Visibility.Visible;
-                    GridLeftForegroundEdit.Visibility = System.Windows.Visibility.Visible;
+                    GridLeftEdit.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
 
                     switch (mode2)
                     {
+                        case "Spectrograph":
+                            break;
                         case "Random Lights":
                             GridForegroundRandomLights.Visibility = System.Windows.Visibility.Visible;
                             // Ensure the right controls are appearing based on selections
@@ -347,12 +350,31 @@ namespace Corsair_Effects_Engine
                             ForegroundRandomLightsStartType_SelectionChanged(null, null);
                             ForegroundRandomLightsEndType_SelectionChanged(null, null);
                             break;
+                        case "Reactive Typing":
+                            GridForegroundReactive.Visibility = System.Windows.Visibility.Visible;
+                            break;
+                        case "Heatmap":
+                            GridForegroundHeatmap.Visibility = System.Windows.Visibility.Visible;
+                            break;
                     }
                     break;
                 #endregion Foreground
                 #region Background
                 case "BackgroundEdit":
+                    UpdateStatusMessage.NewMessage(7, "Background Edit");
+                    ContentLeft.Width = new GridLength(500, GridUnitType.Star);
+                    ContentRight.Width = new GridLength(200, GridUnitType.Star);
+                    GridContent.Visibility = System.Windows.Visibility.Visible;
+                    GridLeftEdit.Visibility = System.Windows.Visibility.Visible;
+                    GridBackground.Visibility = System.Windows.Visibility.Visible;
+                    GridRightSettings.Visibility = System.Windows.Visibility.Visible;
 
+                    switch (mode2)
+                    {
+                        case "Rainbow":
+                            GridBackgroundRainbow.Visibility = System.Windows.Visibility.Visible;
+                            break;
+                    }
                     break;
                 #endregion Foreground
                 #region Static
@@ -376,12 +398,20 @@ namespace Corsair_Effects_Engine
             GridLeftSettings.Visibility = System.Windows.Visibility.Hidden;
             GridRightSettings.Visibility = System.Windows.Visibility.Hidden;
 
+            // Edit container
+            GridLeftEdit.Visibility = System.Windows.Visibility.Hidden;
+
             // Edit: Colour
-            GridForegroundColor.Visibility = System.Windows.Visibility.Hidden;
+            GridColor.Visibility = System.Windows.Visibility.Hidden;
             
             // Edit: Foreground
-            GridLeftForegroundEdit.Visibility = System.Windows.Visibility.Hidden;
             GridForegroundRandomLights.Visibility = System.Windows.Visibility.Hidden;
+            GridForegroundReactive.Visibility = System.Windows.Visibility.Hidden;
+            GridForegroundHeatmap.Visibility = System.Windows.Visibility.Hidden;
+
+            // Edit: Background
+            GridBackground.Visibility = System.Windows.Visibility.Hidden;
+            GridBackgroundRainbow.Visibility = System.Windows.Visibility.Hidden;
 
             // Full Keyboard
             GridKeyboard.Visibility = System.Windows.Visibility.Hidden;
@@ -618,7 +648,7 @@ namespace Corsair_Effects_Engine
                     SetNewColorSlidersBinding("ForegroundRandomLightsColorStartLower",
                                               "ForegroundRandomLightsColorStartUpper");
             
-                    GridForegroundColor.Visibility = System.Windows.Visibility.Visible;
+                    GridColor.Visibility = System.Windows.Visibility.Visible;
                     GridForegroundRandomLights.IsEnabled = false;
                     break;
             }
@@ -648,7 +678,7 @@ namespace Corsair_Effects_Engine
                     SetNewColorSlidersBinding("ForegroundRandomLightsColorEndLower",
                                               "ForegroundRandomLightsColorEndUpper");
 
-                    GridForegroundColor.Visibility = System.Windows.Visibility.Visible;
+                    GridColor.Visibility = System.Windows.Visibility.Visible;
                     GridForegroundRandomLights.IsEnabled = false;
                     break;
             }
@@ -707,7 +737,7 @@ namespace Corsair_Effects_Engine
                     GridForegroundRandomLights.IsEnabled = true;
                     break;
             }
-            GridForegroundColor.Visibility = System.Windows.Visibility.Hidden;
+            GridColor.Visibility = System.Windows.Visibility.Hidden;
         }
 
         #endregion Pages

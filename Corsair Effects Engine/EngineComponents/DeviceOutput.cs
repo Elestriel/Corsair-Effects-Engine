@@ -189,9 +189,9 @@ namespace Corsair_Effects_Engine.EngineComponents
 
             for (int i = 0; i < 5; i++)
             {
-                redValues[i] = (byte)Keys[i + 143].KeyColor.LightColor.R;
-                greenValues[i] = (byte)Keys[i + 143].KeyColor.LightColor.G;
-                blueValues[i] = (byte)Keys[i + 143].KeyColor.LightColor.B;
+                redValues[i] = (byte)Keys[i + 144].KeyColor.LightColor.R;
+                greenValues[i] = (byte)Keys[i + 144].KeyColor.LightColor.G;
+                blueValues[i] = (byte)Keys[i + 144].KeyColor.LightColor.B;
             }
 
             // Perform USB control message to keyboard
