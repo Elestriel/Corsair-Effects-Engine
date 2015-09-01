@@ -55,6 +55,13 @@
     <StartupObject>Corsair_Effects_Engine.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ColorPicker, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\References\ColorPicker\ColorPicker.dll</HintPath>
+    </Reference>
+    <Reference Include="ColorPickerControls">
+      <HintPath>..\..\..\..\References\ColorPicker\ColorPickerControls.dll</HintPath>
+    </Reference>
     <Reference Include="CSCore">
       <HintPath>..\..\..\..\References\CSCore\CSCore.dll</HintPath>
     </Reference>

@@ -172,7 +172,6 @@ namespace Corsair_Effects_Engine.EngineComponents
 
         public IntPtr GetKeyboardPointer()
         {
-            //InitKeyboard(Properties.Settings.Default.KeyboardHID, Properties.Settings.Default.KeyboardModel);
             if (InitDevice(DeviceHID.Keyboard, Properties.Settings.Default.KeyboardModel, "keyboard") == 0) { return UsbDevice; }
             else { return IntPtr.Zero; };
         }
@@ -332,7 +331,6 @@ namespace Corsair_Effects_Engine.EngineComponents
                             }
                             else
                             {
-                                //UpdateStatusMessage.ShowStatusMessage(6, "x: " + x + " y: " + y + " key: " + keys.Current);
                                 key = (byte)keys.Current;
                                 keys.MoveNext();
                                 size = (int)(sizef * 4);
@@ -340,7 +338,7 @@ namespace Corsair_Effects_Engine.EngineComponents
                         }
                         catch
                         {
-                            UpdateStatusMessage.NewMessage(3, "Enumeration Failed");
+                            UpdateStatusMessage.NewMessage(3, "Enumeration Failed.");
                             return false;
                         }
                     }
@@ -351,10 +349,6 @@ namespace Corsair_Effects_Engine.EngineComponents
                 if ((byte)keys.Current != 255 || (float)sizes.Current != 0f)
                 {
                     UpdateStatusMessage.NewMessage(4, "Bad line: " + keys.Current + ", " + sizes.Current + " Key " + key + "." + y);
-                }
-                else
-                {
-                    //UpdateStatusMessage.ShowStatusMessage(5, "Row Okay: " + keys.Current + ", " + sizes.Current + " Key " + key + "." + y);
                 }
 
                 keys.MoveNext();

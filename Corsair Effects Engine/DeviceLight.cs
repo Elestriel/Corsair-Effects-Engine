@@ -122,4 +122,26 @@ namespace Corsair_Effects_Engine
             this.EndColor = endColor;
         }
     }
+
+    class LightSingle : ILight
+    {
+        public Color LightColor
+        {
+            get
+            { return keyLight; }
+            set { }
+        }
+
+        public bool EffectInProgress
+        {
+            get { return false;}
+            set { }
+        }
+
+        private Color keyLight;
+
+        public LightSingle(Color lightColor) {
+            this.keyLight = lightColor;
+        }
+    }
 }

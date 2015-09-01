@@ -194,12 +194,12 @@ namespace Corsair_Effects_Engine.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool OptStartMinimized {
+        public bool Opt16MColours {
             get {
-                return ((bool)(this["OptStartMinimized"]));
+                return ((bool)(this["Opt16MColours"]));
             }
             set {
-                this["OptStartMinimized"] = value;
+                this["Opt16MColours"] = value;
             }
         }
         
@@ -373,7 +373,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Original Colour")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Defined Colour")]
         public string ForegroundRandomLightsEndType {
             get {
                 return ((string)(this["ForegroundRandomLightsEndType"]));
@@ -488,6 +488,42 @@ namespace Corsair_Effects_Engine.Properties {
             }
             set {
                 this["ForegroundRandomLightsSolidDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("255")]
+        public byte BackgroundBrightness {
+            get {
+                return ((byte)(this["BackgroundBrightness"]));
+            }
+            set {
+                this["BackgroundBrightness"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3000")]
+        public int BackgroundRepeatTime {
+            get {
+                return ((int)(this["BackgroundRepeatTime"]));
+            }
+            set {
+                this["BackgroundRepeatTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OptInvertM1 {
+            get {
+                return ((bool)(this["OptInvertM1"]));
+            }
+            set {
+                this["OptInvertM1"] = value;
             }
         }
     }

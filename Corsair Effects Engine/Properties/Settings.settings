@@ -44,7 +44,7 @@
     <Setting Name="OptMinimizeOnClose" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="OptStartMinimized" Type="System.Boolean" Scope="User">
+    <Setting Name="Opt16MColours" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="OptStartEffectsOnLoad" Type="System.Boolean" Scope="User">
@@ -90,7 +90,7 @@
       <Value Profile="(Default)">Random Colour</Value>
     </Setting>
     <Setting Name="ForegroundRandomLightsEndType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Original Colour</Value>
+      <Value Profile="(Default)">Defined Colour</Value>
     </Setting>
     <Setting Name="ForegroundRandomLightsColorStartLower" Type="System.String" Scope="User">
       <Value Profile="(Default)">#000000</Value>
@@ -118,6 +118,15 @@
     </Setting>
     <Setting Name="ForegroundRandomLightsSolidDuration" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2000</Value>
+    </Setting>
+    <Setting Name="BackgroundBrightness" Type="System.Byte" Scope="User">
+      <Value Profile="(Default)">255</Value>
+    </Setting>
+    <Setting Name="BackgroundRepeatTime" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3000</Value>
+    </Setting>
+    <Setting Name="OptInvertM1" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

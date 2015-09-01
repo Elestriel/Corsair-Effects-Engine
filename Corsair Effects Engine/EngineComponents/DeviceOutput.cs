@@ -39,6 +39,13 @@ namespace Corsair_Effects_Engine.EngineComponents
                 blueValues[i] = (byte)(7 - (Keys[i].KeyColor.LightColor.B / 32));
             }
 
+            if (Properties.Settings.Default.OptInvertM1)
+            {
+                redValues[23] = (byte)(7 - redValues[23]);
+                greenValues[23] = (byte)(7 - greenValues[23]);
+                blueValues[23] = (byte)(7 - blueValues[23]);
+            }
+
             // Perform USB control message to keyboard
             //
             // Request Type:  0x21
@@ -141,7 +148,7 @@ namespace Corsair_Effects_Engine.EngineComponents
             keyboard16MPacket[7][4] = 0x01;
             keyboard16MPacket[11][2] = 0x03;
             keyboard16MPacket[11][4] = 0x02;
-            
+
             for (int i = 0; i < 60; i++)
             {
                 keyboard16MPacket[0][i + 4] = Keys[i].KeyColor.LightColor.R;
@@ -159,6 +166,13 @@ namespace Corsair_Effects_Engine.EngineComponents
                 keyboard16MPacket[2][i + 4] = Keys[i + 120].KeyColor.LightColor.R;
                 keyboard16MPacket[6][i + 4] = Keys[i + 120].KeyColor.LightColor.G;
                 keyboard16MPacket[10][i + 4] = Keys[i + 120].KeyColor.LightColor.B;
+            }
+
+            if (Properties.Settings.Default.OptInvertM1)
+            {
+                keyboard16MPacket[0][27] = (byte)(255 - keyboard16MPacket[0][27]);
+                keyboard16MPacket[4][27] = (byte)(255 - keyboard16MPacket[4][27]);
+                keyboard16MPacket[8][27] = (byte)(255 - keyboard16MPacket[8][27]);
             }
 
             for (int p = 0; p < 12; p++)
@@ -278,6 +292,5 @@ namespace Corsair_Effects_Engine.EngineComponents
             }
             else return false;
         }
-        
     }
 }

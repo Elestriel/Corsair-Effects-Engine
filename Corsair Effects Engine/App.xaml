@@ -102,7 +102,6 @@
         <x:Array x:Key="ForegroundRandomLightsEndTypeList"
                  Type="sys:String">
             <sys:String>Defined Colour</sys:String>
-            <sys:String>Original Colour</sys:String>
             <sys:String>Random Colour</sys:String>
         </x:Array>
     </Application.Resources>
