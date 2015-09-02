@@ -32,7 +32,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0.1.0.0008";
+        private const string VersionNumber = "0.1.0.0009";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -589,6 +589,8 @@ namespace Corsair_Effects_Engine
         #region Pages
         #region Page: ForegroundEdit
 
+        #region Page: ForegroundEdit: Random Lights
+
         private void ForegroundRandomLightsStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!WindowInitialized) { return; };
@@ -615,19 +617,19 @@ namespace Corsair_Effects_Engine
         {
             if (!WindowInitialized) { return; };
             if (Properties.Settings.Default.ForegroundRandomLightsStartType == "Defined Colour")
-            { ForegroundStartColor.Visibility = System.Windows.Visibility.Visible; }
-            else { ForegroundStartColor.Visibility = System.Windows.Visibility.Hidden; }
+            { ForegroundRandomLightsStartColor.Visibility = System.Windows.Visibility.Visible; }
+            else { ForegroundRandomLightsStartColor.Visibility = System.Windows.Visibility.Hidden; }
         }
 
         private void ForegroundRandomLightsEndType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!WindowInitialized) { return; };
             if (Properties.Settings.Default.ForegroundRandomLightsEndType == "Defined Colour")
-            { ForegroundEndColor.Visibility = System.Windows.Visibility.Visible; }
-            else { ForegroundEndColor.Visibility = System.Windows.Visibility.Hidden; }
+            { ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Visible; }
+            else { ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Hidden; }
         }
 
-        private void ForegroundStartColorEdit_Click(object sender, RoutedEventArgs e)
+        private void ForegroundRandomLightsStartColorEdit_Click(object sender, RoutedEventArgs e)
         {
             switch (Properties.Settings.Default.ForegroundRandomLightsStartType)
             {
@@ -654,7 +656,7 @@ namespace Corsair_Effects_Engine
             }
         }
 
-        private void ForegroundEndColorEdit_Click(object sender, RoutedEventArgs e)
+        private void ForegroundRandomLightsEndColorEdit_Click(object sender, RoutedEventArgs e)
         {
             switch (Properties.Settings.Default.ForegroundRandomLightsEndType)
             {
@@ -684,6 +686,16 @@ namespace Corsair_Effects_Engine
             }
         }
 
+        #endregion Page: ForegroundEdit: Random Lights
+
+        #region Page: ForegroundEdit: Reactive
+
+        #endregion Page: ForegroundEdit: Reactive
+
+        #endregion ForegroundEdit
+
+
+        #region Color Sliders
         private void SetNewColorSlidersBinding(string lowerPath, string upperPath)
         {
             Binding ColorSlidersBindingL = new Binding();
@@ -702,8 +714,6 @@ namespace Corsair_Effects_Engine
             ColorSlidersBindingU.Converter = new ColorToStringConverter();
             ColorSliders.SetBinding(Controls.RgbSliders.UpperProperty, ColorSlidersBindingU);
         }
-
-        #endregion ForegroundEdit
 
         private void AcceptColourButton_Click(object sender, RoutedEventArgs e)
         {
@@ -739,6 +749,7 @@ namespace Corsair_Effects_Engine
             }
             GridColor.Visibility = System.Windows.Visibility.Hidden;
         }
+        #endregion Color Sliders
 
         #endregion Pages
 

@@ -51,7 +51,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="OptLiveKeyboardPreview" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="OptWarnIfCueRunning" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

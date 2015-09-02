@@ -13,6 +13,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,9 +24,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <SupportUrl>http://forum.corsair.com/v3/showthread.php%3ft=139027</SupportUrl>
+    <ProductName>Elestriel%27s Effects Engine</ProductName>
+    <PublisherName>Emily Maxwell</PublisherName>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -163,24 +166,24 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\K65-RGB.xml">
+    <Content Include="CorsairDevices\K65-RGB.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\K70-RGB.xml">
+    </Content>
+    <Content Include="CorsairDevices\K70-RGB.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\K95-RGB.xml">
+    </Content>
+    <Content Include="CorsairDevices\K95-RGB.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\STRAFE.xml">
+    </Content>
+    <Content Include="CorsairDevices\STRAFE.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\scimitar\profile_scimitar.xml">
+    <Content Include="CorsairDevices\scimitar\profile_scimitar.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -200,338 +203,338 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\cgk65rgb_br.xml">
+    <Content Include="CorsairDevices\cgk65rgb\cgk65rgb_br.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\cgk65rgb_jp.xml">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\cgk65rgb_jp.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\cgk65rgb_kr.xml">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\cgk65rgb_kr.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\cgk65rgb_na.xml">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\cgk65rgb_na.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\cgk65rgb_uk.xml">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\cgk65rgb_uk.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\be.jpg">
+    <Content Include="CorsairDevices\cgk65rgb\image\be.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\br.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\br.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\ch.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\ch.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\de.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\de.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\es.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\es.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\eu.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\eu.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\fr.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\fr.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\it.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\it.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\jp.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\jp.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\kr.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\kr.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\mex.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\mex.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\na.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\na.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\nd.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\nd.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\ru.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\ru.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\tw.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\tw.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\cgk65rgb\image\uk.jpg">
+    </Content>
+    <Content Include="CorsairDevices\cgk65rgb\image\uk.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\be.jpg">
+    <Content Include="CorsairDevices\k70rgb\image\be.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\br.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\br.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\ch.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\ch.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\de.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\de.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\es.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\es.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\eu.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\eu.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\fr.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\fr.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\it.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\it.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\jp.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\jp.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\kr.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\kr.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\mex.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\mex.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\na.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\na.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\nd.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\nd.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\ru.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\ru.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\tw.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\tw.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\image\uk.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\image\uk.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\be.jpg">
+    <Content Include="CorsairDevices\k95rgb\image\be.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\br.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\br.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\ch.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\ch.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\de.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\de.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\es.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\es.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\eu.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\eu.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\fr.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\fr.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\it.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\it.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\jp.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\jp.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\kr.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\kr.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\mex.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\mex.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\na.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\na.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\nd.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\nd.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\ru.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\ru.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\tw.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\tw.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\image\uk.jpg">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\image\uk.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\m65rgb\image\m65rgb.png">
+    <Content Include="CorsairDevices\m65rgb\image\m65rgb.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\sabre1\image\sabre1-lighting.png">
+    <Content Include="CorsairDevices\sabre1\image\sabre1-lighting.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\sabre2\image\sabre2-lighting.png">
+    <Content Include="CorsairDevices\sabre2\image\sabre2-lighting.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\be.jpg">
+    <Content Include="CorsairDevices\strafe\image\be.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\br.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\br.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\ch.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\ch.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\de.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\de.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\es.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\es.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\eu.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\eu.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\fr.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\fr.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\it.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\it.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\jp.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\jp.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\kr.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\kr.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\mex.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\mex.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\na.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\na.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\nd.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\nd.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\ru.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\ru.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\tw.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\tw.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\image\uk.jpg">
+    </Content>
+    <Content Include="CorsairDevices\strafe\image\uk.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\k70rgb_br.xml">
+    <Content Include="CorsairDevices\k70rgb\k70rgb_br.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\k70rgb_jp.xml">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\k70rgb_jp.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\k70rgb_kr.xml">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\k70rgb_kr.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\k70rgb_na.xml">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\k70rgb_na.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k70rgb\k70rgb_uk.xml">
+    </Content>
+    <Content Include="CorsairDevices\k70rgb\k70rgb_uk.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\k95rgb_br.xml">
+    <Content Include="CorsairDevices\k95rgb\k95rgb_br.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\k95rgb_jp.xml">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\k95rgb_jp.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\k95rgb_kr.xml">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\k95rgb_kr.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\k95rgb_na.xml">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\k95rgb_na.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\k95rgb\k95rgb_uk.xml">
+    </Content>
+    <Content Include="CorsairDevices\k95rgb\k95rgb_uk.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\m65rgb\profile_m65rgb.xml">
+    <Content Include="CorsairDevices\m65rgb\profile_m65rgb.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\sabre1\profile_sabre1.xml">
+    <Content Include="CorsairDevices\sabre1\profile_sabre1.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\sabre2\profile_sabre2.xml">
+    <Content Include="CorsairDevices\sabre2\profile_sabre2.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\strafe\strafe_br.xml">
+    <Content Include="CorsairDevices\strafe\strafe_br.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\strafe_jp.xml">
+    </Content>
+    <Content Include="CorsairDevices\strafe\strafe_jp.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\strafe_kr.xml">
+    </Content>
+    <Content Include="CorsairDevices\strafe\strafe_kr.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\strafe_na.xml">
+    </Content>
+    <Content Include="CorsairDevices\strafe\strafe_na.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\strafe\strafe_uk.xml">
+    </Content>
+    <Content Include="CorsairDevices\strafe\strafe_uk.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-front-mask.png">
+    <Content Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-front-mask.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-front.png">
+    </Content>
+    <Content Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-front.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-logo-mask.png">
+    </Content>
+    <Content Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-logo-mask.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-logo.png">
+    </Content>
+    <Content Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-scroll-mask.png">
+    </Content>
+    <Content Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-scroll-mask.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-scroll.png">
+    </Content>
+    <Content Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-scroll.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-side-mask.png">
+    </Content>
+    <Content Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-side-mask.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-side.png">
+    </Content>
+    <Content Include="CorsairDevices\scimitar\image\scimitar-lighting-zone-side.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar-side-image.png">
+    </Content>
+    <Content Include="CorsairDevices\scimitar\image\scimitar-side-image.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar-top-image.png">
+    </Content>
+    <Content Include="CorsairDevices\scimitar\image\scimitar-top-image.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
-    <EmbeddedResource Include="CorsairDevices\scimitar\image\scimitar.png">
+    </Content>
+    <Content Include="CorsairDevices\scimitar\image\scimitar.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\CorsairLogoTransparent.ico" />
