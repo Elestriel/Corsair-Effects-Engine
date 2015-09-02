@@ -184,7 +184,7 @@
                             <RowDefinition Height="137*"/>
                             <RowDefinition Height="264*"/>
                         </Grid.RowDefinitions>
-                        <Label Content="Style" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
+                        <Label Content="Light Style" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
                         <ComboBox x:Name="ForegroundRandomLightsStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" Height="24" 
                                   ToolTip="The style of light to be used for this effect."
                                   ItemsSource="{DynamicResource ForegroundRandomLightsStyleList}"
@@ -193,7 +193,7 @@
                         <!-- When "Solid" is selected -->
                         <xctk:IntegerUpDown x:Name="ForegroundRandomLightsSolidDurationUD" HorizontalAlignment="Left" Margin="10,105,0,0" 
                                             VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Hidden"
-                                            Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSolidDuration, Mode=TwoWay}" Increment="100"/>
+                                            Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSwitchDuration, Mode=TwoWay}" Increment="100"/>
                         <!-- When "Fade" is selected -->
                         <xctk:IntegerUpDown x:Name="ForegroundRandomLightsFadeSolidDurationUD" HorizontalAlignment="Left" Margin="10,80,0,0" 
                                             VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Hidden"
@@ -237,33 +237,33 @@
                 </Grid>
                 
                 <!-- Foreground: Reactive Typing -->
-                <Grid x:Name="GridForegroundReactive" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden">
+                <Grid x:Name="GridForegroundReactive" Margin="0,0,0,0" Grid.Column="0" Visibility="Visible">
                     <Grid Margin="0,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="137*"/>
                             <RowDefinition Height="264*"/>
                         </Grid.RowDefinitions>
-                        <Label Content="Style" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
+                        <Label Content="Light Style" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
                         <ComboBox x:Name="ForegroundReactiveStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" Height="24" 
                                   ToolTip="The style of light to be used for this effect."
-                                  ItemsSource="{DynamicResource ForegroundRandomLightsStyleList}"
-                                  SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsStyle, Mode=TwoWay}"
-                                  HorizontalAlignment="Left" Width="150" SelectionChanged="ForegroundRandomLightsStyle_SelectionChanged"/>
+                                  ItemsSource="{DynamicResource ForegroundReactiveStyleList}"
+                                  SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveStyle, Mode=TwoWay}"
+                                  HorizontalAlignment="Left" Width="150" SelectionChanged="ForegroundReactiveStyle_SelectionChanged"/>
                         <!-- When "Solid" is selected -->
                         <xctk:IntegerUpDown x:Name="ForegroundReactiveSolidDurationUD" HorizontalAlignment="Left" Margin="10,105,0,0" 
                                             VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Hidden"
-                                            Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSolidDuration, Mode=TwoWay}" Increment="100"/>
+                                            Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSolidDuration, Mode=TwoWay}" Increment="100"/>
                         <!-- When "Fade" is selected -->
                         <xctk:IntegerUpDown x:Name="ForegroundReactiveFadeSolidDurationUD" HorizontalAlignment="Left" Margin="10,80,0,0" 
                                             VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Hidden"
-                                            Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsFadeSolidDuration, Mode=TwoWay}" Increment="100"/>
+                                            Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveFadeSolidDuration, Mode=TwoWay}" Increment="100"/>
                         <Label x:Name="ForegroundReactiveFadeSolidDurationLabel" Content="Milliseconds to remain solid" HorizontalAlignment="Left" 
                                Margin="108,76,0,0" VerticalAlignment="Top" Height="26" Width="158" Visibility="Hidden"
                                ToolTip="Time to remain solid before beginning to fade."/>
 
                         <xctk:IntegerUpDown x:Name="ForegroundReactiveFadeTotalDurationUD" HorizontalAlignment="Left" Margin="10,105,0,0" 
                                             VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Hidden"
-                                            Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsFadeTotalDuration, Mode=TwoWay}" Increment="100"/>
+                                            Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveFadeTotalDuration, Mode=TwoWay}" Increment="100"/>
                         <Label x:Name="ForegroundReactiveFadeTotalDurationLabel" Content="Milliseconds total" HorizontalAlignment="Left" 
                                Margin="108,101,0,0" VerticalAlignment="Top" Height="26" Width="103" Visibility="Hidden"
                                ToolTip="Total time of the effect including solid and fade."/>
@@ -272,25 +272,26 @@
                         <Label Content="Start Colour" Grid.Row="1" Grid.Column="0" Margin="10,0,0,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Left" Width="150"/>
                         <ComboBox x:Name="ForegroundReactiveStartType" Grid.Row="1" Grid.Column="0" Margin="10,21,0,0" VerticalAlignment="Top" Height="24" 
                                   ToolTip="The colour to start the effect." HorizontalAlignment="Left" Width="150"
-                                  ItemsSource="{DynamicResource ForegroundRandomLightsStartTypeList}"
-                                  SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsStartType, Mode=TwoWay}" SelectionChanged="ForegroundRandomLightsStartType_SelectionChanged"/>
+                                  ItemsSource="{DynamicResource ForegroundReactiveStartTypeList}"
+                                  SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveStartType, Mode=TwoWay}" 
+                                  SelectionChanged="ForegroundReactiveStartType_SelectionChanged"/>
                         <Button x:Name="ForegroundReactiveStartColorEdit" Style="{StaticResource HyperlinkLikeButton}" Content="Edit" Margin="0,5,136,0" VerticalAlignment="Top" 
-                        	VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the selected foreground effects." Click="ForegroundRandomLightsStartColorEdit_Click" Grid.Row="1" Height="16"/>
+                        	VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the selected foreground effects." Click="ForegroundReactiveStartColorEdit_Click" Grid.Row="1" Height="16"/>
                         <Rectangle x:Name="ForegroundReactiveStartColor" HorizontalAlignment="Left" Height="24" Margin="165,21,0,0" 
                                    Grid.Row="1" Stroke="Black" VerticalAlignment="Top" Width="121"
-                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSolidColorStart, 
+                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSolidColorStart, 
                                     Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
 
                         <Label Content="End Colour" Grid.Row="1" Grid.Column="0" Margin="10,50,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
                         <ComboBox x:Name="ForegroundReactiveEndType" Grid.Row="1" Grid.Column="0" Margin="10,71,0,0" VerticalAlignment="Top" Height="24" 
                                   ToolTip="The colour to finish the effect." HorizontalAlignment="Left" Width="150"
-                                  ItemsSource="{DynamicResource ForegroundRandomLightsEndTypeList}"
-                                  SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsEndType, Mode=TwoWay}" SelectionChanged="ForegroundRandomLightsEndType_SelectionChanged"/>
+                                  ItemsSource="{DynamicResource ForegroundReactiveEndTypeList}"
+                                  SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveEndType, Mode=TwoWay}" SelectionChanged="ForegroundReactiveEndType_SelectionChanged"/>
                         <Button x:Name="ForegroundReactiveEndColorEdit" Style="{StaticResource HyperlinkLikeButton}" Content="Edit" Margin="0,55,136,0" VerticalAlignment="Top" 
-                        	VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the selected foreground effects." Click="ForegroundRandomLightsEndColorEdit_Click" Grid.Row="1" Height="16"/>
+                        	VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the selected foreground effects." Click="ForegroundReactiveEndColorEdit_Click" Grid.Row="1" Height="16"/>
                         <Rectangle x:Name="ForegroundReactiveEndColor" HorizontalAlignment="Left" Height="24" Margin="165,71,0,0" 
                                    Grid.Row="1" Stroke="Black" VerticalAlignment="Top" Width="121"
-                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSolidColorEnd, 
+                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSolidColorEnd, 
                                     Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
                     </Grid>
                 </Grid>

@@ -110,13 +110,13 @@
     <Setting Name="ForegroundRandomLightsFadeTotalDuration" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">1500</Value>
     </Setting>
-    <Setting Name="ForegroundRandomLightsSolidColorStart" Type="System.String" Scope="User">
+    <Setting Name="ForegroundRandomLightsSwitchColorStart" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FFFFFF</Value>
     </Setting>
-    <Setting Name="ForegroundRandomLightsSolidColorEnd" Type="System.String" Scope="User">
+    <Setting Name="ForegroundRandomLightsSwitchColorEnd" Type="System.String" Scope="User">
       <Value Profile="(Default)">#000000</Value>
     </Setting>
-    <Setting Name="ForegroundRandomLightsSolidDuration" Type="System.Int32" Scope="User">
+    <Setting Name="ForegroundRandomLightsSwitchDuration" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2000</Value>
     </Setting>
     <Setting Name="BackgroundBrightness" Type="System.Byte" Scope="User">
@@ -130,6 +130,42 @@
     </Setting>
     <Setting Name="BackgroundRainbowDirection" Type="System.String" Scope="User">
       <Value Profile="(Default)">Right</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveStartType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Defined Colour</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveEndType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Background</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveColorStartLower" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#000000</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveColorEndLower" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#000000</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveColorStartUpper" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveColorEndUpper" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveFadeSolidDuration" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1000</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveFadeTotalDuration" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1500</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveSwitchSolidDuration" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2000</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveSwitchColorStart" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveSwitchColorEnd" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#000000</Value>
+    </Setting>
+    <Setting Name="ForegroundReactiveStyle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Fade</Value>
     </Setting>
   </Settings>
 </SettingsFile>

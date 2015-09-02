@@ -14,7 +14,6 @@
     {
         m_SimpleMessageWindow.OnWindowsMessageCreate += new SimpleMessageOnlyWindow.OnWindowsMessageCreateEventHandler(SimpleMessageWindowCreate);
         m_SimpleMessageWindow.OnWindowsMessageInput += new SimpleMessageOnlyWindow.OnWindowsMessageInputEventHandler(SimpleMessageWindowInput);
-        //
     }
 
     public void SimpleMessageWindowCreate(System.IntPtr hWnd, int msg, System.IntPtr wParam, System.IntPtr lParam)

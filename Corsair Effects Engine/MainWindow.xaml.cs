@@ -32,7 +32,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0.1.0.0009";
+        private const string VersionNumber = "0.1.0.0010";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -596,7 +596,7 @@ namespace Corsair_Effects_Engine
             if (!WindowInitialized) { return; };
             switch (Properties.Settings.Default.ForegroundRandomLightsStyle)
             {
-                case "Solid":
+                case "Switch":
                     ForegroundRandomLightsFadeSolidDurationUD.Visibility = System.Windows.Visibility.Hidden;
                     ForegroundRandomLightsFadeTotalDurationUD.Visibility = System.Windows.Visibility.Hidden;
                     ForegroundRandomLightsFadeSolidDurationLabel.Visibility = System.Windows.Visibility.Hidden;
@@ -634,7 +634,7 @@ namespace Corsair_Effects_Engine
             switch (Properties.Settings.Default.ForegroundRandomLightsStartType)
             {
                 case "Defined Colour":
-                    Properties.Settings.Default.ForegroundRandomLightsSolidColorStart = OpenColorPicker(Properties.Settings.Default.ForegroundRandomLightsSolidColorStart).ToString();
+                    Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart = OpenColorPicker(Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart).ToString();
                     break;
                 case "Random Colour":
                     EditPageReturnTo = "ForegroundStart";
@@ -661,7 +661,7 @@ namespace Corsair_Effects_Engine
             switch (Properties.Settings.Default.ForegroundRandomLightsEndType)
             {
                 case "Defined Colour":
-                    Properties.Settings.Default.ForegroundRandomLightsSolidColorEnd = OpenColorPicker(Properties.Settings.Default.ForegroundRandomLightsSolidColorEnd).ToString();
+                    Properties.Settings.Default.ForegroundRandomLightsSwitchColorEnd = OpenColorPicker(Properties.Settings.Default.ForegroundRandomLightsSwitchColorEnd).ToString();
                     break;
                 case "Original Colour":
                     // Do nothing
@@ -689,13 +689,107 @@ namespace Corsair_Effects_Engine
         #endregion Page: ForegroundEdit: Random Lights
 
         #region Page: ForegroundEdit: Reactive
+        private void ForegroundReactiveStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!WindowInitialized) { return; };
+            switch (Properties.Settings.Default.ForegroundRandomLightsStyle)
+            {
+                case "Switch":
+                    ForegroundRandomLightsFadeSolidDurationUD.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundRandomLightsFadeTotalDurationUD.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundRandomLightsFadeSolidDurationLabel.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundRandomLightsFadeTotalDurationLabel.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundRandomLightsSolidDurationUD.Visibility = System.Windows.Visibility.Visible;
+                    break;
+                case "Fade":
+                    ForegroundRandomLightsFadeSolidDurationUD.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundRandomLightsFadeTotalDurationUD.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundRandomLightsFadeSolidDurationLabel.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundRandomLightsFadeTotalDurationLabel.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundRandomLightsSolidDurationUD.Visibility = System.Windows.Visibility.Hidden;
+                    break;
+            }
+        }
+
+        private void ForegroundReactiveStartType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!WindowInitialized) { return; };
+            if (Properties.Settings.Default.ForegroundRandomLightsStartType == "Defined Colour")
+            { ForegroundRandomLightsStartColor.Visibility = System.Windows.Visibility.Visible; }
+            else { ForegroundRandomLightsStartColor.Visibility = System.Windows.Visibility.Hidden; }
+        }
+
+        private void ForegroundReactiveEndType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (!WindowInitialized) { return; };
+            if (Properties.Settings.Default.ForegroundRandomLightsEndType == "Defined Colour")
+            { ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Visible; }
+            else { ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Hidden; }
+        }
+
+        private void ForegroundReactiveStartColorEdit_Click(object sender, RoutedEventArgs e)
+        {
+            switch (Properties.Settings.Default.ForegroundReactiveStartType)
+            {
+                case "Defined Colour":
+                    Properties.Settings.Default.ForegroundReactiveSwitchColorStart = OpenColorPicker(Properties.Settings.Default.ForegroundReactiveSwitchColorStart).ToString();
+                    break;
+                case "Random Colour":
+                    EditPageReturnTo = "ForegroundStart";
+                    ColourLabel.Content = "Start Colour";
+                    InitialLowerColor = Properties.Settings.Default.ForegroundReactiveColorStartLower;
+                    InitialUpperColor = Properties.Settings.Default.ForegroundReactiveColorStartUpper;
+
+                    // Ugly: Assign property values to initialize sliders.
+                    // This needs to be replaced with proper binding, somehow.
+                    ColorSliders.LowerColor = (Color)ColorConverter.ConvertFromString(InitialLowerColor);
+                    ColorSliders.UpperColor = (Color)ColorConverter.ConvertFromString(InitialUpperColor);
+
+                    SetNewColorSlidersBinding("ForegroundReactiveColorStartLower",
+                                              "ForegroundReactiveColorStartUpper");
+
+                    GridColor.Visibility = System.Windows.Visibility.Visible;
+                    GridForegroundReactive.IsEnabled = false;
+                    break;
+            }
+        }
+
+        private void ForegroundReactiveEndColorEdit_Click(object sender, RoutedEventArgs e)
+        {
+            switch (Properties.Settings.Default.ForegroundReactiveEndType)
+            {
+                case "Defined Colour":
+                    Properties.Settings.Default.ForegroundReactiveSwitchColorEnd = OpenColorPicker(Properties.Settings.Default.ForegroundReactiveSwitchColorEnd).ToString();
+                    break;
+                case "Original Colour":
+                    // Do nothing
+                    break;
+                case "Random Colour":
+                    EditPageReturnTo = "ForegroundEnd";
+                    ColourLabel.Content = "End Colour";
+                    InitialLowerColor = Properties.Settings.Default.ForegroundReactiveColorEndLower;
+                    InitialUpperColor = Properties.Settings.Default.ForegroundReactiveColorEndUpper;
+
+                    // Ugly: Assign property values to initialize sliders.
+                    // This needs to be replaced with proper binding, somehow.
+                    ColorSliders.LowerColor = (Color)ColorConverter.ConvertFromString(InitialLowerColor);
+                    ColorSliders.UpperColor = (Color)ColorConverter.ConvertFromString(InitialUpperColor);
+
+                    SetNewColorSlidersBinding("ForegroundReactiveColorEndLower",
+                                              "ForegroundReactiveColorEndUpper");
+
+                    GridColor.Visibility = System.Windows.Visibility.Visible;
+                    GridForegroundReactive.IsEnabled = false;
+                    break;
+            }
+        }
 
         #endregion Page: ForegroundEdit: Reactive
 
         #endregion ForegroundEdit
 
+        #region Color Sliders and Picker
 
-        #region Color Sliders
         private void SetNewColorSlidersBinding(string lowerPath, string upperPath)
         {
             Binding ColorSlidersBindingL = new Binding();
@@ -749,19 +843,16 @@ namespace Corsair_Effects_Engine
             }
             GridColor.Visibility = System.Windows.Visibility.Hidden;
         }
-        #endregion Color Sliders
-
-        #endregion Pages
 
         private Color OpenColorPicker(Color inColor)
         {
             ColorPickerStandardDialog dia = new ColorPickerStandardDialog();
             dia.InitialColor = inColor;
             if (dia.ShowDialog() == true)
-                { inColor = dia.SelectedColor; }
+            { inColor = dia.SelectedColor; }
             return inColor;
         }
-        
+
         private Color OpenColorPicker(string inColorString)
         {
             Color inColor = (Color)ColorConverter.ConvertFromString(inColorString.ToString());
@@ -771,6 +862,10 @@ namespace Corsair_Effects_Engine
             { inColor = dia.SelectedColor; }
             return inColor;
         }
+
+        #endregion Color Sliders and Picker
+
+        #endregion Pages
     }
 
     #region Type Converters

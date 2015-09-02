@@ -458,36 +458,36 @@ namespace Corsair_Effects_Engine.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF")]
-        public string ForegroundRandomLightsSolidColorStart {
+        public string ForegroundRandomLightsSwitchColorStart {
             get {
-                return ((string)(this["ForegroundRandomLightsSolidColorStart"]));
+                return ((string)(this["ForegroundRandomLightsSwitchColorStart"]));
             }
             set {
-                this["ForegroundRandomLightsSolidColorStart"] = value;
+                this["ForegroundRandomLightsSwitchColorStart"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#000000")]
-        public string ForegroundRandomLightsSolidColorEnd {
+        public string ForegroundRandomLightsSwitchColorEnd {
             get {
-                return ((string)(this["ForegroundRandomLightsSolidColorEnd"]));
+                return ((string)(this["ForegroundRandomLightsSwitchColorEnd"]));
             }
             set {
-                this["ForegroundRandomLightsSolidColorEnd"] = value;
+                this["ForegroundRandomLightsSwitchColorEnd"] = value;
             }
         }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2000")]
-        public int ForegroundRandomLightsSolidDuration {
+        public int ForegroundRandomLightsSwitchDuration {
             get {
-                return ((int)(this["ForegroundRandomLightsSolidDuration"]));
+                return ((int)(this["ForegroundRandomLightsSwitchDuration"]));
             }
             set {
-                this["ForegroundRandomLightsSolidDuration"] = value;
+                this["ForegroundRandomLightsSwitchDuration"] = value;
             }
         }
         
@@ -536,6 +536,150 @@ namespace Corsair_Effects_Engine.Properties {
             }
             set {
                 this["BackgroundRainbowDirection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Defined Colour")]
+        public string ForegroundReactiveStartType {
+            get {
+                return ((string)(this["ForegroundReactiveStartType"]));
+            }
+            set {
+                this["ForegroundReactiveStartType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Background")]
+        public string ForegroundReactiveEndType {
+            get {
+                return ((string)(this["ForegroundReactiveEndType"]));
+            }
+            set {
+                this["ForegroundReactiveEndType"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#000000")]
+        public string ForegroundReactiveColorStartLower {
+            get {
+                return ((string)(this["ForegroundReactiveColorStartLower"]));
+            }
+            set {
+                this["ForegroundReactiveColorStartLower"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#000000")]
+        public string ForegroundReactiveColorEndLower {
+            get {
+                return ((string)(this["ForegroundReactiveColorEndLower"]));
+            }
+            set {
+                this["ForegroundReactiveColorEndLower"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF")]
+        public string ForegroundReactiveColorStartUpper {
+            get {
+                return ((string)(this["ForegroundReactiveColorStartUpper"]));
+            }
+            set {
+                this["ForegroundReactiveColorStartUpper"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF")]
+        public string ForegroundReactiveColorEndUpper {
+            get {
+                return ((string)(this["ForegroundReactiveColorEndUpper"]));
+            }
+            set {
+                this["ForegroundReactiveColorEndUpper"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int ForegroundReactiveFadeSolidDuration {
+            get {
+                return ((int)(this["ForegroundReactiveFadeSolidDuration"]));
+            }
+            set {
+                this["ForegroundReactiveFadeSolidDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1500")]
+        public int ForegroundReactiveFadeTotalDuration {
+            get {
+                return ((int)(this["ForegroundReactiveFadeTotalDuration"]));
+            }
+            set {
+                this["ForegroundReactiveFadeTotalDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
+        public int ForegroundReactiveSwitchSolidDuration {
+            get {
+                return ((int)(this["ForegroundReactiveSwitchSolidDuration"]));
+            }
+            set {
+                this["ForegroundReactiveSwitchSolidDuration"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF")]
+        public string ForegroundReactiveSwitchColorStart {
+            get {
+                return ((string)(this["ForegroundReactiveSwitchColorStart"]));
+            }
+            set {
+                this["ForegroundReactiveSwitchColorStart"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#000000")]
+        public string ForegroundReactiveSwitchColorEnd {
+            get {
+                return ((string)(this["ForegroundReactiveSwitchColorEnd"]));
+            }
+            set {
+                this["ForegroundReactiveSwitchColorEnd"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Fade")]
+        public string ForegroundReactiveStyle {
+            get {
+                return ((string)(this["ForegroundReactiveStyle"]));
+            }
+            set {
+                this["ForegroundReactiveStyle"] = value;
             }
         }
     }
