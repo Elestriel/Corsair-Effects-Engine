@@ -32,7 +32,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0.1.0.0011";
+        private const string VersionNumber = "0.1.0.0012";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -234,6 +234,7 @@ namespace Corsair_Effects_Engine
                     ContentRight.Width = new GridLength(0);
                     GridContent.Visibility = System.Windows.Visibility.Visible;
                     GridLeftLog.Visibility = System.Windows.Visibility.Visible;
+                    GridControls.IsEnabled = true;
                     break;
                 case "LogSettings":
                     UpdateStatusMessage.NewMessage(7, "LogSettings");
@@ -242,6 +243,7 @@ namespace Corsair_Effects_Engine
                     GridContent.Visibility = System.Windows.Visibility.Visible;
                     GridLeftLog.Visibility = System.Windows.Visibility.Visible;
                     GridRightLog.Visibility = System.Windows.Visibility.Visible;
+                    GridControls.IsEnabled = true;
                     break;
                 #endregion Log
                 #region Settings
@@ -252,6 +254,7 @@ namespace Corsair_Effects_Engine
                     GridContent.Visibility = System.Windows.Visibility.Visible;
                     GridLeftSettings.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
+                    GridControls.IsEnabled = true;
                     break;
                 #endregion Settings
                 #region Mouse
@@ -261,6 +264,7 @@ namespace Corsair_Effects_Engine
                     ContentRight.Width = new GridLength(200, GridUnitType.Star); 
                     GridKeyboard.Visibility = System.Windows.Visibility.Visible;
                     KeyboardImage.Visibility = System.Windows.Visibility.Visible;
+                    GridControls.IsEnabled = true;
 
                     if (Properties.Settings.Default.MouseModel != "None" &&
                         Properties.Settings.Default.MouseModel != "")
@@ -290,6 +294,7 @@ namespace Corsair_Effects_Engine
                     ContentRight.Width = new GridLength(200, GridUnitType.Star);
                     GridKeyboard.Visibility = System.Windows.Visibility.Visible;
                     KeyboardImage.Visibility = System.Windows.Visibility.Visible;
+                    GridControls.IsEnabled = true;
 
                     if (Properties.Settings.Default.KeyboardModel != "None" && 
                         Properties.Settings.Default.KeyboardModel != "" && 
@@ -343,6 +348,7 @@ namespace Corsair_Effects_Engine
                     GridContent.Visibility = System.Windows.Visibility.Visible;
                     GridLeftEdit.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
+                    GridControls.IsEnabled = false;
 
                     PageBeingEdited = mode2;
                     PageBeingEditedLabel.Content = "Currently Editing: " + PageBeingEdited;
@@ -380,6 +386,7 @@ namespace Corsair_Effects_Engine
                     GridLeftEdit.Visibility = System.Windows.Visibility.Visible;
                     GridBackground.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
+                    GridControls.IsEnabled = false;
 
                     PageBeingEdited = mode2;
                     PageBeingEditedLabel.Content = "Currently Editing: " + PageBeingEdited;

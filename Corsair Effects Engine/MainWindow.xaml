@@ -236,7 +236,7 @@
                         	VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the selected foreground effects." Click="ForegroundRandomLightsStartColorEdit_Click" Grid.Row="2" Height="16"/>
                         <Rectangle x:Name="ForegroundRandomLightsStartColor" HorizontalAlignment="Left" Height="24" Margin="165,21,0,0" 
                                    Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="121"
-                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSolidColorStart, 
+                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSwitchColorStart, 
                                     Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
 
                         <Label Content="End Colour" Grid.Row="2" Grid.Column="0" Margin="10,50,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
@@ -248,7 +248,7 @@
                         	VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the selected foreground effects." Click="ForegroundRandomLightsEndColorEdit_Click" Grid.Row="2" Height="16"/>
                         <Rectangle x:Name="ForegroundRandomLightsEndColor" HorizontalAlignment="Left" Height="24" Margin="165,71,0,0" 
                                    Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="121"
-                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSolidColorEnd, 
+                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSwitchColorEnd, 
                                     Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
                     </Grid>
                 </Grid>
@@ -301,7 +301,7 @@
                                 Width="24" ToolTip="Edit the selected foreground effects." Click="ForegroundReactiveStartColorEdit_Click" Grid.Row="2" Height="16"/>
                         <Rectangle x:Name="ForegroundReactiveStartColor" HorizontalAlignment="Left" Height="24" Margin="165,21,0,0" 
                                    Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="121"
-                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSolidColorStart, 
+                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSwitchColorStart, 
                                     Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
 
                         <Label Content="End Colour" Grid.Row="2" Grid.Column="0" Margin="10,50,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
@@ -314,7 +314,7 @@
                                 Click="ForegroundReactiveEndColorEdit_Click" Grid.Row="2" Height="16"/>
                         <Rectangle x:Name="ForegroundReactiveEndColor" HorizontalAlignment="Left" Height="24" Margin="165,71,0,0" 
                                    Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="121"
-                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSolidColorEnd, 
+                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSwitchColorEnd, 
                                     Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
                     </Grid>
                 </Grid>

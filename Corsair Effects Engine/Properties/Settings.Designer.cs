@@ -373,7 +373,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Background")]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
         public string ForegroundRandomLightsEndType {
             get {
                 return ((string)(this["ForegroundRandomLightsEndType"]));
@@ -553,7 +553,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Background")]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
         public string ForegroundReactiveEndType {
             get {
                 return ((string)(this["ForegroundReactiveEndType"]));

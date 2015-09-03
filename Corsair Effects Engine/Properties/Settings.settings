@@ -90,7 +90,7 @@
       <Value Profile="(Default)">Random Colour</Value>
     </Setting>
     <Setting Name="ForegroundRandomLightsEndType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Background</Value>
+      <Value Profile="(Default)">None</Value>
     </Setting>
     <Setting Name="ForegroundRandomLightsColorStartLower" Type="System.String" Scope="User">
       <Value Profile="(Default)">#000000</Value>
@@ -135,7 +135,7 @@
       <Value Profile="(Default)">Defined Colour</Value>
     </Setting>
     <Setting Name="ForegroundReactiveEndType" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Background</Value>
+      <Value Profile="(Default)">None</Value>
     </Setting>
     <Setting Name="ForegroundReactiveColorStartLower" Type="System.String" Scope="User">
       <Value Profile="(Default)">#000000</Value>

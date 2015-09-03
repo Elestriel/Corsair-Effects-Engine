@@ -229,11 +229,11 @@ namespace Corsair_Effects_Engine
                             }
                             switch (Properties.Settings.Default.ForegroundRandomLightsEndType)
                             {
+                                case "None":
+                                    endColor = Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
+                                    break;
                                 case "Defined Colour":
                                     endColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorEnd);
-                                    break;
-                                case "Background":
-                                    endColor = Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
                                     break;
                                 case "Random Colour":
                                     endColor = Color.FromRgb((byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
@@ -319,11 +319,11 @@ namespace Corsair_Effects_Engine
                 }
                 switch (Properties.Settings.Default.ForegroundReactiveEndType)
                 {
+                    case "None":
+                        endColor = Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
+                        break;
                     case "Defined Colour":
                         endColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorEnd);
-                        break;
-                    case "Background":
-                        endColor = Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
                         break;
                     case "Random Colour":
                         endColor = Color.FromRgb((byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
