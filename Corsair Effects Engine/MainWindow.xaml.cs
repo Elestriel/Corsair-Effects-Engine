@@ -32,7 +32,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0.1.0.0010";
+        private const string VersionNumber = "0.1.0.0011";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -45,7 +45,11 @@ namespace Corsair_Effects_Engine
         private static string InitialLowerColor;
         private static string InitialUpperColor;
 
-        static Task EngineTask = null;
+        // Name of the page being edited
+        private static string PageBeingEdited;
+
+        Engine newEngine = new Engine();
+        Task EngineTask = null;
 
         #region MainWindow Events
         public MainWindow()
@@ -146,10 +150,9 @@ namespace Corsair_Effects_Engine
 
         private void StartEngine()
         {
-            Engine.RunEngine = true;
-            Engine.PauseEngine = false;
-
-            EngineTask = Task.Run(() => Engine.Start());
+            newEngine.PauseEngine = false;
+            newEngine.RunEngine = true;
+            EngineTask = Task.Run(() => newEngine.Start());
         }
 
         private async void StopEngine()
@@ -157,7 +160,7 @@ namespace Corsair_Effects_Engine
             if (EngineTask != null)
             {
                 // Ask the thread to destroy itself
-                Engine.RunEngine = false;
+                newEngine.RunEngine = false;
 
                 // Wait for the thread to end
                 await EngineTask;
@@ -184,6 +187,7 @@ namespace Corsair_Effects_Engine
 
         private void KeyboardButton_Click(object sender, RoutedEventArgs e)
         {
+            /*
             bool resumeEngineAfterLoad = false;
             if (Engine.RunEngine == true)
             {
@@ -200,6 +204,7 @@ namespace Corsair_Effects_Engine
             SetWindowLayout("Keyboard");
 
             if (resumeEngineAfterLoad) { Engine.PauseEngine = false; };
+            */
         }
 
         private void ForegroundEditButton_Click(object sender, RoutedEventArgs e)
@@ -339,6 +344,9 @@ namespace Corsair_Effects_Engine
                     GridLeftEdit.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
 
+                    PageBeingEdited = mode2;
+                    PageBeingEditedLabel.Content = "Currently Editing: " + PageBeingEdited;
+
                     switch (mode2)
                     {
                         case "Spectrograph":
@@ -352,6 +360,10 @@ namespace Corsair_Effects_Engine
                             break;
                         case "Reactive Typing":
                             GridForegroundReactive.Visibility = System.Windows.Visibility.Visible;
+                            // Ensure the right controls are appearing based on selections
+                            ForegroundReactiveStyle_SelectionChanged(null, null);
+                            ForegroundReactiveStartType_SelectionChanged(null, null);
+                            ForegroundReactiveEndType_SelectionChanged(null, null);
                             break;
                         case "Heatmap":
                             GridForegroundHeatmap.Visibility = System.Windows.Visibility.Visible;
@@ -368,6 +380,9 @@ namespace Corsair_Effects_Engine
                     GridLeftEdit.Visibility = System.Windows.Visibility.Visible;
                     GridBackground.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
+
+                    PageBeingEdited = mode2;
+                    PageBeingEditedLabel.Content = "Currently Editing: " + PageBeingEdited;
 
                     switch (mode2)
                     {
@@ -501,7 +516,7 @@ namespace Corsair_Effects_Engine
         /// Updates the live keyboard preview.
         /// </summary>
         public void RefreshKeyboardPreview_ShowNewFrame()
-        {
+        {/*
             UpdateStatusMessage.NewMessage(5, "New Frame");
             if (keyData == null) { return; };
             if (Engine.RunEngine == false || Engine.PauseEngine == true) { return; };
@@ -515,6 +530,7 @@ namespace Corsair_Effects_Engine
                                                 keyData[i].KeyColor.LightColor.G,
                                                 keyData[i].KeyColor.LightColor.B)); } ));
             }
+          */
         }
 
         #endregion Thread-Safe Functions
@@ -577,7 +593,8 @@ namespace Corsair_Effects_Engine
             if (Model == "" || Region == "") { return; };
             if (Model == "None" || Region == "None") { DrawButtonsOnKeyboard(Clear: true); return; };
 
-            Engine.RestartEngine = true;
+            //Engine.RestartEngine = true;
+            newEngine.RestartEngine = true;
         }
 
         #endregion Live Keyboard Preview
@@ -587,6 +604,7 @@ namespace Corsair_Effects_Engine
         }
 
         #region Pages
+
         #region Page: ForegroundEdit
 
         #region Page: ForegroundEdit: Random Lights
@@ -637,7 +655,7 @@ namespace Corsair_Effects_Engine
                     Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart = OpenColorPicker(Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart).ToString();
                     break;
                 case "Random Colour":
-                    EditPageReturnTo = "ForegroundStart";
+                    EditPageReturnTo = "ForegroundRandomLightsStart";
                     ColourLabel.Content = "Start Colour";
                     InitialLowerColor = Properties.Settings.Default.ForegroundRandomLightsColorStartLower;
                     InitialUpperColor = Properties.Settings.Default.ForegroundRandomLightsColorStartUpper;
@@ -651,6 +669,7 @@ namespace Corsair_Effects_Engine
                                               "ForegroundRandomLightsColorStartUpper");
             
                     GridColor.Visibility = System.Windows.Visibility.Visible;
+                    DisableControlsWhileEditing();
                     GridForegroundRandomLights.IsEnabled = false;
                     break;
             }
@@ -667,7 +686,7 @@ namespace Corsair_Effects_Engine
                     // Do nothing
                     break;
                 case "Random Colour":
-                    EditPageReturnTo = "ForegroundEnd";
+                    EditPageReturnTo = "ForegroundRandomHeadsEnd";
                     ColourLabel.Content = "End Colour";
                     InitialLowerColor = Properties.Settings.Default.ForegroundRandomLightsColorEndLower;
                     InitialUpperColor = Properties.Settings.Default.ForegroundRandomLightsColorEndUpper;
@@ -681,6 +700,7 @@ namespace Corsair_Effects_Engine
                                               "ForegroundRandomLightsColorEndUpper");
 
                     GridColor.Visibility = System.Windows.Visibility.Visible;
+                    DisableControlsWhileEditing();
                     GridForegroundRandomLights.IsEnabled = false;
                     break;
             }
@@ -689,24 +709,25 @@ namespace Corsair_Effects_Engine
         #endregion Page: ForegroundEdit: Random Lights
 
         #region Page: ForegroundEdit: Reactive
+
         private void ForegroundReactiveStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!WindowInitialized) { return; };
-            switch (Properties.Settings.Default.ForegroundRandomLightsStyle)
+            switch (Properties.Settings.Default.ForegroundReactiveStyle)
             {
                 case "Switch":
-                    ForegroundRandomLightsFadeSolidDurationUD.Visibility = System.Windows.Visibility.Hidden;
-                    ForegroundRandomLightsFadeTotalDurationUD.Visibility = System.Windows.Visibility.Hidden;
-                    ForegroundRandomLightsFadeSolidDurationLabel.Visibility = System.Windows.Visibility.Hidden;
-                    ForegroundRandomLightsFadeTotalDurationLabel.Visibility = System.Windows.Visibility.Visible;
-                    ForegroundRandomLightsSolidDurationUD.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundReactiveFadeSolidDurationUD.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundReactiveFadeTotalDurationUD.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundReactiveFadeSolidDurationLabel.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundReactiveFadeTotalDurationLabel.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundReactiveSolidDurationUD.Visibility = System.Windows.Visibility.Visible;
                     break;
                 case "Fade":
-                    ForegroundRandomLightsFadeSolidDurationUD.Visibility = System.Windows.Visibility.Visible;
-                    ForegroundRandomLightsFadeTotalDurationUD.Visibility = System.Windows.Visibility.Visible;
-                    ForegroundRandomLightsFadeSolidDurationLabel.Visibility = System.Windows.Visibility.Visible;
-                    ForegroundRandomLightsFadeTotalDurationLabel.Visibility = System.Windows.Visibility.Visible;
-                    ForegroundRandomLightsSolidDurationUD.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundReactiveFadeSolidDurationUD.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundReactiveFadeTotalDurationUD.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundReactiveFadeSolidDurationLabel.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundReactiveFadeTotalDurationLabel.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundReactiveSolidDurationUD.Visibility = System.Windows.Visibility.Hidden;
                     break;
             }
         }
@@ -714,17 +735,17 @@ namespace Corsair_Effects_Engine
         private void ForegroundReactiveStartType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!WindowInitialized) { return; };
-            if (Properties.Settings.Default.ForegroundRandomLightsStartType == "Defined Colour")
-            { ForegroundRandomLightsStartColor.Visibility = System.Windows.Visibility.Visible; }
-            else { ForegroundRandomLightsStartColor.Visibility = System.Windows.Visibility.Hidden; }
+            if (Properties.Settings.Default.ForegroundReactiveStartType == "Defined Colour")
+            { ForegroundReactiveStartColor.Visibility = System.Windows.Visibility.Visible; }
+            else { ForegroundReactiveStartColor.Visibility = System.Windows.Visibility.Hidden; }
         }
 
         private void ForegroundReactiveEndType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!WindowInitialized) { return; };
-            if (Properties.Settings.Default.ForegroundRandomLightsEndType == "Defined Colour")
-            { ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Visible; }
-            else { ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Hidden; }
+            if (Properties.Settings.Default.ForegroundReactiveEndType == "Defined Colour")
+            { ForegroundReactiveEndColor.Visibility = System.Windows.Visibility.Visible; }
+            else { ForegroundReactiveEndColor.Visibility = System.Windows.Visibility.Hidden; }
         }
 
         private void ForegroundReactiveStartColorEdit_Click(object sender, RoutedEventArgs e)
@@ -735,7 +756,7 @@ namespace Corsair_Effects_Engine
                     Properties.Settings.Default.ForegroundReactiveSwitchColorStart = OpenColorPicker(Properties.Settings.Default.ForegroundReactiveSwitchColorStart).ToString();
                     break;
                 case "Random Colour":
-                    EditPageReturnTo = "ForegroundStart";
+                    EditPageReturnTo = "ForegroundReactiveStart";
                     ColourLabel.Content = "Start Colour";
                     InitialLowerColor = Properties.Settings.Default.ForegroundReactiveColorStartLower;
                     InitialUpperColor = Properties.Settings.Default.ForegroundReactiveColorStartUpper;
@@ -749,6 +770,7 @@ namespace Corsair_Effects_Engine
                                               "ForegroundReactiveColorStartUpper");
 
                     GridColor.Visibility = System.Windows.Visibility.Visible;
+                    DisableControlsWhileEditing();
                     GridForegroundReactive.IsEnabled = false;
                     break;
             }
@@ -765,7 +787,7 @@ namespace Corsair_Effects_Engine
                     // Do nothing
                     break;
                 case "Random Colour":
-                    EditPageReturnTo = "ForegroundEnd";
+                    EditPageReturnTo = "ForegroundReactiveEnd";
                     ColourLabel.Content = "End Colour";
                     InitialLowerColor = Properties.Settings.Default.ForegroundReactiveColorEndLower;
                     InitialUpperColor = Properties.Settings.Default.ForegroundReactiveColorEndUpper;
@@ -779,12 +801,18 @@ namespace Corsair_Effects_Engine
                                               "ForegroundReactiveColorEndUpper");
 
                     GridColor.Visibility = System.Windows.Visibility.Visible;
+                    DisableControlsWhileEditing();
                     GridForegroundReactive.IsEnabled = false;
                     break;
             }
         }
 
         #endregion Page: ForegroundEdit: Reactive
+
+        private void PageBeingEditedDoneBotton_Click(object sender, RoutedEventArgs e)
+        {
+            SetWindowLayout("Settings");
+        }
 
         #endregion ForegroundEdit
 
@@ -821,13 +849,21 @@ namespace Corsair_Effects_Engine
 
             switch (EditPageReturnTo)
             {
-                case "ForegroundStart":
+                case "ForegroundRandomLightsStart":
                     Properties.Settings.Default.ForegroundRandomLightsColorStartLower = InitialLowerColor;
                     Properties.Settings.Default.ForegroundRandomLightsColorStartUpper = InitialUpperColor;
                     break;
-                case "ForegroundEnd":
+                case "ForegroundRandomLightsEnd":
                     Properties.Settings.Default.ForegroundRandomLightsColorEndLower = InitialLowerColor;
                     Properties.Settings.Default.ForegroundRandomLightsColorEndUpper = InitialUpperColor;
+                    break;
+                case "ForegroundReactiveStart":
+                    Properties.Settings.Default.ForegroundReactiveColorStartLower = InitialLowerColor;
+                    Properties.Settings.Default.ForegroundReactiveColorStartUpper = InitialUpperColor;
+                    break;
+                case "ForegroundReactiveEnd":
+                    Properties.Settings.Default.ForegroundReactiveColorEndLower = InitialLowerColor;
+                    Properties.Settings.Default.ForegroundReactiveColorEndUpper = InitialUpperColor;
                     break;
             }
             CloseColorsAndReEnablePage(EditPageReturnTo);
@@ -837,11 +873,28 @@ namespace Corsair_Effects_Engine
         {
             switch (page)
             {
-                case "ForegroundStart": case "ForegroundEnd":
+                case "ForegroundRandomLightsStart": 
+                case "ForegroundRandomLightsEnd":
                     GridForegroundRandomLights.IsEnabled = true;
                     break;
+                case "ForegroundReactiveStart":
+                case "ForegroundReactiveEnd":
+                    GridForegroundReactive.IsEnabled = true;
+                    break;
             }
+            GridPageBeingEdited.IsEnabled = true;
+            ForegroundEditButton.IsEnabled = true;
+            BackgroundEditButton.IsEnabled = true;
+            StaticEditButton.IsEnabled = true;
             GridColor.Visibility = System.Windows.Visibility.Hidden;
+        }
+        
+        private void DisableControlsWhileEditing()
+        {
+            GridPageBeingEdited.IsEnabled = false;
+            ForegroundEditButton.IsEnabled = false;
+            BackgroundEditButton.IsEnabled = false;
+            StaticEditButton.IsEnabled = false;
         }
 
         private Color OpenColorPicker(Color inColor)

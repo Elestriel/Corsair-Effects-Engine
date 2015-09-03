@@ -19,7 +19,7 @@
         <Style x:Key="HyperlinkLikeButton" TargetType="{x:Type Button}">
             <Setter Property="Template" Value="{StaticResource HyperlinkLikeButtonTemplate}" />
         </Style>
-        
+
         <!-- Settings Data -->
         <x:Array x:Key="KeyboardModelList" 
                  Type="sys:String">

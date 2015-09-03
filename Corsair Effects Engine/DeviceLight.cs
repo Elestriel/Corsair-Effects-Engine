@@ -15,19 +15,19 @@ namespace Corsair_Effects_Engine
     }
 
     /// <summary>
-    /// Lights a key as the first colour for the duration and then changes to the second colour.
+    /// Lights a key as the specified colour.
     /// </summary>
-    /// <param name="startColor">Colour to light up.</param>
-    /// <param name="endColor">Colour to change to when time is up.</param>
-    /// <param name="duration">Time in milliseconds for the light to stay lit before reverting to off.</param>
+    /// <param name="lightColor">Colour to light up.</param>
     class LightSwitch : ILight
     {        
         public Color LightColor {
             get 
             {
                 TimeSpan Difference = DateTime.Now - StartTime;
-                if ((Difference.Seconds * 1000 + Difference.Milliseconds) < (Duration)) 
-                { return StartColor; }
+                if (Difference.TotalMilliseconds < Duration)
+                {
+                    return StartColor;
+                }
                 else 
                 { return EndColor; };
             }
@@ -39,7 +39,7 @@ namespace Corsair_Effects_Engine
             get
             {
                 TimeSpan Difference = DateTime.Now - StartTime;
-                if ((Difference.Seconds * 1000 + Difference.Milliseconds) < (Duration))
+                if (Difference.TotalMilliseconds < Duration)
                 { return true; }
                 else
                 { return false; };
@@ -68,10 +68,10 @@ namespace Corsair_Effects_Engine
             get
             {
                 TimeSpan Difference = DateTime.Now - StartTime;
-                double DifferenceMS = Difference.Seconds * 1000 + Difference.Milliseconds;
-                if ((DifferenceMS) < (SolidDuration))
+
+                if (Difference.TotalMilliseconds < SolidDuration)
                 { return StartColor; }
-                else if ((DifferenceMS) < (TotalDuration))
+                else if (Difference.TotalMilliseconds < TotalDuration)
                 { 
                     double sA, sR, sG, sB, eA, eR, eG, eB;
                     sA = StartColor.A;
@@ -84,7 +84,7 @@ namespace Corsair_Effects_Engine
                     eB = EndColor.B;
 
                     byte nA, nR, nG, nB;
-                    double StepMultiplier = (DifferenceMS - SolidDuration) / (TotalDuration - SolidDuration);
+                    double StepMultiplier = (Difference.TotalMilliseconds - SolidDuration) / (TotalDuration - SolidDuration);
                     nA = (byte)(sA - ((sA - eA) * StepMultiplier));
                     nR = (byte)(sR - ((sR - eR) * StepMultiplier));
                     nG = (byte)(sG - ((sG - eG) * StepMultiplier));

@@ -12,47 +12,52 @@ using System.Windows.Media.Imaging;
 
 namespace Corsair_Effects_Engine
 {
-    public static class Engine
+    public class Engine
     {
-        public static RawInputHook InputHook = new RawInputHook(); 
+        public static RawInputHook InputHook = new RawInputHook();
         static RawInputKeyCodes InputKeys = new RawInputKeyCodes();
 
-        public static bool PauseEngine = false;
-        public static bool RunEngine = false;
-        public static bool RestartEngine = false;
+        public bool PauseEngine = false;
+        public bool RunEngine = false;
+        public bool RestartEngine = false;
 
-        private static IntPtr KeyboardPointer;
-        private static IntPtr MousePointer;
+        private IntPtr KeyboardPointer;
+        private IntPtr MousePointer;
 
-        private static KeyData[] BackgroundKeys = new KeyData[149];
-        private static KeyData[] ForegroundKeys = new KeyData[149];
-        private static KeyData[] ReactiveKeys = new KeyData[149];
-        private static KeyData[] Keys = MainWindow.keyData;
+        private KeyData[] BackgroundKeys = new KeyData[149];
+        private KeyData[] ForegroundKeys = new KeyData[149];
+        private KeyData[] ReactiveKeys = new KeyData[149];
+        private KeyData[] Keys = MainWindow.keyData;
 
-        public static double BackgroundAnim = 0;
-        
-        public static void Start()
+        private double BackgroundAnim = 0;
+        private int HeatmapHighestStrikeCount = 0;
+        private int[] HeatmapStrikeCount = new int[149];
+
+        public Engine()
+        {
+            InputHook.OnRawInputFromKeyboard += InputFromKeyboard;
+        }
+
+        public void Start()
         {
             UpdateStatusMessage.NewMessage(5, "Initializing Engine.");
 
             EngineComponents.InitDevices DeviceInit = new EngineComponents.InitDevices();
             EngineComponents.DeviceOutput Output = new EngineComponents.DeviceOutput();
 
-            InputHook.OnRawInputFromKeyboard += InputFromKeyboard;
-
             for (int i = 0; i < 149; i++)
             {
                 BackgroundKeys[i] = new KeyData();
                 BackgroundKeys[i].KeyColor = new LightSwitch(startColor: Color.FromRgb(255, 255, 255),
-                                                       endColor: Color.FromRgb(0, 0, 0),
+                                                       endColor: Color.FromArgb(0, 0, 0, 0),
                                                        duration: 0);
                 ForegroundKeys[i] = new KeyData();
                 ForegroundKeys[i].KeyColor = new LightSwitch(startColor: Color.FromRgb(255, 255, 255),
-                                                       endColor: Color.FromRgb(0, 0, 0),
+                                                       endColor: Color.FromArgb(0, 0, 0, 0),
                                                        duration: 0);
                 ReactiveKeys[i] = new KeyData();
                 ReactiveKeys[i].KeyColor = new LightSwitch(startColor: Color.FromRgb(255, 255, 255),
-                                                       endColor: Color.FromRgb(0, 0, 0),
+                                                       endColor: Color.FromArgb(0, 0, 0, 0),
                                                        duration: 0);
             }
 
@@ -70,6 +75,8 @@ namespace Corsair_Effects_Engine
                 TimeSpan timeDifference;
                 double timeDifferenceMS;
 
+                UpdateStatusMessage.NewMessage(5, "Initialization Complete.");
+
                 while (!PauseEngine && RunEngine && !RestartEngine)
                 {
                     // Update animation sync
@@ -77,10 +84,10 @@ namespace Corsair_Effects_Engine
                     timeDifferenceMS = timeDifference.Seconds * 1000 + timeDifference.Milliseconds;
 
                     BackgroundAnim = (timeDifferenceMS / Properties.Settings.Default.BackgroundRepeatTime) * (double)KeyboardMap.CanvasWidth;
-                    if (timeDifferenceMS > Properties.Settings.Default.BackgroundRepeatTime) 
+                    if (timeDifferenceMS > Properties.Settings.Default.BackgroundRepeatTime)
                     {
                         lastResetTime = DateTime.Now;
-                        BackgroundAnim = 0; 
+                        BackgroundAnim = 0;
                     };
 
                     // Render static layer
@@ -90,7 +97,7 @@ namespace Corsair_Effects_Engine
 
                     // Render foreground layer
                     RenderForeground();
-                    
+
                     // Blend layers
                     BlendLayers();
 
@@ -122,16 +129,17 @@ namespace Corsair_Effects_Engine
                 Output.RestoreKeyboard(KeyboardPointer);
                 Output.RestoreMouse(MousePointer);
             }
+            InputHook.OnRawInputFromKeyboard -= InputFromKeyboard;
             UpdateStatusMessage.NewMessage(5, "Engine is shutting down.");
         }
 
-        private static void RenderBackground()
+        private void RenderBackground()
         {
             if (Properties.Settings.Default.BackgroundEffectEnabled)
             {
                 int tBrightness = (byte)(Properties.Settings.Default.BackgroundBrightness / 2);
                 int refKey = 140;
-                if (Properties.Settings.Default.KeyboardModel == "K65-RGB") {refKey = 139; };
+                if (Properties.Settings.Default.KeyboardModel == "K65-RGB") { refKey = 139; };
 
                 switch (Properties.Settings.Default.BackgroundEffect)
                 {
@@ -188,7 +196,7 @@ namespace Corsair_Effects_Engine
             }
         }
 
-        private static void RenderForeground()
+        private void RenderForeground()
         {
             if (Properties.Settings.Default.ForegroundEffectEnabled)
             {
@@ -250,13 +258,10 @@ namespace Corsair_Effects_Engine
                         #endregion Random Lights Code
                         break;
                     case "Reactive Typing":
-                        #region Reactive Code
-                        // Defer to reactive map
-
-                        //ForegroundKeys = ReactiveKeys;
-                        #endregion Reactive Code
+                        ForegroundKeys = ReactiveKeys; // Defer to reactive map
                         break;
                     case "Heatmap":
+                        ForegroundKeys = ReactiveKeys; // Defer to reactive map
                         break;
                 }
             }
@@ -267,7 +272,7 @@ namespace Corsair_Effects_Engine
             }
         }
 
-        private static void BlendLayers()
+        private void BlendLayers()
         {
             Color FG;
             Color BG;
@@ -286,57 +291,74 @@ namespace Corsair_Effects_Engine
             }
         }
 
-        public static void InputFromKeyboard(RAWINPUTHEADER riHeader, RAWKEYBOARD riKeyboard)
+        public void InputFromKeyboard(RAWINPUTHEADER riHeader, RAWKEYBOARD riKeyboard)
         {
-            UpdateStatusMessage.NewMessage(0, "Key Hit");
             if (riKeyboard.Flags == 0x0) { return; };
             if (riKeyboard.Flags == 0x2 && Keyboard.IsKeyToggled(Key.NumLock)) { return; };
 
-            Random rnd = new Random();
-            Color SL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartLower);
-            Color SU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartUpper);
-            Color EL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndLower);
-            Color EU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndUpper);
-            Color startColor = Color.FromRgb(255, 255, 255);
-            Color endColor = Color.FromRgb(0, 0, 0);
             int keyLight = InputKeys.GetKeyCode(riKeyboard.MakeCode, riKeyboard.VKey, riKeyboard.Flags, Keyboard.IsKeyToggled(Key.NumLock));
 
-            switch (Properties.Settings.Default.ForegroundReactiveStartType)
+            if (Properties.Settings.Default.ForegroundEffect == "Reactive Typing")
             {
-                case "Defined Colour":
-                    startColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorStart);
-                    break;
-                case "Random Colour":
-                    startColor = Color.FromRgb((byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
-                    break;
-            }
-            switch (Properties.Settings.Default.ForegroundReactiveEndType)
-            {
-                case "Defined Colour":
-                    endColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorEnd);
-                    break;
-                case "Background":
-                    endColor = Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
-                    break;
-                case "Random Colour":
-                    endColor = Color.FromRgb((byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
-                    break;
-            }
+                Random rnd = new Random();
+                Color SL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartLower);
+                Color SU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartUpper);
+                Color EL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndLower);
+                Color EU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndUpper);
+                Color startColor = Color.FromRgb(255, 255, 255);
+                Color endColor = Color.FromRgb(0, 0, 0);
 
-            switch (Properties.Settings.Default.ForegroundReactiveStyle)
+                switch (Properties.Settings.Default.ForegroundReactiveStartType)
+                {
+                    case "Defined Colour":
+                        startColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorStart);
+                        break;
+                    case "Random Colour":
+                        startColor = Color.FromRgb((byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
+                        break;
+                }
+                switch (Properties.Settings.Default.ForegroundReactiveEndType)
+                {
+                    case "Defined Colour":
+                        endColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorEnd);
+                        break;
+                    case "Background":
+                        endColor = Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
+                        break;
+                    case "Random Colour":
+                        endColor = Color.FromRgb((byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
+                        break;
+                }
+
+                switch (Properties.Settings.Default.ForegroundReactiveStyle)
+                {
+                    case "Switch":
+                        ReactiveKeys[keyLight].KeyColor = new LightSwitch(startColor: startColor,
+                                                                endColor: endColor,
+                                                                duration: Properties.Settings.Default.ForegroundReactiveSwitchSolidDuration);
+                        break;
+                    case "Fade":
+                        ReactiveKeys[keyLight].KeyColor = new LightFade(startColor: startColor,
+                                                                endColor: endColor,
+                                                                solidDuration: Properties.Settings.Default.ForegroundReactiveFadeSolidDuration,
+                                                                totalDuration: Properties.Settings.Default.ForegroundReactiveFadeTotalDuration);
+                        break;
+                }
+            } //Reactive Typing
+            else if (Properties.Settings.Default.ForegroundEffect == "Heatmap")
             {
-                case "Switch":
-                    ReactiveKeys[keyLight].KeyColor = new LightSwitch(startColor: startColor,
-                                                            endColor: endColor,
-                                                            duration: Properties.Settings.Default.ForegroundReactiveSwitchSolidDuration);
-                    break;
-                case "Fade":
-                    ReactiveKeys[keyLight].KeyColor = new LightFade(startColor: startColor,
-                                                            endColor: endColor,
-                                                            solidDuration: Properties.Settings.Default.ForegroundReactiveFadeSolidDuration,
-                                                            totalDuration: Properties.Settings.Default.ForegroundReactiveFadeTotalDuration);
-                    break;
-            }
+                double keyIntensity;
+                HeatmapStrikeCount[keyLight] += 1;
+                if (HeatmapStrikeCount[keyLight] > HeatmapHighestStrikeCount) { HeatmapHighestStrikeCount = HeatmapStrikeCount[keyLight]; };
+
+
+                for (int i = 0; i < 149; i++)
+                {
+                    keyIntensity = 1 - ((double)HeatmapStrikeCount[i] / (double)HeatmapHighestStrikeCount);
+
+                    ReactiveKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(255, (byte)(255 - (255 * keyIntensity)), 0, 0));
+                }
+            } //Heatmap
         }
     }
 
