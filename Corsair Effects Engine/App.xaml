@@ -419,20 +419,28 @@
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
                             <Path 
-                              Name="path"
+                              Name="pathChecked"
                               Opacity="0"
                               Stroke="{StaticResource AccentColorBrush}"
-                              Fill="Red"
                               StrokeThickness="2"
                               Data="M 0 5 L 4 10  M 4 10 L 10 -2"
+                              Margin="0,2,0,0" />
+                            <Path 
+                              Name="pathUnChecked"
+                              Opacity="0"
+                              Stroke="Red"
+                              StrokeThickness="2"
+                              Data="M 0 0 L 10 10  M 0 10 L 10 0"
                               Margin="0,2,0,0" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="true">
-                                <Setter TargetName="path" Property="Opacity" Value="1" />
+                                <Setter TargetName="pathChecked" Property="Opacity" Value="1" />
+                                <Setter TargetName="pathUnChecked" Property="Opacity" Value="0" />
                             </Trigger>
                             <Trigger Property="IsChecked" Value="false">
-                                <Setter TargetName="path" Property="Opacity" Value="0" />
+                                <Setter TargetName="pathChecked" Property="Opacity" Value="0" />
+                                <Setter TargetName="pathUnChecked" Property="Opacity" Value="1" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
                                 <Setter Property="Foreground" Value="{StaticResource TextDisabledColorBrush}" />
