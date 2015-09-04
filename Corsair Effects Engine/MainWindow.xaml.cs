@@ -21,9 +21,6 @@ using System.Windows.Shapes;
 
 using CSCore;
 using CSCore.CoreAudioAPI;
-using ColorPicker;
-using ColorPickerControls;
-using ColorPickerControls.Dialogs;
 
 namespace Corsair_Effects_Engine
 {
@@ -32,7 +29,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0.1.0.0012";
+        private const string VersionNumber = "0.1.0.0013";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -56,7 +53,46 @@ namespace Corsair_Effects_Engine
         {
             InitializeComponent();
             DataContext = new CeeDataContext();
+            // Declarations for custom window layout
+            this.CommandBindings.Add(new CommandBinding(SystemCommands.CloseWindowCommand, this.OnCloseWindow));
+            this.CommandBindings.Add(new CommandBinding(SystemCommands.MaximizeWindowCommand, this.OnMaximizeWindow, this.OnCanResizeWindow));
+            this.CommandBindings.Add(new CommandBinding(SystemCommands.MinimizeWindowCommand, this.OnMinimizeWindow, this.OnCanMinimizeWindow));
+            this.CommandBindings.Add(new CommandBinding(SystemCommands.RestoreWindowCommand, this.OnRestoreWindow, this.OnCanResizeWindow));
         }
+
+        #region Methods for custom window layout
+
+        private void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
+        }
+
+        private void OnCanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
+        }
+
+        private void OnCloseWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.CloseWindow(this);
+        }
+
+        private void OnMaximizeWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MaximizeWindow(this);
+        }
+
+        private void OnMinimizeWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MinimizeWindow(this);
+        }
+
+        private void OnRestoreWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.RestoreWindow(this);
+        }
+
+        #endregion Methods for custom window layout
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -234,7 +270,7 @@ namespace Corsair_Effects_Engine
                     ContentRight.Width = new GridLength(0);
                     GridContent.Visibility = System.Windows.Visibility.Visible;
                     GridLeftLog.Visibility = System.Windows.Visibility.Visible;
-                    GridControls.IsEnabled = true;
+                    SetGridControlEnabled(true);
                     break;
                 case "LogSettings":
                     UpdateStatusMessage.NewMessage(7, "LogSettings");
@@ -243,7 +279,7 @@ namespace Corsair_Effects_Engine
                     GridContent.Visibility = System.Windows.Visibility.Visible;
                     GridLeftLog.Visibility = System.Windows.Visibility.Visible;
                     GridRightLog.Visibility = System.Windows.Visibility.Visible;
-                    GridControls.IsEnabled = true;
+                    SetGridControlEnabled(true);
                     break;
                 #endregion Log
                 #region Settings
@@ -254,7 +290,7 @@ namespace Corsair_Effects_Engine
                     GridContent.Visibility = System.Windows.Visibility.Visible;
                     GridLeftSettings.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
-                    GridControls.IsEnabled = true;
+                    SetGridControlEnabled(true);
                     break;
                 #endregion Settings
                 #region Mouse
@@ -264,7 +300,7 @@ namespace Corsair_Effects_Engine
                     ContentRight.Width = new GridLength(200, GridUnitType.Star); 
                     GridKeyboard.Visibility = System.Windows.Visibility.Visible;
                     KeyboardImage.Visibility = System.Windows.Visibility.Visible;
-                    GridControls.IsEnabled = true;
+                    SetGridControlEnabled(true);
 
                     if (Properties.Settings.Default.MouseModel != "None" &&
                         Properties.Settings.Default.MouseModel != "")
@@ -294,7 +330,7 @@ namespace Corsair_Effects_Engine
                     ContentRight.Width = new GridLength(200, GridUnitType.Star);
                     GridKeyboard.Visibility = System.Windows.Visibility.Visible;
                     KeyboardImage.Visibility = System.Windows.Visibility.Visible;
-                    GridControls.IsEnabled = true;
+                    SetGridControlEnabled(true);
 
                     if (Properties.Settings.Default.KeyboardModel != "None" && 
                         Properties.Settings.Default.KeyboardModel != "" && 
@@ -348,7 +384,8 @@ namespace Corsair_Effects_Engine
                     GridContent.Visibility = System.Windows.Visibility.Visible;
                     GridLeftEdit.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
-                    GridControls.IsEnabled = false;
+
+                    SetGridControlEnabled(false);
 
                     PageBeingEdited = mode2;
                     PageBeingEditedLabel.Content = "Currently Editing: " + PageBeingEdited;
@@ -386,7 +423,8 @@ namespace Corsair_Effects_Engine
                     GridLeftEdit.Visibility = System.Windows.Visibility.Visible;
                     GridBackground.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
-                    GridControls.IsEnabled = false;
+                    
+                    SetGridControlEnabled(false);
 
                     PageBeingEdited = mode2;
                     PageBeingEditedLabel.Content = "Currently Editing: " + PageBeingEdited;
@@ -405,6 +443,20 @@ namespace Corsair_Effects_Engine
                     break;
                 #endregion Foreground
             }
+        }
+
+        private void SetGridControlEnabled(bool enabled)
+        {
+            ForegroundEditButton.IsEnabled = enabled;
+            ForegroundComboBox.IsEnabled = enabled;
+
+            BackgroundEditButton.IsEnabled = enabled;
+            BackgroundComboBox.IsEnabled = enabled;
+
+            StaticEditButton.IsEnabled = enabled;
+            StaticComboBox.IsEnabled = enabled;
+
+            GridControlsButtons.IsEnabled = enabled;
         }
 
         private void HideAllGrids()
@@ -641,17 +693,37 @@ namespace Corsair_Effects_Engine
         private void ForegroundRandomLightsStartType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!WindowInitialized) { return; };
-            if (Properties.Settings.Default.ForegroundRandomLightsStartType == "Defined Colour")
-            { ForegroundRandomLightsStartColor.Visibility = System.Windows.Visibility.Visible; }
-            else { ForegroundRandomLightsStartColor.Visibility = System.Windows.Visibility.Hidden; }
+            switch (Properties.Settings.Default.ForegroundRandomLightsStartType)
+            {
+            case "Defined Colour":
+                ForegroundRandomLightsStartColor.Visibility = System.Windows.Visibility.Visible;
+                ForegroundRandomLightsStartColorEdit.Visibility = System.Windows.Visibility.Hidden;
+                break;
+            case "Random Colour":
+                ForegroundRandomLightsStartColor.Visibility = System.Windows.Visibility.Hidden;
+                ForegroundRandomLightsStartColorEdit.Visibility = System.Windows.Visibility.Visible;
+                break;
+            }
         }
 
         private void ForegroundRandomLightsEndType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!WindowInitialized) { return; };
-            if (Properties.Settings.Default.ForegroundRandomLightsEndType == "Defined Colour")
-            { ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Visible; }
-            else { ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Hidden; }
+            switch (Properties.Settings.Default.ForegroundRandomLightsEndType)
+            {
+                case "Defined Colour":
+                    ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundRandomLightsEndColorEdit.Visibility = System.Windows.Visibility.Hidden;
+                    break;
+                case "Random Colour":
+                    ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundRandomLightsEndColorEdit.Visibility = System.Windows.Visibility.Visible;
+                    break;
+                case "None":
+                    ForegroundRandomLightsEndColor.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundRandomLightsEndColorEdit.Visibility = System.Windows.Visibility.Hidden;
+                    break;
+            }
         }
 
         private void ForegroundRandomLightsStartColorEdit_Click(object sender, RoutedEventArgs e)
@@ -659,7 +731,6 @@ namespace Corsair_Effects_Engine
             switch (Properties.Settings.Default.ForegroundRandomLightsStartType)
             {
                 case "Defined Colour":
-                    Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart = OpenColorPicker(Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart).ToString();
                     break;
                 case "Random Colour":
                     EditPageReturnTo = "ForegroundRandomLightsStart";
@@ -687,7 +758,6 @@ namespace Corsair_Effects_Engine
             switch (Properties.Settings.Default.ForegroundRandomLightsEndType)
             {
                 case "Defined Colour":
-                    Properties.Settings.Default.ForegroundRandomLightsSwitchColorEnd = OpenColorPicker(Properties.Settings.Default.ForegroundRandomLightsSwitchColorEnd).ToString();
                     break;
                 case "Original Colour":
                     // Do nothing
@@ -742,17 +812,35 @@ namespace Corsair_Effects_Engine
         private void ForegroundReactiveStartType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!WindowInitialized) { return; };
-            if (Properties.Settings.Default.ForegroundReactiveStartType == "Defined Colour")
-            { ForegroundReactiveStartColor.Visibility = System.Windows.Visibility.Visible; }
-            else { ForegroundReactiveStartColor.Visibility = System.Windows.Visibility.Hidden; }
+            switch (Properties.Settings.Default.ForegroundReactiveStartType) {
+                case "Defined Colour":
+                    ForegroundReactiveStartColor.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundReactiveStartColorEdit.Visibility = System.Windows.Visibility.Hidden;
+                    break;
+                case "Random Colour":
+                    ForegroundReactiveStartColor.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundReactiveStartColorEdit.Visibility = System.Windows.Visibility.Visible;
+                    break;
+            }
         }
 
         private void ForegroundReactiveEndType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!WindowInitialized) { return; };
-            if (Properties.Settings.Default.ForegroundReactiveEndType == "Defined Colour")
-            { ForegroundReactiveEndColor.Visibility = System.Windows.Visibility.Visible; }
-            else { ForegroundReactiveEndColor.Visibility = System.Windows.Visibility.Hidden; }
+            switch (Properties.Settings.Default.ForegroundReactiveEndType) {
+                case "Defined Colour":
+                    ForegroundReactiveEndColor.Visibility = System.Windows.Visibility.Visible;
+                    ForegroundReactiveEndColorEdit.Visibility = System.Windows.Visibility.Hidden;
+                    break;
+                case "Random Colour":
+                    ForegroundReactiveEndColor.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundReactiveEndColorEdit.Visibility = System.Windows.Visibility.Visible;
+                    break;
+                case "None":
+                    ForegroundReactiveEndColor.Visibility = System.Windows.Visibility.Hidden;
+                    ForegroundReactiveEndColorEdit.Visibility = System.Windows.Visibility.Hidden;
+                    break;
+            }
         }
 
         private void ForegroundReactiveStartColorEdit_Click(object sender, RoutedEventArgs e)
@@ -760,7 +848,6 @@ namespace Corsair_Effects_Engine
             switch (Properties.Settings.Default.ForegroundReactiveStartType)
             {
                 case "Defined Colour":
-                    Properties.Settings.Default.ForegroundReactiveSwitchColorStart = OpenColorPicker(Properties.Settings.Default.ForegroundReactiveSwitchColorStart).ToString();
                     break;
                 case "Random Colour":
                     EditPageReturnTo = "ForegroundReactiveStart";
@@ -788,7 +875,6 @@ namespace Corsair_Effects_Engine
             switch (Properties.Settings.Default.ForegroundReactiveEndType)
             {
                 case "Defined Colour":
-                    Properties.Settings.Default.ForegroundReactiveSwitchColorEnd = OpenColorPicker(Properties.Settings.Default.ForegroundReactiveSwitchColorEnd).ToString();
                     break;
                 case "Original Colour":
                     // Do nothing
@@ -904,25 +990,6 @@ namespace Corsair_Effects_Engine
             StaticEditButton.IsEnabled = false;
         }
 
-        private Color OpenColorPicker(Color inColor)
-        {
-            ColorPickerStandardDialog dia = new ColorPickerStandardDialog();
-            dia.InitialColor = inColor;
-            if (dia.ShowDialog() == true)
-            { inColor = dia.SelectedColor; }
-            return inColor;
-        }
-
-        private Color OpenColorPicker(string inColorString)
-        {
-            Color inColor = (Color)ColorConverter.ConvertFromString(inColorString.ToString());
-            ColorPickerStandardDialog dia = new ColorPickerStandardDialog();
-            dia.InitialColor = inColor;
-            if (dia.ShowDialog() == true)
-            { inColor = dia.SelectedColor; }
-            return inColor;
-        }
-
         #endregion Color Sliders and Picker
 
         #endregion Pages
@@ -953,6 +1020,82 @@ namespace Corsair_Effects_Engine
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value.ToString();
+        }
+    }
+
+    public class ColorToHexConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            var hexCode = System.Convert.ToString(value);
+            if (string.IsNullOrEmpty(hexCode))
+                return null;
+            try
+            {
+                var color = (Color)ColorConverter.ConvertFromString(hexCode);
+                return color;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            try
+            {
+                return value.ToString();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+    }
+
+    public class BooleanToVisibilityConverter : IValueConverter
+    {
+        //Set to true if you want to show control when boolean value is true
+        //Set to false if you want to hide/collapse control when value is true
+        private bool triggerValue = false;
+        public bool TriggerValue
+        {
+            get { return triggerValue; }
+            set { triggerValue = value; }
+        }
+        //Set to true if you just want to hide the control
+        //else set to false if you want to collapse the control
+        private bool isHidden;
+        public bool IsHidden
+        {
+            get { return isHidden; }
+            set { isHidden = value; }
+        }
+
+        private object GetVisibility(object value)
+        {
+            if (!(value is bool))
+                return DependencyProperty.UnsetValue;
+            bool objValue = (bool)value;
+            if ((objValue && TriggerValue && IsHidden) || (!objValue && !TriggerValue && IsHidden))
+            {
+                return Visibility.Hidden;
+            }
+            if ((objValue && TriggerValue && !IsHidden) || (!objValue && !TriggerValue && !IsHidden))
+            {
+                return Visibility.Collapsed;
+            }
+            return Visibility.Visible;
+        }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return GetVisibility(value);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
     #endregion Type Converters

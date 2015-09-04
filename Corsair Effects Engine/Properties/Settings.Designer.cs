@@ -169,7 +169,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool OptMinimizeToTray {
             get {
                 return ((bool)(this["OptMinimizeToTray"]));
@@ -229,7 +229,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool OptWarnIfCueRunning {
             get {
                 return ((bool)(this["OptWarnIfCueRunning"]));
@@ -680,6 +680,18 @@ namespace Corsair_Effects_Engine.Properties {
             }
             set {
                 this["ForegroundReactiveStyle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF0080")]
+        public string OptAccentColor {
+            get {
+                return ((string)(this["OptAccentColor"]));
+            }
+            set {
+                this["OptAccentColor"] = value;
             }
         }
     }

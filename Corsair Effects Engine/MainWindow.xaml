@@ -7,7 +7,8 @@
         xmlns:src="clr-namespace:Corsair_Effects_Engine"
         x:Class="Corsair_Effects_Engine.MainWindow"
         Title="Corsair Effects Engine" 
-        Height="440" Width="900" ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/CorsairLogoTransparent.ico">
+        Height="440" Width="900" ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/CorsairLogoTransparent.ico"
+        Style="{StaticResource MyWindowStyle}">
 
     <Window.Resources>
         <src:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
@@ -41,22 +42,29 @@
                           SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=StaticProfileName, Mode=TwoWay}"/>
             <Button x:Name="StaticEditButton" Style="{StaticResource HyperlinkLikeButton}" Content="Edit" Margin="0,110,10,0" VerticalAlignment="Top" 
                     VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the current static profile." Click="StaticEditButton_Click"/>
-            <Grid Margin="0,210,10,0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="180">
+            <Grid x:Name="GridControlsButtons" Margin="0,179,10,0" HorizontalAlignment="Right" Width="180" Height="150" VerticalAlignment="Top">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="24"/>
-                    <RowDefinition Height="24"/>
-                    <RowDefinition Height="24"/>
-                    <RowDefinition Height="24"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Button x:Name="MouseButton" Content="Mouse" VerticalAlignment="Top" Grid.Column="0" Grid.Row="0" Click="MouseButton_Click" ToolTip="Show the Mouse Configuration Page."/>
-                <Button x:Name="KeyboardButton" Content="Keyboard" VerticalAlignment="Top" Grid.Column="1" Grid.Row="0" Click="KeyboardButton_Click" ToolTip="Show the Keyboard Configuration and Visualizer Page."/>
-                <Button x:Name="LogButton" Content="Log" VerticalAlignment="Top" Grid.Column="0" Grid.Row="1" Click="LogButton_Click" ToolTip="Display the Log and Log Settings. (Click twice for log only)"/>
-                <Button x:Name="SettingsButton" Content="Settings" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1" Click="SettingsButton_Click" ToolTip="Display the Settings Page."/>
-                <Button x:Name="TestButton" Content="Test" VerticalAlignment="Bottom"  Grid.Column="0" Grid.Row="3" ToolTip="Start the worker thread." Click="TestButton_Click" Margin="0,0,0,1"/>
+                <Button x:Name="MouseButton" Content="Mouse" VerticalAlignment="Top" Grid.Row="0" HorizontalAlignment="Right"
+                        Click="MouseButton_Click" ToolTip="Show the Mouse Configuration Page."
+                                   Style="{StaticResource BigTextOnlyButton}"/>
+                <Button x:Name="KeyboardButton" Content="Keyboard" VerticalAlignment="Top" Grid.Row="1" HorizontalAlignment="Right"
+                        Click="KeyboardButton_Click" ToolTip="Show the Keyboard Configuration and Visualizer Page."
+                                   Style="{StaticResource BigTextOnlyButton}"/>
+                <Button x:Name="LogButton" Content="Log" VerticalAlignment="Top" Grid.Row="2" HorizontalAlignment="Right"
+                        Click="LogButton_Click" ToolTip="Display the Log and Log Settings. (Click twice for log only)"
+                                   Style="{StaticResource BigTextOnlyButton}"/>
+                <Button x:Name="SettingsButton" Content="Settings" VerticalAlignment="Top" Grid.Row="3" HorizontalAlignment="Right"
+                        Click="SettingsButton_Click" ToolTip="Display the Settings Page."
+                                   Style="{StaticResource BigTextOnlyButton}"/>
+                <Button x:Name="TestButton" Content="Test" VerticalAlignment="Bottom"  Grid.Row="4" HorizontalAlignment="Right"
+                        ToolTip="Start the worker thread." Click="TestButton_Click"
+                                   Style="{StaticResource BigTextOnlyButton}"/>
             </Grid>
         </Grid>
 
@@ -76,6 +84,51 @@
                 <ComboBox x:Name="LogLevelComboBox" Margin="10,26,10,0" VerticalAlignment="Top" ToolTip="Verbosity of the log output."
                           ItemsSource="{DynamicResource LogLevelList}"
                           SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=LogLevel, Mode=TwoWay}"/>
+            </Grid>
+
+            <!-- Settings -->
+            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Hidden">
+                <CheckBox x:Name="CheckMinimizeToTray" Content="Minimize to System Tray" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
+                          ToolTip="Minimize to the System Tray instead of the Task Bar."
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeToTray, Mode=TwoWay}" IsEnabled="False"/>
+                <CheckBox x:Name="CheckMinimizeInsteadOfClose" Content="Minimize instead of close" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"
+                          ToolTip="Minimize instead of quitting when clicking on the red X."
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeOnClose, Mode=TwoWay}" IsEnabled="False"/>
+                <CheckBox x:Name="CheckStartWithWindows" Content="Start with Windows" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"
+                          ToolTip="Start CEE when Windows starts."
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptStartMinimized, Mode=TwoWay}" IsEnabled="False"/>
+                <CheckBox x:Name="CheckStartMinimized" Content="Start minimized" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top"
+                          ToolTip="Start CEE in a minimized state."
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptStartMinimized, Mode=TwoWay}" IsEnabled="False"/>
+                <CheckBox x:Name="Check16MColours" Content="16.8 Million colours" HorizontalAlignment="Left" Margin="270,10,0,0" VerticalAlignment="Top"
+                          ToolTip="Run the keyboard in 16.8 million colour mode."
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=Opt16MColours, Mode=TwoWay}"/>
+                <CheckBox x:Name="CheckDisplayLiveKeyboardPreview" Content="Display live keyboard preview" HorizontalAlignment="Left" Margin="10,132,0,0" VerticalAlignment="Top"
+                          ToolTip="Show effects and animations on the Keyboard page as they're being rendered."
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptLiveKeyboardPreview, Mode=TwoWay}" IsEnabled="False"/>
+                <CheckBox x:Name="CheckWarnIfCueIsOpen" Content="Display a warning if CUE is open" HorizontalAlignment="Left" Margin="10,153,0,0" VerticalAlignment="Top"
+                          ToolTip="Show a warning before starting effects if CUE is running."
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptWarnIfCueRunning, Mode=TwoWay}" IsEnabled="False"/>
+                <CheckBox x:Name="CheckLaunchCueOnExit" Content="Launch CUE on exit" HorizontalAlignment="Left" Margin="10,195,0,0" VerticalAlignment="Top"
+                          ToolTip="Launch CUE upon quitting CEE. This requires the path to CUE to be entered below."
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptLaunchCueOnExit, Mode=TwoWay}" IsEnabled="False"/>
+                <CheckBox x:Name="CheckRestoreLightingOnExit" Content="Restore lighting on exit" HorizontalAlignment="Left" Margin="10,216,0,0" VerticalAlignment="Top"
+                          ToolTip="Restore on-device lighting to the keyboard and mouse when quitting."
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptRestoreLightingOnExit, Mode=TwoWay}"/>
+                <Label Content="Corsair Utility Engine (CUE) Path. Double click to browse." HorizontalAlignment="Left" Margin="10,0,0,28" Height="26" VerticalAlignment="Bottom"/>
+                <TextBox x:Name="CuePathTextBox" Margin="10,0,10,10" IsReadOnly="True"
+                         ToolTip="Navigate to the path of your CUE executable. This is used to launch CUE when quitting CEE."
+                         Text="{Binding Source={x:Static p:Settings.Default}, Path=OptCuePath, Mode=TwoWay}" 
+                         Height="23" VerticalAlignment="Bottom" MouseDoubleClick="CuePathTextBox_MouseDoubleClick"
+                         Style="{StaticResource flatTextBox}"/>
+                <CheckBox x:Name="CheckInverM1" Content="Invert M1 key on K95" HorizontalAlignment="Left" Margin="270,33,0,0" VerticalAlignment="Top"
+                	ToolTip="Invert the colour of the M1 key on the K95. By default, it acts as a negative to what's sent to it, so this compensates."
+                	IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptInvertM1, Mode=TwoWay}"/>
+                <xctk:ColorPicker SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=OptAccentColor, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="420,83,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                <Label Content="Program Accent Colour:" HorizontalAlignment="Left" Margin="277,80,0,0" VerticalAlignment="Top"/>
             </Grid>
             <Grid x:Name="GridRightSettings" Grid.Column="1" Visibility="Visible">
                 <Label Content="Keyboard Model" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
@@ -115,46 +168,8 @@
                           SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=AudioInputDevice, Mode=TwoWay}"/>
 
                 <Label Content="Frame Delay (ms)" HorizontalAlignment="Left" Margin="10,265,0,0" VerticalAlignment="Top"/>
-                <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="131,271,0,0" VerticalAlignment="Top" Width="57" Maximum="10000" Minimum="0"
+                <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="124,265,0,0" VerticalAlignment="Top" Width="57" Maximum="10000" Minimum="0"
                                     Value="{Binding Source={x:Static p:Settings.Default}, Path=OptFrameDelay, Mode=TwoWay}"/>
-            </Grid>
-
-            <!-- Settings -->
-            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Hidden">
-                <CheckBox x:Name="CheckMinimizeToTray" Content="Minimize to System Tray" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
-                          ToolTip="Minimize to the System Tray instead of the Task Bar."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeToTray, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckMinimizeInsteadOfClose" Content="Minimize instead of close" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"
-                          ToolTip="Minimize instead of quitting when clicking on the red X."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeOnClose, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckStartWithWindows" Content="Start with Windows" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"
-                          ToolTip="Start CEE when Windows starts."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptStartMinimized, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckStartMinimized" Content="Start minimized" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top"
-                          ToolTip="Start CEE in a minimized state."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptStartMinimized, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="Check16MColours" Content="16.8 Million colours" HorizontalAlignment="Left" Margin="270,10,0,0" VerticalAlignment="Top"
-                          ToolTip="Run the keyboard in 16.8 million colour mode."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=Opt16MColours, Mode=TwoWay}"/>
-                <CheckBox x:Name="CheckDisplayLiveKeyboardPreview" Content="Display live keyboard preview" HorizontalAlignment="Left" Margin="10,132,0,0" VerticalAlignment="Top"
-                          ToolTip="Show effects and animations on the Keyboard page as they're being rendered."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptLiveKeyboardPreview, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckWarnIfCueIsOpen" Content="Display a warning if CUE is open" HorizontalAlignment="Left" Margin="10,153,0,0" VerticalAlignment="Top"
-                          ToolTip="Show a warning before starting effects if CUE is running."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptWarnIfCueRunning, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckLaunchCueOnExit" Content="Launch CUE on exit" HorizontalAlignment="Left" Margin="10,195,0,0" VerticalAlignment="Top"
-                          ToolTip="Launch CUE upon quitting CEE. This requires the path to CUE to be entered below."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptLaunchCueOnExit, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckRestoreLightingOnExit" Content="Restore lighting on exit" HorizontalAlignment="Left" Margin="10,216,0,0" VerticalAlignment="Top"
-                          ToolTip="Restore on-device lighting to the keyboard and mouse when quitting."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptRestoreLightingOnExit, Mode=TwoWay}"/>
-                <Label Content="Corsair Utility Engine (CUE) Path. Double click to browse." HorizontalAlignment="Left" Margin="10,0,0,28" Height="26" VerticalAlignment="Bottom"/>
-                <TextBox x:Name="CuePathTextBox" Margin="10,0,10,10" IsReadOnly="True"
-                         ToolTip="Navigate to the path of your CUE executable. This is used to launch CUE when quitting CEE."
-                         Text="{Binding Source={x:Static p:Settings.Default}, Path=OptCuePath, Mode=TwoWay}" Height="23" VerticalAlignment="Bottom" MouseDoubleClick="CuePathTextBox_MouseDoubleClick"/>
-                <CheckBox x:Name="CheckInverM1" Content="Invert M1 key on K95" HorizontalAlignment="Left" Margin="270,33,0,0" VerticalAlignment="Top"
-                	ToolTip="Invert the colour of the M1 key on the K95. By default, it acts as a negative to what's sent to it, so this compensates."
-                	IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptInvertM1, Mode=TwoWay}"/>
             </Grid>
 
             <!-- Edit Grid -->
@@ -171,10 +186,11 @@
                 <!-- Top of the grid displaying info and Back button -->
                 <Grid x:Name="GridPageBeingEdited">
                     <Button x:Name="PageBeingEditedDoneBotton" Content="Done" HorizontalAlignment="Left" Margin="10,22,0,0" 
-                            VerticalAlignment="Top" Width="75" Click="PageBeingEditedDoneBotton_Click"/>
+                            VerticalAlignment="Top" Width="75" Click="PageBeingEditedDoneBotton_Click"
+                            Style="{StaticResource MetroButton}" Foreground="{StaticResource TextColorBrush}"/>
                     <Label x:Name="PageBeingEditedLabel" Content="PageEdit" HorizontalAlignment="Left" Margin="90,20,0,0" VerticalAlignment="Top"/>
                 </Grid>
-                
+
                 <!-- Colours Grid -->
                 <Grid x:Name="GridColor" Grid.Column="1" Visibility="Hidden" Grid.Row="1">
                     <Label x:Name="ColourLabel" Content="Colours" Margin="10,10,10,0" VerticalAlignment="Top" Width="auto" HorizontalContentAlignment="Center" Height="26"/>
@@ -194,8 +210,8 @@
                     <Grid Margin="0,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="55"/>
-                            <RowDefinition Height="13*"/>
-                            <RowDefinition Height="61*"/>
+                            <RowDefinition Height="60*"/>
+                            <RowDefinition Height="173*"/>
                         </Grid.RowDefinitions>
                         <Label Content="Light Style" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
                         <ComboBox x:Name="ForegroundRandomLightsStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" Height="24" 
@@ -204,26 +220,26 @@
                                   SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsStyle, Mode=TwoWay}"
                                   HorizontalAlignment="Left" Width="150" SelectionChanged="ForegroundRandomLightsStyle_SelectionChanged"/>
                         <!-- When "Solid" is selected -->
-                        <xctk:IntegerUpDown x:Name="ForegroundRandomLightsSolidDurationUD" HorizontalAlignment="Left" Margin="10,27,0,0" 
-                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Visible"
+                        <xctk:IntegerUpDown x:Name="ForegroundRandomLightsSolidDurationUD" HorizontalAlignment="Left" Margin="10,32,0,0" 
+                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="25" Visibility="Visible"
                                             Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSwitchDuration, Mode=TwoWay}" 
                                             Increment="100" Grid.Row="1"/>
                         <!-- When "Fade" is selected -->
                         <xctk:IntegerUpDown x:Name="ForegroundRandomLightsFadeSolidDurationUD" HorizontalAlignment="Left" Margin="10,2,0,0" 
-                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Visible"
+                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="25" Visibility="Visible"
                                             Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsFadeSolidDuration, Mode=TwoWay}"
                                             Increment="100" Grid.Row="1"/>
                         <Label x:Name="ForegroundRandomLightsFadeSolidDurationLabel" Content="Milliseconds to remain solid" HorizontalAlignment="Left" 
-                               Margin="108,0,0,0" VerticalAlignment="Top" Height="26" Width="158" Visibility="Visible"
+                               Margin="108,2,0,0" VerticalAlignment="Top" Height="26" Width="158" Visibility="Visible"
                                ToolTip="Time to remain solid before beginning to fade." Grid.Row="1"/>
 
-                        <xctk:IntegerUpDown x:Name="ForegroundRandomLightsFadeTotalDurationUD" HorizontalAlignment="Left" Margin="10,27,0,0" 
-                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Visible"
+                        <xctk:IntegerUpDown x:Name="ForegroundRandomLightsFadeTotalDurationUD" HorizontalAlignment="Left" Margin="10,32,0,0" 
+                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="25" Visibility="Visible"
                                             Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsFadeTotalDuration, Mode=TwoWay}" Increment="100" Grid.Row="1"/>
                         <Label x:Name="ForegroundRandomLightsFadeTotalDurationLabel" Content="Milliseconds total" HorizontalAlignment="Left" 
-                               Margin="108,24,0,0" VerticalAlignment="Top" Height="26" Width="103" Visibility="Visible"
+                               Margin="108,32,0,0" VerticalAlignment="Top" Height="26" Width="103" Visibility="Visible"
                                ToolTip="Total time of the effect including solid and fade." Grid.Row="1"/>
-                        
+
                         <!-- Used for Solid and Fade -->
                         <!-- Bottom Portion: Colour Options-->
                         <Label Content="Start Colour" Grid.Row="2" Grid.Column="0" Margin="10,0,0,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Left" Width="150"/>
@@ -234,10 +250,11 @@
                                   SelectionChanged="ForegroundRandomLightsStartType_SelectionChanged"/>
                         <Button x:Name="ForegroundRandomLightsStartColorEdit" Style="{StaticResource HyperlinkLikeButton}" Content="Edit" Margin="0,5,136,0" VerticalAlignment="Top" 
                         	VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the selected foreground effects." Click="ForegroundRandomLightsStartColorEdit_Click" Grid.Row="2" Height="16"/>
-                        <Rectangle x:Name="ForegroundRandomLightsStartColor" HorizontalAlignment="Left" Height="24" Margin="165,21,0,0" 
-                                   Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="121"
-                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSwitchColorStart, 
-                                    Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
+                        <xctk:ColorPicker x:Name="ForegroundRandomLightsStartColor"
+                                  HorizontalAlignment="Left" Height="24" Margin="165,21,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False" Grid.Row="2"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSwitchColorStart, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
 
                         <Label Content="End Colour" Grid.Row="2" Grid.Column="0" Margin="10,50,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
                         <ComboBox x:Name="ForegroundRandomLightsEndType" Grid.Row="2" Grid.Column="0" Margin="10,71,0,0" VerticalAlignment="Top" Height="24" 
@@ -246,10 +263,11 @@
                                   SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsEndType, Mode=TwoWay}" SelectionChanged="ForegroundRandomLightsEndType_SelectionChanged"/>
                         <Button x:Name="ForegroundRandomLightsEndColorEdit" Style="{StaticResource HyperlinkLikeButton}" Content="Edit" Margin="0,55,136,0" VerticalAlignment="Top" 
                         	VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the selected foreground effects." Click="ForegroundRandomLightsEndColorEdit_Click" Grid.Row="2" Height="16"/>
-                        <Rectangle x:Name="ForegroundRandomLightsEndColor" HorizontalAlignment="Left" Height="24" Margin="165,71,0,0" 
-                                   Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="121"
-                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSwitchColorEnd, 
-                                    Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
+                        <xctk:ColorPicker x:Name="ForegroundRandomLightsEndColor"
+                                  HorizontalAlignment="Left" Height="24" Margin="165,71,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False" Grid.Row="2"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundRandomLightsSwitchColorEnd, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
                     </Grid>
                 </Grid>
 
@@ -258,8 +276,8 @@
                     <Grid Margin="0,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="55"/>
-                            <RowDefinition Height="13*"/>
-                            <RowDefinition Height="61*"/>
+                            <RowDefinition Height="60*"/>
+                            <RowDefinition Height="173*"/>
                         </Grid.RowDefinitions>
                         <Label Content="Light Style" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
                         <ComboBox x:Name="ForegroundReactiveStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" Height="24" 
@@ -268,26 +286,26 @@
                                   SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveStyle, Mode=TwoWay}"
                                   HorizontalAlignment="Left" Width="150" SelectionChanged="ForegroundReactiveStyle_SelectionChanged"/>
                         <!-- When "Solid" is selected -->
-                        <xctk:IntegerUpDown x:Name="ForegroundReactiveSolidDurationUD" HorizontalAlignment="Left" Margin="10,27,0,0" 
-                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Hidden"
+                        <xctk:IntegerUpDown x:Name="ForegroundReactiveSolidDurationUD" HorizontalAlignment="Left" Margin="10,32,0,0" 
+                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="25" Visibility="Visible"
                                             Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSwitchSolidDuration, Mode=TwoWay}" 
                                             Increment="100" Grid.Row="1"/>
                         <!-- When "Fade" is selected -->
                         <xctk:IntegerUpDown x:Name="ForegroundReactiveFadeSolidDurationUD" HorizontalAlignment="Left" Margin="10,2,0,0" 
-                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Hidden"
+                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="25" Visibility="Visible"
                                             Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveFadeSolidDuration, Mode=TwoWay}" 
                                             Increment="100" Grid.Row="1"/>
                         <Label x:Name="ForegroundReactiveFadeSolidDurationLabel" Content="Milliseconds to remain solid" HorizontalAlignment="Left" 
-                               Margin="108,0,0,0" VerticalAlignment="Top" Height="26" Width="158" Visibility="Hidden"
+                               Margin="108,2,0,0" VerticalAlignment="Top" Height="26" Width="158" Visibility="Visible"
                                ToolTip="Time to remain solid before beginning to fade." Grid.Row="1"/>
 
-                        <xctk:IntegerUpDown x:Name="ForegroundReactiveFadeTotalDurationUD" HorizontalAlignment="Left" Margin="10,27,0,0" Grid.Row="1"
-                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="20" Visibility="Hidden"
+                        <xctk:IntegerUpDown x:Name="ForegroundReactiveFadeTotalDurationUD" HorizontalAlignment="Left" Margin="10,32,0,0" Grid.Row="1"
+                                            VerticalAlignment="Top" Width="93" Maximum="60000" Minimum="0" Height="25" Visibility="Visible"
                                             Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveFadeTotalDuration, Mode=TwoWay}" Increment="100"/>
                         <Label x:Name="ForegroundReactiveFadeTotalDurationLabel" Content="Milliseconds total" HorizontalAlignment="Left" 
-                               Margin="108,24,0,0" VerticalAlignment="Top" Height="26" Width="103" Visibility="Hidden"
+                               Margin="108,32,0,0" VerticalAlignment="Top" Height="26" Width="103" Visibility="Visible"
                                ToolTip="Total time of the effect including solid and fade." Grid.Row="1"/>
-                        
+
                         <!-- Used for Solid and Fade -->
                         <!-- Bottom Portion: Colour Options-->
                         <Label Content="Start Colour" Grid.Row="2" Grid.Column="0" Margin="10,0,0,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Left" Width="150"/>
@@ -299,10 +317,11 @@
                         <Button x:Name="ForegroundReactiveStartColorEdit" Style="{StaticResource HyperlinkLikeButton}" 
                                 Content="Edit" Margin="0,5,136,0" VerticalAlignment="Top" VerticalContentAlignment="Bottom" HorizontalAlignment="Right" 
                                 Width="24" ToolTip="Edit the selected foreground effects." Click="ForegroundReactiveStartColorEdit_Click" Grid.Row="2" Height="16"/>
-                        <Rectangle x:Name="ForegroundReactiveStartColor" HorizontalAlignment="Left" Height="24" Margin="165,21,0,0" 
-                                   Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="121"
-                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSwitchColorStart, 
-                                    Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
+                        <xctk:ColorPicker x:Name="ForegroundReactiveStartColor"
+                                  HorizontalAlignment="Left" Height="24" Margin="165,21,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False" Grid.Row="2"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSwitchColorStart, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
 
                         <Label Content="End Colour" Grid.Row="2" Grid.Column="0" Margin="10,50,0,0" VerticalAlignment="Top" Width="150" Height="26" HorizontalAlignment="Left"/>
                         <ComboBox x:Name="ForegroundReactiveEndType" Grid.Row="2" Grid.Column="0" Margin="10,71,0,0" VerticalAlignment="Top" Height="24" 
@@ -312,10 +331,11 @@
                         <Button x:Name="ForegroundReactiveEndColorEdit" Style="{StaticResource HyperlinkLikeButton}" Content="Edit" Margin="0,55,136,0" VerticalAlignment="Top" 
                         	VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the selected foreground effects."
                                 Click="ForegroundReactiveEndColorEdit_Click" Grid.Row="2" Height="16"/>
-                        <Rectangle x:Name="ForegroundReactiveEndColor" HorizontalAlignment="Left" Height="24" Margin="165,71,0,0" 
-                                   Grid.Row="2" Stroke="Black" VerticalAlignment="Top" Width="121"
-                                   Fill="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSwitchColorEnd, 
-                                    Mode=TwoWay, Converter={StaticResource ColorToBrushConverter}}"/>
+                        <xctk:ColorPicker x:Name="ForegroundReactiveEndColor"
+                                  HorizontalAlignment="Left" Height="24" Margin="165,71,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False" Grid.Row="2"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundReactiveSwitchColorEnd, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
                     </Grid>
                 </Grid>
 

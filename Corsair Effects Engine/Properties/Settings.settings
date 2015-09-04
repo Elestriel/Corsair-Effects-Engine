@@ -39,7 +39,7 @@
       <Value Profile="(Default)">Headphones (Realtek High Definition Audio)</Value>
     </Setting>
     <Setting Name="OptMinimizeToTray" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="OptMinimizeOnClose" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -54,7 +54,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="OptWarnIfCueRunning" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="OptLaunchCueOnExit" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -166,6 +166,9 @@
     </Setting>
     <Setting Name="ForegroundReactiveStyle" Type="System.String" Scope="User">
       <Value Profile="(Default)">Fade</Value>
+    </Setting>
+    <Setting Name="OptAccentColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFF0080</Value>
     </Setting>
   </Settings>
 </SettingsFile>
