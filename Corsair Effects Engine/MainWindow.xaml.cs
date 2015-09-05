@@ -45,6 +45,8 @@ namespace Corsair_Effects_Engine
         // Name of the page being edited
         private static string PageBeingEdited;
 
+        ContextMenu cm;
+
         Engine newEngine = new Engine();
         Task EngineTask = null;
 
@@ -60,6 +62,7 @@ namespace Corsair_Effects_Engine
             this.CommandBindings.Add(new CommandBinding(SystemCommands.RestoreWindowCommand, this.OnRestoreWindow, this.OnCanResizeWindow));
 
             // Minimize to Tray stuff
+            cm = this.FindResource("TrayContextMenu") as ContextMenu;
             System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
             Stream iconStream = Application.GetResourceStream(new Uri("Resources/CorsairLogoTransparent.ico", UriKind.Relative)).Stream;
             ni.Icon = new System.Drawing.Icon(iconStream);
@@ -82,10 +85,10 @@ namespace Corsair_Effects_Engine
             System.Windows.Forms.MouseEventArgs me = (System.Windows.Forms.MouseEventArgs)e;
             if (me.Button == System.Windows.Forms.MouseButtons.Right) 
             { 
-                ContextMenu cm = this.FindResource("TrayContextMenu") as ContextMenu;
                 cm.PlacementTarget = sender as Button;
                 cm.IsOpen = true;
-        }
+                this.Activate();
+            }
         }
 
         protected override void OnStateChanged(EventArgs e)

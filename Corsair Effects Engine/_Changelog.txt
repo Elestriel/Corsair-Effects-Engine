@@ -1,8 +1,11 @@
-﻿Build 0015
+﻿Build 0016
+- Corrected an issue where the system tray context menu doesn't close.
+
+Build 0015
 - Heatmap fully integrated.
 - Changed the RgbSliders Accept/Cancel buttons to match the rest of the interface.
 - Minimize to Tray has been integrated.
-- System Tray Icon Menu has been integrated.
+- System tray context menu has been integrated.
 
 Build 0014
 - New UI.
