@@ -1,0 +1,12 @@
+﻿Build 0015
+- Heatmap fully integrated.
+- Changed the RgbSliders Accept/Cancel buttons to match the rest of the interface.
+- Minimize to Tray has been integrated.
+- System Tray Icon Menu has been integrated.
+
+Build 0014
+- New UI.
+- Initial Alpha release.
+
+Builds 0001 through 0013
+- Development of new program and engine.

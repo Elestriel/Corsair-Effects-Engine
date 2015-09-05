@@ -126,7 +126,8 @@
                                         </Grid>
                                     </AdornerDecorator>
                                 </Border>
-                                <Border BorderBrush="{StaticResource AccentColorBrush}" BorderThickness="1" Visibility="{Binding IsActive, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={StaticResource bool2VisibilityConverter}}" />
+                                <Border BorderBrush="{StaticResource AccentColorBrush}" BorderThickness="1" 
+                                        Visibility="{Binding IsActive, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={StaticResource bool2VisibilityConverter}}" />
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -162,6 +163,67 @@
             <Setter Property="Background" Value="{StaticResource WindowBackgroundColorBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
+        </Style>
+        
+        <!-- ContextMenu -->
+        <Style x:Key="{x:Type ContextMenu}" TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource {x:Type ContextMenu}}">
+            <Setter Property="Background" Value="{StaticResource WindowBackgroundColorBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+        <Style x:Key="{x:Type MenuItem}" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource {x:Type MenuItem}}">
+            <Setter Property="Background" Value="{StaticResource WindowBackgroundColorBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True" Uid="Border_38">
+                            <Grid x:Name="Grid" Uid="Grid_49">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition MinWidth="17" SharedSizeGroup="MenuItemIconColumnGroup" Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition SharedSizeGroup="MenuItemIGTColumnGroup" Width="Auto"/>
+                                    <ColumnDefinition Width="14"/>
+                                </Grid.ColumnDefinitions>
+                                <Path x:Name="GlyphPanel" Data="M 0 5 L 4 10  M 4 10 L 10 -2" StrokeThickness="2" Stroke="{StaticResource AccentColorBrush}" Margin="4,0,6,0" Uid="Path_12" Visibility="Hidden" VerticalAlignment="Center"/>
+                                <ContentPresenter x:Name="ContentPresenter" ContentTemplate="{TemplateBinding HeaderTemplate}" Content="{TemplateBinding Header}" Grid.Column="1" ContentSource="Header" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Uid="ContentPresenter_33"/>
+                                <TextBlock x:Name="InputGestureText" Grid.Column="2" DockPanel.Dock="Right" Margin="5,2,0,2" Text="{TemplateBinding InputGestureText}" Uid="TextBlock_10"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="Visibility" TargetName="GlyphPanel" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsHighlighted" Value="true">
+                                <Setter Property="Background" Value="{StaticResource AccentColorBrush}"/>
+                                <Setter Property="Stroke" TargetName="GlyphPanel" Value="{StaticResource TextColorBrush}"/>
+                            </Trigger>
+                            <DataTrigger Value="False">
+                                <DataTrigger.Binding>
+                                    <Binding ElementName="MenuItemIcon" Path="Source"/>
+                                </DataTrigger.Binding>
+                                <Setter Property="VerticalAlignment" TargetName="ContentPresenter" Value="Center"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="CustomSeparator" TargetType="{x:Type Separator}" BasedOn="{StaticResource {x:Type Separator}}">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Margin" Value="3,2"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="UseLayoutRounding" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Separator}">
+                        <Border Background="{DynamicResource AccentColorBrush}" Uid="Border_28"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
         
         <!-- Hyperlink-like Button -->
@@ -400,6 +462,32 @@
             </Style.Triggers>
         </Style>
 
+        <!-- SimpleStyles: ComboBoxItem -->
+        <Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                        <Border 
+                          Name="Border"
+                          Padding="2"
+                          SnapsToDevicePixels="true">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="true">
+                                <Setter TargetName="Border" Property="Background" Value="{StaticResource AccentColorBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{StaticResource TextDisabledColorBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <!-- Labels -->
         <Style x:Key="{x:Type Label}" TargetType="{x:Type Label}">
             <Setter Property="Foreground" Value="{StaticResource TextColorBrush}"/>
@@ -479,32 +567,6 @@
                             </Trigger>
                             <Trigger Property="IsChecked" Value="false">
                                 <Setter TargetName="path" Property="Opacity" Value="0" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <!-- SimpleStyles: ComboBoxItem -->
-        <Style x:Key="{x:Type ComboBoxItem}" TargetType="{x:Type ComboBoxItem}">
-            <Setter Property="SnapsToDevicePixels" Value="true"/>
-            <Setter Property="OverridesDefaultStyle" Value="true"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
-                        <Border 
-                          Name="Border"
-                          Padding="2"
-                          SnapsToDevicePixels="true">
-                            <ContentPresenter />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsHighlighted" Value="true">
-                                <Setter TargetName="Border" Property="Background" Value="{StaticResource AccentColorBrush}"/>
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="false">
-                                <Setter Property="Foreground" Value="#888888"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

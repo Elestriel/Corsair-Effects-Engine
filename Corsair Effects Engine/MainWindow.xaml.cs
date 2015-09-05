@@ -29,7 +29,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0.1.0.0014";
+        private const string VersionNumber = "0015";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -58,6 +58,43 @@ namespace Corsair_Effects_Engine
             this.CommandBindings.Add(new CommandBinding(SystemCommands.MaximizeWindowCommand, this.OnMaximizeWindow, this.OnCanResizeWindow));
             this.CommandBindings.Add(new CommandBinding(SystemCommands.MinimizeWindowCommand, this.OnMinimizeWindow, this.OnCanMinimizeWindow));
             this.CommandBindings.Add(new CommandBinding(SystemCommands.RestoreWindowCommand, this.OnRestoreWindow, this.OnCanResizeWindow));
+
+            // Minimize to Tray stuff
+            System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
+            Stream iconStream = Application.GetResourceStream(new Uri("Resources/CorsairLogoTransparent.ico", UriKind.Relative)).Stream;
+            ni.Icon = new System.Drawing.Icon(iconStream);
+            ni.Visible = true;
+            ni.MouseClick += ni_MouseClick;
+            ni.DoubleClick +=
+                delegate(object sender, EventArgs args)
+                {
+                    System.Windows.Forms.MouseEventArgs me = (System.Windows.Forms.MouseEventArgs)args;
+                    if (me.Button == System.Windows.Forms.MouseButtons.Left)
+                    {
+                        this.Show();
+                        this.WindowState = WindowState.Normal;
+                    }
+                };
+        }
+
+        void ni_MouseClick(object sender, EventArgs e)
+        {
+            System.Windows.Forms.MouseEventArgs me = (System.Windows.Forms.MouseEventArgs)e;
+            if (me.Button == System.Windows.Forms.MouseButtons.Right) 
+            { 
+                ContextMenu cm = this.FindResource("TrayContextMenu") as ContextMenu;
+                cm.PlacementTarget = sender as Button;
+                cm.IsOpen = true;
+        }
+        }
+
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == System.Windows.WindowState.Minimized &&
+                Properties.Settings.Default.OptMinimizeToTray == true)
+                this.Hide();
+
+            base.OnStateChanged(e);
         }
 
         #region Methods for custom window layout
@@ -131,7 +168,7 @@ namespace Corsair_Effects_Engine
             StartEngine();
 
             WindowInitialized = true;
-            UpdateStatusMessage.NewMessage(0, "Welcome to the Corsair Effects Engine v" + VersionNumber + ".");
+            UpdateStatusMessage.NewMessage(0, "Welcome to the Corsair Effects Engine build " + VersionNumber + ".");
         }
 
         public void GetDeviceIDs()
@@ -182,6 +219,12 @@ namespace Corsair_Effects_Engine
                 // Close the window
                 Application.Current.Windows[0].Close(); 
             }
+        }
+
+        private void CloseMainWindow(object sender, RoutedEventArgs e)
+        {
+            //Application.Current.Shutdown();
+            this.Close();
         }
 
         private void StartEngine()
@@ -658,10 +701,6 @@ namespace Corsair_Effects_Engine
 
         #endregion Live Keyboard Preview
 
-        private void TestButton_Click(object sender, RoutedEventArgs e)
-        {
-        }
-
         #region Pages
 
         #region Page: ForegroundEdit
@@ -901,6 +940,19 @@ namespace Corsair_Effects_Engine
         }
 
         #endregion Page: ForegroundEdit: Reactive
+
+        #region Page: ForegroundEdit: Heatmap
+
+        private void HeatmapResetCountButton_Click(object sender, RoutedEventArgs e)
+        {
+            newEngine.HeatmapHighestStrikeCount = 0;
+            for (int i = 0; i < 149; i++)
+            {
+                newEngine.HeatmapStrikeCount[i] = 0;
+            }
+        }
+
+        #endregion Page: ForegroundEdit: Heatmap
 
         private void PageBeingEditedDoneBotton_Click(object sender, RoutedEventArgs e)
         {

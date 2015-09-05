@@ -44,7 +44,7 @@ namespace Corsair_Effects_Engine
                         {
                             if (geoData.Name == "point")
                             {
-                                keyData[k].Coords[p] = new Point(int.Parse(geoData.Attributes["x"].Value), int.Parse(geoData.Attributes["y"].Value));
+                                keyData[k].Coords[p] = new System.Windows.Point(int.Parse(geoData.Attributes["x"].Value), int.Parse(geoData.Attributes["y"].Value));
                                 p++;
                             }
                         }

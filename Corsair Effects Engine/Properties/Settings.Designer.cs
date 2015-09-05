@@ -61,7 +61,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0: Default")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6: Engine Rendering Output")]
         public string LogLevel {
             get {
                 return ((string)(this["LogLevel"]));
@@ -169,7 +169,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool OptMinimizeToTray {
             get {
                 return ((bool)(this["OptMinimizeToTray"]));
@@ -692,6 +692,30 @@ namespace Corsair_Effects_Engine.Properties {
             }
             set {
                 this["OptAccentColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF00FF")]
+        public string ForegroundHeatmapColorMost {
+            get {
+                return ((string)(this["ForegroundHeatmapColorMost"]));
+            }
+            set {
+                this["ForegroundHeatmapColorMost"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF00")]
+        public string ForegroundHeatmapColorLeast {
+            get {
+                return ((string)(this["ForegroundHeatmapColorLeast"]));
+            }
+            set {
+                this["ForegroundHeatmapColorLeast"] = value;
             }
         }
     }

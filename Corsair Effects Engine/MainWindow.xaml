@@ -13,6 +13,14 @@
     <Window.Resources>
         <src:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
         <src:ColorToStringConverter x:Key="ColorToStringConverter"/>
+        <!-- Tray Icon ContextMenu -->
+        <ContextMenu x:Key="TrayContextMenu">
+            <MenuItem Header="Foreground Effects" IsCheckable="True" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundEffectEnabled, Mode=TwoWay}"/>
+            <MenuItem Header="Background Effects" IsCheckable="True" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundEffectEnabled, Mode=TwoWay}"/>
+            <MenuItem Header="Static Profile" IsCheckable="True" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=StaticProfileEnabled, Mode=TwoWay}"/>
+            <Separator Style="{StaticResource CustomSeparator}"/>
+            <MenuItem Header="Quit" IsEnabled="True" Click="CloseMainWindow"/>
+        </ContextMenu>
     </Window.Resources>
 
     <Grid>
@@ -20,6 +28,7 @@
             <ColumnDefinition x:Name="MainColumn1" Width="200*" MinWidth="200" MaxWidth="200"/>
             <ColumnDefinition x:Name="MainColumn2" Width="700*"/>
         </Grid.ColumnDefinitions>
+
         <!-- Left Column -->
         <Grid x:Name="GridControls" Grid.Column="0" Margin="0,0,0,10">
             <CheckBox x:Name="ForegroundCheck" Content="Foreground Effects" Margin="10,10,10,0" VerticalAlignment="Top" Height="16" ToolTip="Display foreground effects?"
@@ -44,11 +53,11 @@
                     VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the current static profile." Click="StaticEditButton_Click"/>
             <Grid x:Name="GridControlsButtons" Margin="0,179,10,0" HorizontalAlignment="Right" Width="180" Height="150" VerticalAlignment="Top">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="30*"/>
                 </Grid.RowDefinitions>
                 <Button x:Name="MouseButton" Content="Mouse" VerticalAlignment="Top" Grid.Row="0" HorizontalAlignment="Right"
                         Click="MouseButton_Click" ToolTip="Show the Mouse Configuration Page."
@@ -56,14 +65,11 @@
                 <Button x:Name="KeyboardButton" Content="Keyboard" VerticalAlignment="Top" Grid.Row="1" HorizontalAlignment="Right"
                         Click="KeyboardButton_Click" ToolTip="Show the Keyboard Configuration and Visualizer Page."
                                    Style="{StaticResource BigTextOnlyButton}"/>
-                <Button x:Name="LogButton" Content="Log" VerticalAlignment="Top" Grid.Row="2" HorizontalAlignment="Right"
+                <Button x:Name="LogButton" Content="Log" VerticalAlignment="Top" Grid.Row="3" HorizontalAlignment="Right"
                         Click="LogButton_Click" ToolTip="Display the Log and Log Settings. (Click twice for log only)"
                                    Style="{StaticResource BigTextOnlyButton}"/>
-                <Button x:Name="SettingsButton" Content="Settings" VerticalAlignment="Top" Grid.Row="3" HorizontalAlignment="Right"
+                <Button x:Name="SettingsButton" Content="Settings" VerticalAlignment="Top" Grid.Row="4" HorizontalAlignment="Right"
                         Click="SettingsButton_Click" ToolTip="Display the Settings Page."
-                                   Style="{StaticResource BigTextOnlyButton}"/>
-                <Button x:Name="TestButton" Content="Test" VerticalAlignment="Bottom"  Grid.Row="4" HorizontalAlignment="Right"
-                        ToolTip="Start the worker thread." Click="TestButton_Click"
                                    Style="{StaticResource BigTextOnlyButton}"/>
             </Grid>
         </Grid>
@@ -87,10 +93,10 @@
             </Grid>
 
             <!-- Settings -->
-            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Hidden">
+            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Visible">
                 <CheckBox x:Name="CheckMinimizeToTray" Content="Minimize to System Tray" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
                           ToolTip="Minimize to the System Tray instead of the Task Bar."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeToTray, Mode=TwoWay}" IsEnabled="False"/>
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeToTray, Mode=TwoWay}"/>
                 <CheckBox x:Name="CheckMinimizeInsteadOfClose" Content="Minimize instead of close" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"
                           ToolTip="Minimize instead of quitting when clicking on the red X."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeOnClose, Mode=TwoWay}" IsEnabled="False"/>
@@ -126,9 +132,9 @@
                 	IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptInvertM1, Mode=TwoWay}"/>
                 <xctk:ColorPicker SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=OptAccentColor, 
                                     Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
-                                  HorizontalAlignment="Left" Margin="420,83,0,0" VerticalAlignment="Top" Width="50" 
+                                  HorizontalAlignment="Left" Margin="420,70,0,0" VerticalAlignment="Top" Width="50" 
                                   ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
-                <Label Content="Program Accent Colour:" HorizontalAlignment="Left" Margin="277,80,0,0" VerticalAlignment="Top"/>
+                <Label Content="Program Accent Colour:" HorizontalAlignment="Left" Margin="277,68,0,0" VerticalAlignment="Top"/>
             </Grid>
             <Grid x:Name="GridRightSettings" Grid.Column="1" Visibility="Visible">
                 <Label Content="Keyboard Model" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
@@ -173,7 +179,7 @@
             </Grid>
 
             <!-- Edit Grid -->
-            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Visible" Margin="0,0,0,0">
+            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Hidden" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="296*"/>
                     <ColumnDefinition Width="200*"/>
@@ -200,11 +206,18 @@
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
-                        <Button x:Name="AcceptColourButton" Content="Accept" Margin="0,10,2,0" VerticalAlignment="Top" Height="23" Grid.Column="0" Click="AcceptColourButton_Click"/>
-                        <Button x:Name="CancelColourButton" Content="Cancel" Margin="2,10,0,0" VerticalAlignment="Top" Height="23" Grid.Column="1" Click="CancelColourButton_Click"/>
+                        <Button x:Name="AcceptColourButton" Content="Accept" Margin="0,10,2,0" VerticalAlignment="Top" 
+                                Height="23" Grid.Column="0" Click="AcceptColourButton_Click" Style="{StaticResource MetroButton}"/>
+                        <Button x:Name="CancelColourButton" Content="Cancel" Margin="2,10,0,0" VerticalAlignment="Top"
+                                Height="23" Grid.Column="1" Click="CancelColourButton_Click" Style="{StaticResource MetroButton}"/>
                     </Grid>
                 </Grid>
-
+                
+                <!-- Foreground: Spectrograph -->
+                <Grid x:Name="GridForegroundSpectro" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                    <Label Content="Coming soon..." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="190"/>
+                </Grid>
+                
                 <!-- Foreground: Random Lights -->
                 <Grid x:Name="GridForegroundRandomLights" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
                     <Grid Margin="0,0,0,0">
@@ -341,10 +354,25 @@
 
                 <!-- Foreground: Heatmap -->
                 <Grid x:Name="GridForegroundHeatmap" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
-                    <Label Content="Coming soon..." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="190"/>
+                    <!-- Bottom Portion: Colour Options-->
+                    <Label Content="Most Struck Colour" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Left" Width="auto"/>
+                    <xctk:ColorPicker x:Name="ForegroundHeatmapColorMost"
+                                  HorizontalAlignment="Left" Height="24" Margin="127,10,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundHeatmapColorMost, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
+
+                    <Label Content="Least Struck Colour" Margin="10,41,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:ColorPicker x:Name="ForegroundHeatmapColorLeast"
+                                  HorizontalAlignment="Left" Height="24" Margin="127,43,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundHeatmapColorLeast, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
+                    <Button x:Name="HeatmapResetCountButton" Content="Reset Strike Count" HorizontalAlignment="Left" 
+                            Margin="10,104,0,0" VerticalAlignment="Top" Width="167" Style="{StaticResource MetroButton}" Click="HeatmapResetCountButton_Click"/>
                 </Grid>
 
-                <!-- Background: Rainbow -->
+                <!-- Background: Rainbow and Spectrum Fade -->
                 <Grid x:Name="GridBackground" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="55*"/>

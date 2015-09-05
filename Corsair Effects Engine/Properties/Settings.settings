@@ -12,7 +12,7 @@
       <Value Profile="(Default)">None</Value>
     </Setting>
     <Setting Name="LogLevel" Type="System.String" Scope="User">
-      <Value Profile="(Default)">0: Default</Value>
+      <Value Profile="(Default)">6: Engine Rendering Output</Value>
     </Setting>
     <Setting Name="ForegroundEffect" Type="System.String" Scope="User">
       <Value Profile="(Default)">Spectrograph</Value>
@@ -39,7 +39,7 @@
       <Value Profile="(Default)">Headphones (Realtek High Definition Audio)</Value>
     </Setting>
     <Setting Name="OptMinimizeToTray" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="OptMinimizeOnClose" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -169,6 +169,12 @@
     </Setting>
     <Setting Name="OptAccentColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FFFF0080</Value>
+    </Setting>
+    <Setting Name="ForegroundHeatmapColorMost" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFF00FF</Value>
+    </Setting>
+    <Setting Name="ForegroundHeatmapColorLeast" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF00FF00</Value>
     </Setting>
   </Settings>
 </SettingsFile>

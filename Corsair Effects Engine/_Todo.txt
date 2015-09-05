@@ -1,0 +1,14 @@
+﻿- Tray icon right-click menu
+- Audio capture
+- - Proper volume representation
+- - Automatic volume control based on peak
+- Audio effects:
+- - Spectrograph
+- - - Allow each row's colour to be customized
+- - VU Meter
+- - Oscilloscope
+- - Beat Analyzer (Basically a VU meter)
+- Breathe background effect.
+- Solid background effect.
+- Static profiles.
+- Live keyboard preview.

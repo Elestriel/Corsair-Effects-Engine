@@ -30,8 +30,8 @@ namespace Corsair_Effects_Engine
         private KeyData[] Keys = MainWindow.keyData;
 
         private double BackgroundAnim = 0;
-        private int HeatmapHighestStrikeCount = 0;
-        private int[] HeatmapStrikeCount = new int[149];
+        public int HeatmapHighestStrikeCount = 0;
+        public int[] HeatmapStrikeCount = new int[149];
 
         public Engine()
         {
@@ -317,6 +317,7 @@ namespace Corsair_Effects_Engine
                         startColor = Color.FromRgb((byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
                         break;
                 }
+
                 switch (Properties.Settings.Default.ForegroundReactiveEndType)
                 {
                     case "None":
@@ -347,6 +348,9 @@ namespace Corsair_Effects_Engine
             } //Reactive Typing
             else if (Properties.Settings.Default.ForegroundEffect == "Heatmap")
             {
+                Color CM = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorMost);
+                Color CL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorLeast);
+
                 double keyIntensity;
                 HeatmapStrikeCount[keyLight] += 1;
                 if (HeatmapStrikeCount[keyLight] > HeatmapHighestStrikeCount) { HeatmapHighestStrikeCount = HeatmapStrikeCount[keyLight]; };
@@ -356,7 +360,9 @@ namespace Corsair_Effects_Engine
                 {
                     keyIntensity = 1 - ((double)HeatmapStrikeCount[i] / (double)HeatmapHighestStrikeCount);
 
-                    ReactiveKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(255, (byte)(255 - (255 * keyIntensity)), 0, 0));
+                    ReactiveKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(255, (byte)(CM.R - ((CM.R - CL.R) * keyIntensity)),
+                                                                                               (byte)(CM.G - ((CM.G - CL.G) * keyIntensity)),
+                                                                                               (byte)(CM.B - ((CM.B - CL.B) * keyIntensity))));
                 }
             } //Heatmap
         }
