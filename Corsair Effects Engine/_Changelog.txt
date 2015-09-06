@@ -1,4 +1,7 @@
-﻿Build 0016
+﻿Build 0017
+- Corrected issues with the system tray context menu appearance.
+
+Build 0016
 - Corrected an issue where the system tray context menu doesn't close.
 
 Build 0015

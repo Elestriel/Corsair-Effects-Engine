@@ -32,6 +32,7 @@ namespace Corsair_Effects_Engine
         private double BackgroundAnim = 0;
         public int HeatmapHighestStrikeCount = 0;
         public int[] HeatmapStrikeCount = new int[149];
+        Random rnd = new Random();
 
         public Engine()
         {
@@ -200,7 +201,6 @@ namespace Corsair_Effects_Engine
         {
             if (Properties.Settings.Default.ForegroundEffectEnabled)
             {
-                Random rnd = new Random();
                 Color SL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartLower);
                 Color SU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartUpper);
                 Color EL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndLower);
@@ -208,14 +208,14 @@ namespace Corsair_Effects_Engine
                 Color startColor = Color.FromRgb(255, 255, 255);
                 Color endColor = Color.FromRgb(0, 0, 0);
 
-                int keyLight = rnd.Next(0, 149);
-
                 switch (Properties.Settings.Default.ForegroundEffect)
                 {
                     case "Spectrograph":
                         break;
                     case "Random Lights":
                         #region Random Lights Code
+                        int keyLight = rnd.Next(0, 149);
+
                         if (ForegroundKeys[keyLight].KeyColor.EffectInProgress == false)
                         {
                             switch (Properties.Settings.Default.ForegroundRandomLightsStartType)
@@ -300,7 +300,6 @@ namespace Corsair_Effects_Engine
 
             if (Properties.Settings.Default.ForegroundEffect == "Reactive Typing")
             {
-                Random rnd = new Random();
                 Color SL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartLower);
                 Color SU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartUpper);
                 Color EL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndLower);

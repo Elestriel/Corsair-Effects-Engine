@@ -15,11 +15,17 @@
         <src:ColorToStringConverter x:Key="ColorToStringConverter"/>
         <!-- Tray Icon ContextMenu -->
         <ContextMenu x:Key="TrayContextMenu">
-            <MenuItem Header="Foreground Effects" IsCheckable="True" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundEffectEnabled, Mode=TwoWay}"/>
-            <MenuItem Header="Background Effects" IsCheckable="True" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundEffectEnabled, Mode=TwoWay}"/>
-            <MenuItem Header="Static Profile" IsCheckable="True" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=StaticProfileEnabled, Mode=TwoWay}"/>
-            <Separator Style="{StaticResource CustomSeparator}"/>
-            <MenuItem Header="Quit" IsEnabled="True" Click="CloseMainWindow"/>
+            <ContextMenu.Items>
+                <MenuItem Header="Foreground Effects" IsCheckable="True" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundEffectEnabled, Mode=TwoWay}"/>
+                <MenuItem Header="Background Effects" IsCheckable="True" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundEffectEnabled, Mode=TwoWay}"/>
+                <MenuItem Header="Static Profile" IsCheckable="True" IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=StaticProfileEnabled, Mode=TwoWay}"/>
+                <!--
+                <Separator Style="{StaticResource CustomSeparator}"/>
+                <MenuItem Header="Pause/Resumee" Click="PauseResumeEngine"/>
+                -->
+                <Separator Style="{StaticResource CustomSeparator}"/>
+                <MenuItem Header="Quit" IsEnabled="True" Click="CloseMainWindow"/>
+            </ContextMenu.Items>
         </ContextMenu>
     </Window.Resources>
 
@@ -132,9 +138,9 @@
                 	IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptInvertM1, Mode=TwoWay}"/>
                 <xctk:ColorPicker SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=OptAccentColor, 
                                     Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
-                                  HorizontalAlignment="Left" Margin="420,70,0,0" VerticalAlignment="Top" Width="50" 
+                                  HorizontalAlignment="Left" Margin="420,66,0,0" VerticalAlignment="Top" Width="50" 
                                   ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
-                <Label Content="Program Accent Colour:" HorizontalAlignment="Left" Margin="277,68,0,0" VerticalAlignment="Top"/>
+                <Label Content="Program Accent Colour:" HorizontalAlignment="Left" Margin="277,65,0,0" VerticalAlignment="Top"/>
             </Grid>
             <Grid x:Name="GridRightSettings" Grid.Column="1" Visibility="Visible">
                 <Label Content="Keyboard Model" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>

@@ -29,7 +29,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0015";
+        private const string VersionNumber = "0017";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -247,6 +247,11 @@ namespace Corsair_Effects_Engine
                 // Wait for the thread to end
                 await EngineTask;
             };
+        }
+
+        private void PauseResumeEngine(object sender, RoutedEventArgs e)
+        {
+            newEngine.PauseEngine = !newEngine.PauseEngine;
         }
 
         #endregion MainWindow Events
