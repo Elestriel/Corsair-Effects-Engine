@@ -34,6 +34,10 @@ namespace Corsair_Effects_Engine
         public int[] HeatmapStrikeCount = new int[149];
         Random rnd = new Random();
 
+        private string LastForegroundEffect = "";
+        private string LastBackgroundEffect = "";
+        private string LastStaticProfile = "";
+
         public Engine()
         {
             InputHook.OnRawInputFromKeyboard += InputFromKeyboard;
@@ -134,6 +138,17 @@ namespace Corsair_Effects_Engine
             UpdateStatusMessage.NewMessage(5, "Engine is shutting down.");
         }
 
+        public void ClearAllKeys()
+        {
+            for (int i = 0; i < 149; i++)
+            {
+                BackgroundKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
+                ForegroundKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
+                ReactiveKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
+                Keys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
+            }
+        }
+
         private void RenderBackground()
         {
             if (Properties.Settings.Default.BackgroundEffectEnabled)
@@ -207,6 +222,10 @@ namespace Corsair_Effects_Engine
                 Color EU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndUpper);
                 Color startColor = Color.FromRgb(255, 255, 255);
                 Color endColor = Color.FromRgb(0, 0, 0);
+
+
+                if (LastForegroundEffect != Properties.Settings.Default.ForegroundEffect) { ClearAllKeys(); };
+                LastForegroundEffect = Properties.Settings.Default.ForegroundEffect;
 
                 switch (Properties.Settings.Default.ForegroundEffect)
                 {
@@ -358,7 +377,12 @@ namespace Corsair_Effects_Engine
                 for (int i = 0; i < 149; i++)
                 {
                     keyIntensity = 1 - ((double)HeatmapStrikeCount[i] / (double)HeatmapHighestStrikeCount);
-
+                    // Make a floor for the least-struck key
+                        if (Properties.Settings.Default.Opt16MColours && keyIntensity > .95 && HeatmapStrikeCount[i] > 0)
+                        { keyIntensity = .95; }
+                        else if (!Properties.Settings.Default.Opt16MColours && keyIntensity > .85 && HeatmapStrikeCount[i] > 0)
+                        { keyIntensity = .85; }
+                        if (i == 0) { UpdateStatusMessage.NewMessage(0, keyIntensity.ToString()); };
                     ReactiveKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(255, (byte)(CM.R - ((CM.R - CL.R) * keyIntensity)),
                                                                                                (byte)(CM.G - ((CM.G - CL.G) * keyIntensity)),
                                                                                                (byte)(CM.B - ((CM.B - CL.B) * keyIntensity))));

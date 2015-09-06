@@ -29,7 +29,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0017";
+        private const string VersionNumber = "0018";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -45,12 +45,15 @@ namespace Corsair_Effects_Engine
         // Name of the page being edited
         private static string PageBeingEdited;
 
-        ContextMenu cm;
+        // System Tray components
+        System.Windows.Forms.NotifyIcon SystemTrayIcon;
+        ContextMenu SystemTrayContextMenu;
 
         Engine newEngine = new Engine();
         Task EngineTask = null;
 
         #region MainWindow Events
+
         public MainWindow()
         {
             InitializeComponent();
@@ -62,13 +65,13 @@ namespace Corsair_Effects_Engine
             this.CommandBindings.Add(new CommandBinding(SystemCommands.RestoreWindowCommand, this.OnRestoreWindow, this.OnCanResizeWindow));
 
             // Minimize to Tray stuff
-            cm = this.FindResource("TrayContextMenu") as ContextMenu;
-            System.Windows.Forms.NotifyIcon ni = new System.Windows.Forms.NotifyIcon();
+            SystemTrayContextMenu = this.FindResource("TrayContextMenu") as ContextMenu;
+            SystemTrayIcon = new System.Windows.Forms.NotifyIcon();
             Stream iconStream = Application.GetResourceStream(new Uri("Resources/CorsairLogoTransparent.ico", UriKind.Relative)).Stream;
-            ni.Icon = new System.Drawing.Icon(iconStream);
-            ni.Visible = true;
-            ni.MouseClick += ni_MouseClick;
-            ni.DoubleClick +=
+            SystemTrayIcon.Icon = new System.Drawing.Icon(iconStream);
+            SystemTrayIcon.Visible = true;
+            SystemTrayIcon.MouseClick += SystemTrayIcon_MouseClick;
+            SystemTrayIcon.DoubleClick +=
                 delegate(object sender, EventArgs args)
                 {
                     System.Windows.Forms.MouseEventArgs me = (System.Windows.Forms.MouseEventArgs)args;
@@ -79,60 +82,6 @@ namespace Corsair_Effects_Engine
                     }
                 };
         }
-
-        void ni_MouseClick(object sender, EventArgs e)
-        {
-            System.Windows.Forms.MouseEventArgs me = (System.Windows.Forms.MouseEventArgs)e;
-            if (me.Button == System.Windows.Forms.MouseButtons.Right) 
-            { 
-                cm.PlacementTarget = sender as Button;
-                cm.IsOpen = true;
-                this.Activate();
-            }
-        }
-
-        protected override void OnStateChanged(EventArgs e)
-        {
-            if (WindowState == System.Windows.WindowState.Minimized &&
-                Properties.Settings.Default.OptMinimizeToTray == true)
-                this.Hide();
-
-            base.OnStateChanged(e);
-        }
-
-        #region Methods for custom window layout
-
-        private void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
-        }
-
-        private void OnCanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
-        }
-
-        private void OnCloseWindow(object target, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.CloseWindow(this);
-        }
-
-        private void OnMaximizeWindow(object target, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.MaximizeWindow(this);
-        }
-
-        private void OnMinimizeWindow(object target, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.MinimizeWindow(this);
-        }
-
-        private void OnRestoreWindow(object target, ExecutedRoutedEventArgs e)
-        {
-            SystemCommands.RestoreWindow(this);
-        }
-
-        #endregion Methods for custom window layout
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -174,27 +123,6 @@ namespace Corsair_Effects_Engine
             UpdateStatusMessage.NewMessage(0, "Welcome to the Corsair Effects Engine build " + VersionNumber + ".");
         }
 
-        public void GetDeviceIDs()
-        {
-            switch (Properties.Settings.Default.KeyboardModel)
-            {
-                case "K65-RGB": DeviceHID.Keyboard = 0x1B17; break;
-                case "K70-RGB": DeviceHID.Keyboard = 0x1B13; break;
-                case "K95-RGB": DeviceHID.Keyboard = 0x1B11; break;
-                case "STRAFE": DeviceHID.Keyboard = 0x1B15; break;
-                default: DeviceHID.Keyboard = 0x0; break;
-            }
-
-            switch (Properties.Settings.Default.MouseModel)
-            {
-                case "M65 RGB": DeviceHID.Mouse = 0x1B12; break;
-                case "Saber Optical": DeviceHID.Mouse = 0x1B14; break;
-                case "Saber Laser": DeviceHID.Mouse = 0x1B19; break;
-                case "Scimitar": DeviceHID.Mouse = 0x1B1E; break;
-                default: DeviceHID.Mouse = 0x0; break;
-            }
-        }
-
         /// <summary>
         /// Prevent the window from closing until cleanup is done.
         /// </summary>
@@ -216,11 +144,93 @@ namespace Corsair_Effects_Engine
                 UpdateStatusMessage.NewMsg -= UpdateStatusMessage_NewMsg;
                 RefreshKeyboardPreview.ShowNewFrame -= RefreshKeyboardPreview_ShowNewFrame;
 
+                // Destroy System Tray icon
+                SystemTrayIcon.Dispose();
+
                 // Save settings
                 Properties.Settings.Default.Save();
 
                 // Close the window
                 Application.Current.Windows[0].Close(); 
+            }
+        }
+
+        /// <summary>
+        /// Handle minimization.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnStateChanged(EventArgs e)
+        {
+            if (WindowState == System.Windows.WindowState.Minimized &&
+                Properties.Settings.Default.OptMinimizeToTray == true)
+                this.Hide();
+
+            base.OnStateChanged(e);
+        }
+
+        void SystemTrayIcon_MouseClick(object sender, EventArgs e)
+        {
+            System.Windows.Forms.MouseEventArgs me = (System.Windows.Forms.MouseEventArgs)e;
+            if (me.Button == System.Windows.Forms.MouseButtons.Right) 
+            { 
+                SystemTrayContextMenu.PlacementTarget = sender as Button;
+                SystemTrayContextMenu.IsOpen = true;
+                this.Activate();
+            }
+        }
+
+        #region Methods for custom window layout
+
+        private void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode == ResizeMode.CanResize || this.ResizeMode == ResizeMode.CanResizeWithGrip;
+        }
+
+        private void OnCanMinimizeWindow(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = this.ResizeMode != ResizeMode.NoResize;
+        }
+
+        private void OnCloseWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.CloseWindow(this);
+        }
+
+        private void OnMaximizeWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MaximizeWindow(this);
+        }
+
+        private void OnMinimizeWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.MinimizeWindow(this);
+        }
+
+        private void OnRestoreWindow(object target, ExecutedRoutedEventArgs e)
+        {
+            SystemCommands.RestoreWindow(this);
+        }
+
+        #endregion Methods for custom window layout
+
+        public void GetDeviceIDs()
+        {
+            switch (Properties.Settings.Default.KeyboardModel)
+            {
+                case "K65-RGB": DeviceHID.Keyboard = 0x1B17; break;
+                case "K70-RGB": DeviceHID.Keyboard = 0x1B13; break;
+                case "K95-RGB": DeviceHID.Keyboard = 0x1B11; break;
+                case "STRAFE": DeviceHID.Keyboard = 0x1B15; break;
+                default: DeviceHID.Keyboard = 0x0; break;
+            }
+
+            switch (Properties.Settings.Default.MouseModel)
+            {
+                case "M65 RGB": DeviceHID.Mouse = 0x1B12; break;
+                case "Saber Optical": DeviceHID.Mouse = 0x1B14; break;
+                case "Saber Laser": DeviceHID.Mouse = 0x1B19; break;
+                case "Scimitar": DeviceHID.Mouse = 0x1B1E; break;
+                default: DeviceHID.Mouse = 0x0; break;
             }
         }
 
@@ -958,6 +968,7 @@ namespace Corsair_Effects_Engine
             {
                 newEngine.HeatmapStrikeCount[i] = 0;
             }
+            newEngine.ClearAllKeys();
         }
 
         #endregion Page: ForegroundEdit: Heatmap

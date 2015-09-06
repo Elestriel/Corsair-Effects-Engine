@@ -1,4 +1,8 @@
-﻿Build 0017
+﻿Build 0018
+- System Tray icon will now be disposed when the MainWindow closes.
+- Added a floor in the heatmap so any key that was pressed will never completely revert to the Least colour.
+
+Build 0017
 - Corrected issues with the system tray context menu appearance.
 
 Build 0016
