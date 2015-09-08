@@ -170,8 +170,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="CorsairDevices\K95-RGB.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="CorsairDevices\STRAFE.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -17,7 +17,7 @@ namespace Corsair_Effects_Engine
         {
             string kbdModel = GetModelCode(keyboardModel);
             string kbdRegion = GetRegionCode(KeyboardRegion);
-            string xmlPath = Directory.GetCurrentDirectory() + "\\CorsairDevices\\" +
+            string xmlPath = System.AppDomain.CurrentDomain.BaseDirectory + "CorsairDevices\\" +
                                     kbdModel + "\\" + kbdModel + "_" + kbdRegion + ".xml";
 
             XmlDocument doc = new XmlDocument();

@@ -1,4 +1,13 @@
-﻿Build 0018
+﻿Build 0020
+- Changed the way the program looks for files, allowing it to be launched from folders other than its own.
+- Converted key mappings to a Dictionary structure; producing a huge increase in speed.
+
+Build 0019
+- Re-worked layer blending to run with Alpha channel values.
+- Re-worked colour effects to work with the new blending mode.
+- Made the Rainbow run through the Hue spectrum in HSV, instead of through RGB.
+
+Build 0018
 - System Tray icon will now be disposed when the MainWindow closes.
 - Added a floor in the heatmap so any key that was pressed will never completely revert to the Least colour.
 

@@ -718,5 +718,17 @@ namespace Corsair_Effects_Engine.Properties {
                 this["ForegroundHeatmapColorLeast"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        public string BackgroundSolidColor {
+            get {
+                return ((string)(this["BackgroundSolidColor"]));
+            }
+            set {
+                this["BackgroundSolidColor"] = value;
+            }
+        }
     }
 }

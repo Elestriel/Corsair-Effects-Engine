@@ -176,5 +176,8 @@
     <Setting Name="ForegroundHeatmapColorLeast" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FF00FF00</Value>
     </Setting>
+    <Setting Name="BackgroundSolidColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFFFF</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

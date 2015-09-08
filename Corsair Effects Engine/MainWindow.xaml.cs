@@ -19,8 +19,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using CSCore;
-using CSCore.CoreAudioAPI;
+//using CSCore;
+//using CSCore.CoreAudioAPI;
 
 namespace Corsair_Effects_Engine
 {
@@ -29,7 +29,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0018";
+        private const string VersionNumber = "0020";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -179,7 +179,7 @@ namespace Corsair_Effects_Engine
             }
         }
 
-        #region Methods for custom window layout
+        #region Methods for custom window
 
         private void OnCanResizeWindow(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -211,7 +211,7 @@ namespace Corsair_Effects_Engine
             SystemCommands.RestoreWindow(this);
         }
 
-        #endregion Methods for custom window layout
+        #endregion Methods for custom window
 
         public void GetDeviceIDs()
         {
@@ -482,7 +482,6 @@ namespace Corsair_Effects_Engine
                     ContentRight.Width = new GridLength(200, GridUnitType.Star);
                     GridContent.Visibility = System.Windows.Visibility.Visible;
                     GridLeftEdit.Visibility = System.Windows.Visibility.Visible;
-                    GridBackground.Visibility = System.Windows.Visibility.Visible;
                     GridRightSettings.Visibility = System.Windows.Visibility.Visible;
                     
                     SetGridControlEnabled(false);
@@ -493,7 +492,14 @@ namespace Corsair_Effects_Engine
                     switch (mode2)
                     {
                         case "Rainbow":
+                            GridBackground.Visibility = System.Windows.Visibility.Visible;
                             GridBackgroundRainbow.Visibility = System.Windows.Visibility.Visible;
+                            break;
+                        case "Spectrum Cycle":
+                            GridBackground.Visibility = System.Windows.Visibility.Visible;
+                            break;
+                        case "Solid":
+                            GridBackgroundSolid.Visibility = System.Windows.Visibility.Visible;
                             break;
                     }
                     break;
@@ -547,6 +553,7 @@ namespace Corsair_Effects_Engine
             // Edit: Background
             GridBackground.Visibility = System.Windows.Visibility.Hidden;
             GridBackgroundRainbow.Visibility = System.Windows.Visibility.Hidden;
+            GridBackgroundSolid.Visibility = System.Windows.Visibility.Hidden;
 
             // Full Keyboard
             GridKeyboard.Visibility = System.Windows.Visibility.Hidden;

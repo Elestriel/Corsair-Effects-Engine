@@ -28,15 +28,17 @@ namespace Corsair_Effects_Engine.EngineComponents
 
         public void UpdateKeyboard(IntPtr outputDevice, KeyData[] Keys)
         {
+            double alphaValue;
             byte[] redValues = new byte[144];
             byte[] greenValues = new byte[144];
             byte[] blueValues = new byte[144];
 
             for (int i = 0; i < 144; i++)
             {
-                redValues[i] = (byte)(7 - (Keys[i].KeyColor.LightColor.R / 32));
-                greenValues[i] = (byte)(7 - (Keys[i].KeyColor.LightColor.G / 32));
-                blueValues[i] = (byte)(7 - (Keys[i].KeyColor.LightColor.B / 32));
+                alphaValue = (double)((double)Keys[i].KeyColor.LightColor.A / 255D);
+                redValues[i] = (byte)(7 - (byte)(((double)Keys[i].KeyColor.LightColor.R * alphaValue) / 32));
+                greenValues[i] = (byte)(7 - (byte)(((double)Keys[i].KeyColor.LightColor.G * alphaValue) / 32));
+                blueValues[i] = (byte)(7 - (byte)(((double)Keys[i].KeyColor.LightColor.B * alphaValue) / 32));
             }
 
             if (Properties.Settings.Default.OptInvertM1)
@@ -121,6 +123,7 @@ namespace Corsair_Effects_Engine.EngineComponents
         public void UpdateKeyboard16M(IntPtr outputDevice, KeyData[] Keys)
         {
             byte[][] keyboard16MPacket = new byte[12][];
+            double alphaValue;
 
             for (int i = 0; i < keyboard16MPacket.Length; i++)
             {
@@ -148,24 +151,27 @@ namespace Corsair_Effects_Engine.EngineComponents
             keyboard16MPacket[7][4] = 0x01;
             keyboard16MPacket[11][2] = 0x03;
             keyboard16MPacket[11][4] = 0x02;
-
+            
             for (int i = 0; i < 60; i++)
             {
-                keyboard16MPacket[0][i + 4] = Keys[i].KeyColor.LightColor.R;
-                keyboard16MPacket[4][i + 4] = Keys[i].KeyColor.LightColor.G;
-                keyboard16MPacket[8][i + 4] = Keys[i].KeyColor.LightColor.B;
+                alphaValue = (double)Keys[i].KeyColor.LightColor.A / 255D;
+                keyboard16MPacket[0][i + 4] = (byte)((double)Keys[i].KeyColor.LightColor.R * alphaValue);
+                keyboard16MPacket[4][i + 4] = (byte)((double)Keys[i].KeyColor.LightColor.G * alphaValue);
+                keyboard16MPacket[8][i + 4] = (byte)((double)Keys[i].KeyColor.LightColor.B * alphaValue);
             }
             for (int i = 0; i < 60; i++)
             {
-                keyboard16MPacket[1][i + 4] = Keys[i + 60].KeyColor.LightColor.R;
-                keyboard16MPacket[5][i + 4] = Keys[i + 60].KeyColor.LightColor.G;
-                keyboard16MPacket[9][i + 4] = Keys[i + 60].KeyColor.LightColor.B;
+                alphaValue = (double)Keys[i + 60].KeyColor.LightColor.A / 255D;
+                keyboard16MPacket[1][i + 4] = (byte)((double)Keys[i + 60].KeyColor.LightColor.R * alphaValue);
+                keyboard16MPacket[5][i + 4] = (byte)((double)Keys[i + 60].KeyColor.LightColor.G * alphaValue);
+                keyboard16MPacket[9][i + 4] = (byte)((double)Keys[i + 60].KeyColor.LightColor.B * alphaValue);
             }
             for (int i = 0; i < 24; i++)
             {
-                keyboard16MPacket[2][i + 4] = Keys[i + 120].KeyColor.LightColor.R;
-                keyboard16MPacket[6][i + 4] = Keys[i + 120].KeyColor.LightColor.G;
-                keyboard16MPacket[10][i + 4] = Keys[i + 120].KeyColor.LightColor.B;
+                alphaValue = (double)Keys[i + 120].KeyColor.LightColor.A / 255D;
+                keyboard16MPacket[2][i + 4] = (byte)((double)Keys[i + 120].KeyColor.LightColor.R * alphaValue);
+                keyboard16MPacket[6][i + 4] = (byte)((double)Keys[i + 120].KeyColor.LightColor.G * alphaValue);
+                keyboard16MPacket[10][i + 4] = (byte)((double)Keys[i + 120].KeyColor.LightColor.B * alphaValue);
             }
 
             if (Properties.Settings.Default.OptInvertM1)
@@ -183,15 +189,17 @@ namespace Corsair_Effects_Engine.EngineComponents
 
         public void UpdateMouse(IntPtr outputDevice, KeyData[] Keys)
         {
+            double alphaValue;
             byte[] redValues = new byte[5];
             byte[] greenValues = new byte[5];
             byte[] blueValues = new byte[5];
 
             for (int i = 0; i < 5; i++)
             {
-                redValues[i] = (byte)Keys[i + 144].KeyColor.LightColor.R;
-                greenValues[i] = (byte)Keys[i + 144].KeyColor.LightColor.G;
-                blueValues[i] = (byte)Keys[i + 144].KeyColor.LightColor.B;
+                alphaValue = (double)Keys[i].KeyColor.LightColor.A / 255D;
+                redValues[i] = (byte)((double)Keys[i + 144].KeyColor.LightColor.R * alphaValue);
+                greenValues[i] = (byte)((double)Keys[i + 144].KeyColor.LightColor.G * alphaValue);
+                blueValues[i] = (byte)((double)Keys[i + 144].KeyColor.LightColor.B * alphaValue);
             }
 
             // Perform USB control message to keyboard

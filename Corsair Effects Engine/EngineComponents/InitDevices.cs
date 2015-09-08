@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-
 namespace Corsair_Effects_Engine.EngineComponents
 {
     public class InitDevices
@@ -372,7 +371,8 @@ namespace Corsair_Effects_Engine.EngineComponents
             };
 
             // Load data from XML file
-            XDocument document = XDocument.Load("CorsairDevices\\" + Properties.Settings.Default.KeyboardModel + ".xml");
+            XDocument document = XDocument.Load(System.AppDomain.CurrentDomain.BaseDirectory + "CorsairDevices\\" + Properties.Settings.Default.KeyboardModel + ".xml");
+            //XDocument document = XDocument.Parse(GetResourceTextFile("CorsairDevices." + Properties.Settings.Default.KeyboardModel + ".xml"));
             keyboardIDs = document.Descendants("id").Select(element => element.Value).ToArray();
             keyboardNames = document.Descendants("name").Select(element => element.Value).ToArray();
             keyboardPositionMaps = document.Descendants("positionmap").Select(element => element.Value).ToArray();
@@ -439,6 +439,21 @@ namespace Corsair_Effects_Engine.EngineComponents
             }
 
             return true;
+        }
+
+        public string GetResourceTextFile(string filename)
+        {
+            string result = string.Empty;
+
+            using (Stream stream = this.GetType().Assembly.
+                       GetManifestResourceStream("Corsair_Effects_Engine." + filename))
+            {
+                using (StreamReader sr = new StreamReader(stream))
+                {
+                    result = sr.ReadToEnd();
+                }
+            }
+            return result;
         }
 
         public string FirstLetterToUpper(string str)
