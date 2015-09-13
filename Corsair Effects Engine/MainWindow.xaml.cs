@@ -19,9 +19,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-//using CSCore;
-//using CSCore.CoreAudioAPI;
-
 namespace Corsair_Effects_Engine
 {
     /// <summary>
@@ -29,7 +26,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0020";
+        private const string VersionNumber = "0021";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;

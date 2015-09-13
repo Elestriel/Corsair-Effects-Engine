@@ -196,27 +196,20 @@ namespace Corsair_Effects_Engine.EngineComponents
 
             for (int i = 0; i < 5; i++)
             {
-                alphaValue = (double)Keys[i].KeyColor.LightColor.A / 255D;
+                alphaValue = (double)Keys[i + 144].KeyColor.LightColor.A / 255D;
                 redValues[i] = (byte)((double)Keys[i + 144].KeyColor.LightColor.R * alphaValue);
                 greenValues[i] = (byte)((double)Keys[i + 144].KeyColor.LightColor.G * alphaValue);
                 blueValues[i] = (byte)((double)Keys[i + 144].KeyColor.LightColor.B * alphaValue);
             }
 
-            // Perform USB control message to keyboard
-            //
-            // Request Type:  0x21
-            // Request:       0x09
-            // Value          0x0300
-            // Index:         0x03
-            // Size:          64
             this.mousePacket[0] = 0x07;
             this.mousePacket[1] = 0x22;
             if (Properties.Settings.Default.MouseModel != "Scimitar") { this.mousePacket[2] = 0x04; }
             else { this.mousePacket[2] = 0x05; };
             this.mousePacket[3] = 0x01;
             
-                // Light 1
-                this.mousePacket[4] = 0x01;
+            // Light 1
+            this.mousePacket[4] = 0x01;
             this.mousePacket[5] = redValues[0];
             this.mousePacket[6] = greenValues[0];
             this.mousePacket[7] = blueValues[0];

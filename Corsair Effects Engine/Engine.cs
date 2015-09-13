@@ -5,30 +5,41 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+
+using CSCore;
+using CSCore.CoreAudioAPI;
+using CSCore.DSP;
+using CSCore.SoundIn;
+using CSCore.Utils;
 
 namespace Corsair_Effects_Engine
 {
     public class Engine
     {
+        // RawInput
         public static RawInputHook InputHook = new RawInputHook();
         static RawInputKeyCodes InputKeys = new RawInputKeyCodes();
 
+        // Public thread control variables
         public bool PauseEngine = false;
         public bool RunEngine = false;
         public bool RestartEngine = false;
 
+        // Pointers to the keyboard and mouse HIDs
         private IntPtr KeyboardPointer;
         private IntPtr MousePointer;
 
+        // Key Data
         private KeyData[] BackgroundKeys = new KeyData[149];
         private KeyData[] ForegroundKeys = new KeyData[149];
         private KeyData[] ReactiveKeys = new KeyData[149];
+        private static KeyData[] SpectroKeys = new KeyData[149];
         private KeyData[] Keys = MainWindow.keyData;
 
+        // Effect variables
         private double BackgroundAnim = 0;
         public int HeatmapHighestStrikeCount = 0;
         public int[] HeatmapStrikeCount = new int[149];
@@ -36,7 +47,12 @@ namespace Corsair_Effects_Engine
 
         private string LastForegroundEffect = "";
         private string LastBackgroundEffect = "";
-        private string LastStaticProfile = "";
+        //private string LastStaticProfile = "";
+
+        // CSCore Stuff
+        private static WasapiCapture audioCapture;
+        private static SampleAggregator sampleAggregator;
+        private static int fftLength;
 
         public Engine()
         {
@@ -55,6 +71,7 @@ namespace Corsair_Effects_Engine
                 BackgroundKeys[i] = new KeyData();
                 ForegroundKeys[i] = new KeyData();
                 ReactiveKeys[i] = new KeyData();
+                SpectroKeys[i] = new KeyData();
             }
 
             ClearAllKeys();
@@ -72,6 +89,9 @@ namespace Corsair_Effects_Engine
                 DateTime lastResetTime = DateTime.Now;
                 TimeSpan timeDifference;
                 double timeDifferenceMS;
+
+                // Creates handles for CSCore
+                CSCore_Initialize();
 
                 UpdateStatusMessage.NewMessage(5, "Initialization Complete.");
 
@@ -128,6 +148,8 @@ namespace Corsair_Effects_Engine
                 Output.RestoreMouse(MousePointer);
             }
             InputHook.OnRawInputFromKeyboard -= InputFromKeyboard;
+
+            CSCore_StopCapture();
             UpdateStatusMessage.NewMessage(5, "Engine is shutting down.");
         }
 
@@ -138,6 +160,7 @@ namespace Corsair_Effects_Engine
                 BackgroundKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
                 ForegroundKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
                 ReactiveKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
+                SpectroKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
                 Keys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
             }
         }
@@ -188,7 +211,7 @@ namespace Corsair_Effects_Engine
                     case "Spectrum Cycle":
                         for (int i = 0; i < 149; i++)
                         {
-                            BackgroundKeys[i].KeyColor = new LightSingle(ColorFromHSV((BackgroundAnim / KeyboardMap.CanvasWidth) * 360, 1, tBrightness));
+                            BackgroundKeys[i].KeyColor = new LightSingle(lightColor: ColorFromHSV((BackgroundAnim / KeyboardMap.CanvasWidth) * 360, 1, tBrightness));
                         }
                         break;
                     case "Solid":
@@ -222,6 +245,7 @@ namespace Corsair_Effects_Engine
                 switch (Properties.Settings.Default.ForegroundEffect)
                 {
                     case "Spectrograph":
+                        ForegroundKeys = SpectroKeys; // Defer to spectro map
                         break;
                     case "Random Lights":
                         #region Random Lights Code
@@ -235,9 +259,10 @@ namespace Corsair_Effects_Engine
                                     startColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart);
                                     break;
                                 case "Random Colour":
-                                    startColor = Color.FromRgb((byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
+                                    startColor = Color.FromArgb(255, (byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
                                     break;
                             }
+
                             switch (Properties.Settings.Default.ForegroundRandomLightsEndType)
                             {
                                 case "None":
@@ -247,7 +272,7 @@ namespace Corsair_Effects_Engine
                                     endColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorEnd);
                                     break;
                                 case "Random Colour":
-                                    endColor = Color.FromRgb((byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
+                                    endColor = Color.FromArgb(255, (byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
                                     break;
                             }
 
@@ -263,6 +288,8 @@ namespace Corsair_Effects_Engine
                                                                             endColor: endColor,
                                                                             solidDuration: Properties.Settings.Default.ForegroundRandomLightsFadeSolidDuration,
                                                                             totalDuration: Properties.Settings.Default.ForegroundRandomLightsFadeTotalDuration);
+                                    if (keyLight == 145) { UpdateStatusMessage.NewMessage(0, "Mouse 2: " + startColor.ToString() + " " + endColor.ToString() + " " +
+                                        Properties.Settings.Default.ForegroundRandomLightsFadeSolidDuration + " " + Properties.Settings.Default.ForegroundRandomLightsFadeTotalDuration); };
                                     break;
                             }
                         }
@@ -429,6 +456,188 @@ namespace Corsair_Effects_Engine
             else
                 return Color.FromArgb(255, v, p, q);
         }
+
+        #region CSCore Methods
+        
+        private static void CSCore_Initialize()
+        {
+            MMDeviceEnumerator deviceEnum = new MMDeviceEnumerator();
+
+            List<MMDevice> AudioDeviceList;
+            if (Properties.Settings.Default.OptAudioFromInput)
+            { AudioDeviceList = new List<MMDevice>(deviceEnum.EnumAudioEndpoints(DataFlow.Capture, DeviceState.Active).ToArray()); }
+            else
+            { AudioDeviceList = new List<MMDevice>(deviceEnum.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active).ToArray()); }
+
+            MMDevice captureDevice = deviceEnum.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
+
+            foreach (MMDevice dev in AudioDeviceList)
+            {
+                if ((dev.FriendlyName == Properties.Settings.Default.AudioOutputDevice &&
+                    Properties.Settings.Default.OptAudioFromOutput) ||
+                    (dev.FriendlyName == Properties.Settings.Default.AudioInputDevice &&
+                    Properties.Settings.Default.OptAudioFromInput))
+                    { captureDevice = dev; };
+            }
+
+            switch (Properties.Settings.Default.OptAudioFromOutput)
+            {
+                case true:
+                    audioCapture = new WasapiLoopbackCapture();
+                    break;
+                case false:
+                    audioCapture = new WasapiCapture();
+                    audioCapture.Device = captureDevice;
+                    break;
+                default:
+                    audioCapture = new WasapiLoopbackCapture();
+                    break;
+            }
+
+            UpdateStatusMessage.NewMessage(6, captureDevice.FriendlyName);
+            audioCapture.Initialize();
+            UpdateStatusMessage.NewMessage(0, audioCapture.WaveFormat.Channels.ToString());
+            int captureSampleRate = audioCapture.WaveFormat.SampleRate;
+            switch (captureSampleRate)
+            {
+                case 48000: fftLength = 1024; break;
+                case 96000: fftLength = 2048; break;
+                case 192000: fftLength = 4096; break;
+                default: fftLength = 1024; break;
+            }
+
+            sampleAggregator = new SampleAggregator(fftLength);
+            sampleAggregator.PerformFFT = true;
+            sampleAggregator.FftCalculated += new EventHandler<FftEventArgs>(FftCalculated);
+
+            audioCapture.DataAvailable += new EventHandler<DataAvailableEventArgs>(CSCore_DataAvailable);
+
+            audioCapture.Start();
+        }
+
+        private static void CSCore_DataAvailable(object sender, DataAvailableEventArgs e)
+        {
+            byte[] buffer = e.Data;
+            int bytesRecorded = e.ByteCount;
+            int bufferIncrement = audioCapture.WaveFormat.BlockAlign;
+
+            for (int index = 0; index < bytesRecorded; index += bufferIncrement)
+            {
+                float sample32 = BitConverter.ToSingle(buffer, index);
+                if (sampleAggregator.Add(sample32) == true)
+                {
+                    break;
+                };
+            }
+        }
+
+        private static void CSCore_StopCapture()
+        {
+            UpdateStatusMessage.NewMessage(2, "Stopping Capture");
+            try { audioCapture.Stop(); }
+            catch { }
+            CSCore_Cleanup();
+        }
+
+        private static void CSCore_Cleanup()
+        {
+            if (audioCapture != null)
+            {
+                audioCapture.Dispose();
+                audioCapture = null;
+            }
+            UpdateStatusMessage.NewMessage(2, "Capture Destroyed");
+        }
+
+        private static void FftCalculated(object sender, FftEventArgs e)
+        {
+            int CanvasWidth = KeyboardMap.CanvasWidth;
+            int key;
+
+            //float[] fftData = new float[fftLength];
+            byte[] fftData = new byte[fftLength];
+            
+            for (int i = 0; i < fftLength - 1; i+=2)
+            {
+                //fftData[i] = e.Result[i].Real;
+                double fftmag = Math.Sqrt((e.Result[i].Real * e.Result[i + 1].Real) + (e.Result[i].Imaginary * e.Result[i + 1].Imaginary));
+                //double fftmag = Math.Sqrt((e.Result[i].Value * e.Result[i + 1].Value));
+                fftData[i] = (byte)(fftmag);
+            }
+
+            byte[] compData = CompressFftToKeyboard(fftData, CanvasWidth);
+            //float[] compData = CompressFftToKeyboard(fftData, CanvasWidth);
+            //float[] compData = fftData;
+
+            for (int i = 0; i < CanvasWidth; i++)
+            {
+                for (int k = 0; k < 7; k++)
+                {
+                    key = KeyboardMap.LedMatrix[k, i];
+                    if ((int)compData[i] > ((32 / (1 + (i * .95))) * (7 - k)))
+                    //if (compData[i] > (-Math.Log10(i)+2.2) * (7-k))
+                    //if (compData[i] > Math.Sqrt((7 - k) / 6))
+                    {
+                        if (key >= 0 && key < 144) { SpectroKeys[key].KeyColor = new LightSingle(lightColor: Color.FromArgb(255, 255, 255, 255)); };
+                    }
+                    else { if (key >= 0 && key < 144) { SpectroKeys[key].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0)); } };
+                }
+            }
+        }
+
+        private static float[] CompressFftToKeyboard(float[] fftData, int kWidth)
+        {
+            float[] compressedData = new float[kWidth];
+
+            int tempCalc;
+            double iPower;
+            string tempStr = "";
+            int prevCalc = 0;
+
+            for (int i = 0; i < kWidth; i++)
+            {
+                iPower = Math.Pow((double)i, 2);
+                float keyboardSizeMultiplier = (float)(Math.Pow(kWidth, 2));
+                tempCalc = (int)((330f / keyboardSizeMultiplier) * iPower) + 1;
+
+                while (prevCalc >= tempCalc) { tempCalc += 1; };
+
+                compressedData[i] = Math.Abs(fftData[tempCalc]);
+                prevCalc = tempCalc;
+
+                tempStr += tempCalc + ", ";
+            }
+
+            return compressedData;
+        }
+
+        private static byte[] CompressFftToKeyboard(byte[] fftData, int kWidth)
+        {
+            byte[] compressedData = new byte[kWidth];
+
+            int tempCalc;
+            double iPower;
+            string tempStr = "";
+            int prevCalc = 0;
+
+            for (int i = 0; i < kWidth; i++)
+            {
+                iPower = Math.Pow((double)i, 2);
+                float keyboardSizeMultiplier = (float)(Math.Pow(kWidth, 2));
+                tempCalc = (int)((330f / keyboardSizeMultiplier) * iPower) + 1;
+
+                while (prevCalc >= tempCalc) { tempCalc += 1; };
+
+                compressedData[i] = fftData[tempCalc];
+                prevCalc = tempCalc;
+
+                tempStr += tempCalc + ", ";
+            }
+
+            return compressedData;
+        }
+        
+        #endregion CSCore Methods
     }
 
     public class RawInputKeyCodes
@@ -605,4 +814,66 @@ namespace Corsair_Effects_Engine
         public int GetKeyCodeFromDict(int mcode, int vkey, int flag, bool numLock)
         { return (keyDict[Tuple.Create((byte)mcode, (byte)vkey, (byte)flag, numLock)]); }
     }
+
+    #region CSCore Supporting Classes
+
+    class SampleAggregator
+    {
+        public event EventHandler<FftEventArgs> FftCalculated;
+        public bool PerformFFT { get; set; }
+
+        private Complex[] fftBuffer;
+        private FftEventArgs fftArgs;
+        private int fftPos;
+        private int fftLength;
+        private int m;
+
+        public SampleAggregator(int fftLength)
+        {
+            if (!IsPowerOfTwo(fftLength))
+            {
+                throw new ArgumentException("FFT Length must be a power of two");
+            }
+            this.m = (int)Math.Log(fftLength, 2.0);
+            this.fftLength = fftLength;
+            this.fftBuffer = new Complex[fftLength];
+            this.fftArgs = new FftEventArgs(fftBuffer);
+        }
+
+        bool IsPowerOfTwo(int x)
+        {
+            return (x & (x - 1)) == 0;
+        }
+
+        public bool Add(float value)
+        {
+            if (PerformFFT && FftCalculated != null)
+            {
+                //fftBuffer[fftPos].Real = value * 0.5f * (float)Math.Cos((2 * Math.PI) / (fftLength - 1)) * 30 * 100;
+                //fftBuffer[fftPos].Real = (value / 2f) / (60f / 8.69f);
+                fftBuffer[fftPos].Real = (float)(value * FastFourierTransformation.HammingWindow(fftPos, fftLength));
+                fftBuffer[fftPos].Imaginary = 0; // This is always zero with audio.
+                fftPos++;
+                if (fftPos >= fftLength)
+                {
+                    fftPos = 0;
+                    FastFourierTransformation.Fft(fftBuffer, m, FftMode.Forward);
+                    FftCalculated(this, fftArgs);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public class FftEventArgs : EventArgs
+    {
+        public FftEventArgs(Complex[] result)
+        {
+            this.Result = result;
+        }
+        public Complex[] Result { get; private set; }
+    }
+
+    #endregion CSCore Supporting Classes
 }

@@ -24,8 +24,6 @@ namespace Corsair_Effects_Engine
             MMDeviceEnumerator deviceEnum = new MMDeviceEnumerator();
             AudioOutputDeviceList = new ObservableCollection<MMDevice>(deviceEnum.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active).ToArray());
             AudioInputDeviceList = new ObservableCollection<MMDevice>(deviceEnum.EnumAudioEndpoints(DataFlow.Capture, DeviceState.Active).ToArray());
-            
-            // Key Colour Collection
         }
     }
 }

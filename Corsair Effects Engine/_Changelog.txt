@@ -1,4 +1,9 @@
-﻿Build 0020
+﻿Build 0021
+- Included the old spectro routines.
+- Inclusion of a self-updater.
+- Fixed a bug that caused Random Lights on the mouse to spazz out.
+
+Build 0020
 - Changed the way the program looks for files, allowing it to be launched from folders other than its own.
 - Converted key mappings to a Dictionary structure; producing a huge increase in speed.
 

@@ -120,7 +120,7 @@
     <Compile Include="Controls\RgbSliders.xaml.cs">
       <DependentUpon>RgbSliders.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DeviceLight.cs" />
+    <Compile Include="EngineComponents\DeviceLight.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="RawInput\RaiseEventUtility.cs" />
     <Compile Include="RawInput\RawInputDevices.cs" />

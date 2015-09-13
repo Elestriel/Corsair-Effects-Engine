@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corsair Effects Engine", "Corsair Effects Engine\Corsair Effects Engine.csproj", "{77325303-DCA4-489E-B8D8-6118294D83B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SelfUpdater", "SelfUpdater\SelfUpdater.csproj", "{7F24514A-7104-41BB-822F-E1C70BA13EE1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{77325303-DCA4-489E-B8D8-6118294D83B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77325303-DCA4-489E-B8D8-6118294D83B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77325303-DCA4-489E-B8D8-6118294D83B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7F24514A-7104-41BB-822F-E1C70BA13EE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7F24514A-7104-41BB-822F-E1C70BA13EE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7F24514A-7104-41BB-822F-E1C70BA13EE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7F24514A-7104-41BB-822F-E1C70BA13EE1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
