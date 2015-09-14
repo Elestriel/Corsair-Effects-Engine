@@ -26,7 +26,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0021";
+        private const string VersionNumber = "0022";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -85,8 +85,9 @@ namespace Corsair_Effects_Engine
             UpdateStatusMessage.NewMsg += UpdateStatusMessage_NewMsg;
             RefreshKeyboardPreview.ShowNewFrame += RefreshKeyboardPreview_ShowNewFrame;
 
-            //SetWindowLayout("LogSettings");
-            SetWindowLayout("Settings");
+            SetWindowLayout("LogSettings");
+            //SetWindowLayout("Settings");
+            //SetWindowLayout("ForegroundEdit", "Spectrograph");
 
             // Initialize buttons for Keyboard Preview
             for (int i = 0; i < 144; i++)
@@ -118,6 +119,17 @@ namespace Corsair_Effects_Engine
 
             WindowInitialized = true;
             UpdateStatusMessage.NewMessage(0, "Welcome to the Corsair Effects Engine build " + VersionNumber + ".");
+        }
+
+        private void NewBmp(System.Drawing.Bitmap bmp)
+        {
+            BitmapSource bs = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+                bmp.GetHbitmap(),
+                IntPtr.Zero,
+                System.Windows.Int32Rect.Empty,
+                BitmapSizeOptions.FromWidthAndHeight(bmp.Width, bmp.Height));
+            ImageBrush ib = new ImageBrush(bs);
+            this.Dispatcher.Invoke(new Action(delegate { GridForegroundSpectro.Background = ib; }));
         }
 
         /// <summary>
@@ -451,6 +463,7 @@ namespace Corsair_Effects_Engine
                     switch (mode2)
                     {
                         case "Spectrograph":
+                            GridForegroundSpectro.Visibility = System.Windows.Visibility.Visible;
                             break;
                         case "Random Lights":
                             GridForegroundRandomLights.Visibility = System.Windows.Visibility.Visible;
@@ -590,6 +603,11 @@ namespace Corsair_Effects_Engine
             if (LogTextBox == null) { return; };
             string messagePrefix;
             string logColour;
+
+            if (messageType == 10)
+            { this.Dispatcher.Invoke(new Action(delegate { ampLo.Content = messageText; })); return; }
+            if (messageType == 11)
+            { this.Dispatcher.Invoke(new Action(delegate { ampHi.Content = messageText; })); return; }
 
             // Determine the colour and prefix for the supplied messageType
             switch (messageType)
@@ -1225,6 +1243,9 @@ namespace Corsair_Effects_Engine
     #region Thread Delegates
 
     public delegate void AddStatusMessageDelegate(int messageType, string messageText);
+    /// <summary>
+    /// Sends a new message to the log and debug output.
+    /// </summary>
     public static class UpdateStatusMessage
     {
         public static Window MainWindow;
@@ -1271,6 +1292,5 @@ namespace Corsair_Effects_Engine
             }
         }
     }
-
     #endregion Thread Delegates
 }

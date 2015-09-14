@@ -9,11 +9,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-using CSCore;
-using CSCore.CoreAudioAPI;
-using CSCore.DSP;
-using CSCore.SoundIn;
-using CSCore.Utils;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+
+using NAudio;
+using NAudio.CoreAudioApi;
+using NAudio.Dsp;
+using NAudio.Wave;
 
 namespace Corsair_Effects_Engine
 {
@@ -91,7 +93,7 @@ namespace Corsair_Effects_Engine
                 double timeDifferenceMS;
 
                 // Creates handles for CSCore
-                CSCore_Initialize();
+                NAudio_Initialize();
 
                 UpdateStatusMessage.NewMessage(5, "Initialization Complete.");
 
@@ -149,7 +151,7 @@ namespace Corsair_Effects_Engine
             }
             InputHook.OnRawInputFromKeyboard -= InputFromKeyboard;
 
-            CSCore_StopCapture();
+            NAudio_StopCapture();
             UpdateStatusMessage.NewMessage(5, "Engine is shutting down.");
         }
 
@@ -157,11 +159,11 @@ namespace Corsair_Effects_Engine
         {
             for (int i = 0; i < 149; i++)
             {
-                BackgroundKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
-                ForegroundKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
-                ReactiveKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
-                SpectroKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
-                Keys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0));
+                BackgroundKeys[i].KeyColor = new LightSingle(lightColor: System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+                ForegroundKeys[i].KeyColor = new LightSingle(lightColor: System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+                ReactiveKeys[i].KeyColor = new LightSingle(lightColor: System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+                SpectroKeys[i].KeyColor = new LightSingle(lightColor: System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+                Keys[i].KeyColor = new LightSingle(lightColor: System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
             }
         }
 
@@ -216,7 +218,7 @@ namespace Corsair_Effects_Engine
                         break;
                     case "Solid":
                         for (int i = 0; i < 149; i++) {
-                            BackgroundKeys[i].KeyColor = new LightSingle(lightColor: (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundSolidColor));
+                            BackgroundKeys[i].KeyColor = new LightSingle(lightColor:  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundSolidColor));
                         }
                         break;
                 }
@@ -224,7 +226,7 @@ namespace Corsair_Effects_Engine
             else
             {
                 for (int i = 0; i < 149; i++)
-                { BackgroundKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0)); }
+                { BackgroundKeys[i].KeyColor = new LightSingle(lightColor: System.Windows.Media.Color.FromArgb(0, 0, 0, 0)); }
             }
         }
 
@@ -232,12 +234,12 @@ namespace Corsair_Effects_Engine
         {
             if (Properties.Settings.Default.ForegroundEffectEnabled)
             {
-                Color SL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartLower);
-                Color SU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartUpper);
-                Color EL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndLower);
-                Color EU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndUpper);
-                Color startColor = Color.FromArgb(255, 255, 255, 255);
-                Color endColor = Color.FromArgb(0, 0, 0, 0);
+                System.Windows.Media.Color SL =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartLower);
+                System.Windows.Media.Color SU =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartUpper);
+                System.Windows.Media.Color EL =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndLower);
+                System.Windows.Media.Color EU =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndUpper);
+                System.Windows.Media.Color startColor = System.Windows.Media.Color.FromArgb(255, 255, 255, 255);
+                System.Windows.Media.Color endColor = System.Windows.Media.Color.FromArgb(0, 0, 0, 0);
 
                 if (LastForegroundEffect != Properties.Settings.Default.ForegroundEffect) { ClearAllKeys(); };
                 LastForegroundEffect = Properties.Settings.Default.ForegroundEffect;
@@ -256,23 +258,23 @@ namespace Corsair_Effects_Engine
                             switch (Properties.Settings.Default.ForegroundRandomLightsStartType)
                             {
                                 case "Defined Colour":
-                                    startColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart);
+                                    startColor =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart);
                                     break;
                                 case "Random Colour":
-                                    startColor = Color.FromArgb(255, (byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
+                                    startColor = System.Windows.Media.Color.FromArgb(255, (byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
                                     break;
                             }
 
                             switch (Properties.Settings.Default.ForegroundRandomLightsEndType)
                             {
                                 case "None":
-                                    endColor = Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
+                                    endColor = System.Windows.Media.Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
                                     break;
                                 case "Defined Colour":
-                                    endColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorEnd);
+                                    endColor =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorEnd);
                                     break;
                                 case "Random Colour":
-                                    endColor = Color.FromArgb(255, (byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
+                                    endColor = System.Windows.Media.Color.FromArgb(255, (byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
                                     break;
                             }
 
@@ -306,17 +308,17 @@ namespace Corsair_Effects_Engine
             else
             {
                 for (int i = 0; i < 149; i++)
-                { ForegroundKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0)); }
+                { ForegroundKeys[i].KeyColor = new LightSingle(lightColor: System.Windows.Media.Color.FromArgb(0, 0, 0, 0)); }
             }
         }
 
-        private Color AlphaBlend(Color SRC, Color DST)
+        private System.Windows.Media.Color AlphaBlend(System.Windows.Media.Color SRC, System.Windows.Media.Color DST)
         {
             double srcA = (double)((double)SRC.A / 255D);
             double dstA = (double)((double)DST.A / 255D);
             double outA = (double)(srcA + dstA * (1 - srcA));
 
-            return Color.FromArgb((byte)(255 * outA),
+            return System.Windows.Media.Color.FromArgb((byte)(255 * outA),
                                         (byte)((((double)SRC.R * srcA) + (((double)DST.R * dstA) * (1 - srcA))) / outA),
                                         (byte)((((double)SRC.G * srcA) + (((double)DST.G * dstA) * (1 - srcA))) / outA),
                                         (byte)((((double)SRC.B * srcA) + (((double)DST.B * dstA) * (1 - srcA))) / outA));
@@ -325,9 +327,9 @@ namespace Corsair_Effects_Engine
         private void BlendLayers()
         {
             
-            Color FG;
-            Color BG;
-            Color newColor;
+            System.Windows.Media.Color FG;
+            System.Windows.Media.Color BG;
+            System.Windows.Media.Color newColor;
             double alphaDifference;
             
 
@@ -336,7 +338,7 @@ namespace Corsair_Effects_Engine
                 FG = ForegroundKeys[i].KeyColor.LightColor;
                 BG = BackgroundKeys[i].KeyColor.LightColor;
                 alphaDifference = 1 - ((double)FG.A / 255D);
-                newColor = Color.FromRgb((byte)(FG.R - ((FG.R - BG.R) * alphaDifference)),
+                newColor = System.Windows.Media.Color.FromRgb((byte)(FG.R - ((FG.R - BG.R) * alphaDifference)),
                                          (byte)(FG.G - ((FG.G - BG.G) * alphaDifference)),
                                          (byte)(FG.B - ((FG.B - BG.B) * alphaDifference)));
                 
@@ -354,33 +356,33 @@ namespace Corsair_Effects_Engine
 
             if (Properties.Settings.Default.ForegroundEffect == "Reactive Typing")
             {
-                Color SL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartLower);
-                Color SU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartUpper);
-                Color EL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndLower);
-                Color EU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndUpper);
-                Color startColor = Color.FromRgb(255, 255, 255);
-                Color endColor = Color.FromRgb(0, 0, 0);
+                System.Windows.Media.Color SL =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartLower);
+                System.Windows.Media.Color SU =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartUpper);
+                System.Windows.Media.Color EL =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndLower);
+                System.Windows.Media.Color EU =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndUpper);
+                System.Windows.Media.Color startColor = System.Windows.Media.Color.FromRgb(255, 255, 255);
+                System.Windows.Media.Color endColor = System.Windows.Media.Color.FromRgb(0, 0, 0);
 
                 switch (Properties.Settings.Default.ForegroundReactiveStartType)
                 {
                     case "Defined Colour":
-                        startColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorStart);
+                        startColor =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorStart);
                         break;
                     case "Random Colour":
-                        startColor = Color.FromRgb((byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
+                        startColor = System.Windows.Media.Color.FromRgb((byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
                         break;
                 }
 
                 switch (Properties.Settings.Default.ForegroundReactiveEndType)
                 {
                     case "None":
-                        endColor = Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
+                        endColor = System.Windows.Media.Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
                         break;
                     case "Defined Colour":
-                        endColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorEnd);
+                        endColor =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorEnd);
                         break;
                     case "Random Colour":
-                        endColor = Color.FromRgb((byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
+                        endColor = System.Windows.Media.Color.FromRgb((byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
                         break;
                 }
 
@@ -401,8 +403,8 @@ namespace Corsair_Effects_Engine
             } //Reactive Typing
             else if (Properties.Settings.Default.ForegroundEffect == "Heatmap")
             {
-                Color CM = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorMost);
-                Color CL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorLeast);
+                System.Windows.Media.Color CM =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorMost);
+                System.Windows.Media.Color CL =  (System.Windows.Media.Color) System.Windows.Media.ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorLeast);
 
                 double keyIntensity;
                 HeatmapStrikeCount[keyLight] += 1;
@@ -417,13 +419,13 @@ namespace Corsair_Effects_Engine
                     else if (!Properties.Settings.Default.Opt16MColours && keyIntensity > .85 && HeatmapStrikeCount[i] > 0)
                     { keyIntensity = .85; }
 
-                    Color newColor = Color.FromArgb(255, 
+                    System.Windows.Media.Color newColor = System.Windows.Media.Color.FromArgb(255, 
                                                     (byte)(CM.R - ((CM.R - CL.R) * keyIntensity)),
                                                     (byte)(CM.G - ((CM.G - CL.G) * keyIntensity)),
                                                     (byte)(CM.B - ((CM.B - CL.B) * keyIntensity)));
                     
                     if (HeatmapStrikeCount[i] == 0)
-                    { newColor = Color.FromArgb(0, 0, 0, 0); }
+                    { newColor = System.Windows.Media.Color.FromArgb(0, 0, 0, 0); }
 
                     ReactiveKeys[i].KeyColor = new LightSingle(lightColor: newColor);
 
@@ -432,7 +434,7 @@ namespace Corsair_Effects_Engine
             } //Heatmap
         }
 
-        public static Color ColorFromHSV(double hue, double saturation, double value)
+        public static System.Windows.Media.Color ColorFromHSV(double hue, double saturation, double value)
         {
             int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
             double f = hue / 60 - Math.Floor(hue / 60);
@@ -444,30 +446,30 @@ namespace Corsair_Effects_Engine
             byte t = (byte)Convert.ToInt32(value * (1 - (1 - f) * saturation));
 
             if (hi == 0)
-                return Color.FromArgb(255, v, t, p);
+                return System.Windows.Media.Color.FromArgb(255, v, t, p);
             else if (hi == 1)
-                return Color.FromArgb(255, q, v, p);
+                return System.Windows.Media.Color.FromArgb(255, q, v, p);
             else if (hi == 2)
-                return Color.FromArgb(255, p, v, t);
+                return System.Windows.Media.Color.FromArgb(255, p, v, t);
             else if (hi == 3)
-                return Color.FromArgb(255, p, q, v);
+                return System.Windows.Media.Color.FromArgb(255, p, q, v);
             else if (hi == 4)
-                return Color.FromArgb(255, t, p, v);
+                return System.Windows.Media.Color.FromArgb(255, t, p, v);
             else
-                return Color.FromArgb(255, v, p, q);
+                return System.Windows.Media.Color.FromArgb(255, v, p, q);
         }
 
-        #region CSCore Methods
+        #region NAudio Methods
         
-        private static void CSCore_Initialize()
+        private static void NAudio_Initialize()
         {
             MMDeviceEnumerator deviceEnum = new MMDeviceEnumerator();
 
             List<MMDevice> AudioDeviceList;
             if (Properties.Settings.Default.OptAudioFromInput)
-            { AudioDeviceList = new List<MMDevice>(deviceEnum.EnumAudioEndpoints(DataFlow.Capture, DeviceState.Active).ToArray()); }
+            { AudioDeviceList = new List<MMDevice>(deviceEnum.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active).ToArray()); }
             else
-            { AudioDeviceList = new List<MMDevice>(deviceEnum.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active).ToArray()); }
+            { AudioDeviceList = new List<MMDevice>(deviceEnum.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active).ToArray()); }
 
             MMDevice captureDevice = deviceEnum.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
 
@@ -487,7 +489,7 @@ namespace Corsair_Effects_Engine
                     break;
                 case false:
                     audioCapture = new WasapiCapture();
-                    audioCapture.Device = captureDevice;
+                    //audioCapture.Device = captureDevice;
                     break;
                 default:
                     audioCapture = new WasapiLoopbackCapture();
@@ -495,7 +497,8 @@ namespace Corsair_Effects_Engine
             }
 
             UpdateStatusMessage.NewMessage(6, captureDevice.FriendlyName);
-            audioCapture.Initialize();
+            //audioCapture.Initialize();
+
             UpdateStatusMessage.NewMessage(0, audioCapture.WaveFormat.Channels.ToString());
             int captureSampleRate = audioCapture.WaveFormat.SampleRate;
             switch (captureSampleRate)
@@ -506,40 +509,37 @@ namespace Corsair_Effects_Engine
                 default: fftLength = 1024; break;
             }
 
-            sampleAggregator = new SampleAggregator(fftLength);
+            sampleAggregator = new SampleAggregator();
             sampleAggregator.PerformFFT = true;
             sampleAggregator.FftCalculated += new EventHandler<FftEventArgs>(FftCalculated);
 
-            audioCapture.DataAvailable += new EventHandler<DataAvailableEventArgs>(CSCore_DataAvailable);
+            audioCapture.DataAvailable += new EventHandler<WaveInEventArgs>(NAudio_DataAvailable);
 
-            audioCapture.Start();
+            audioCapture.StartRecording();
         }
 
-        private static void CSCore_DataAvailable(object sender, DataAvailableEventArgs e)
+        private static void NAudio_DataAvailable(object sender, WaveInEventArgs e)
         {
-            byte[] buffer = e.Data;
-            int bytesRecorded = e.ByteCount;
+            byte[] buffer = e.Buffer;
+            int bytesRecorded = e.BytesRecorded;
             int bufferIncrement = audioCapture.WaveFormat.BlockAlign;
 
             for (int index = 0; index < bytesRecorded; index += bufferIncrement)
             {
                 float sample32 = BitConverter.ToSingle(buffer, index);
-                if (sampleAggregator.Add(sample32) == true)
-                {
-                    break;
-                };
+                sampleAggregator.Add(sample32);
             }
         }
 
-        private static void CSCore_StopCapture()
+        private static void NAudio_StopCapture()
         {
             UpdateStatusMessage.NewMessage(2, "Stopping Capture");
-            try { audioCapture.Stop(); }
+            try { audioCapture.StopRecording(); }
             catch { }
-            CSCore_Cleanup();
+            NAudio_Cleanup();
         }
 
-        private static void CSCore_Cleanup()
+        private static void NAudio_Cleanup()
         {
             if (audioCapture != null)
             {
@@ -552,92 +552,110 @@ namespace Corsair_Effects_Engine
         private static void FftCalculated(object sender, FftEventArgs e)
         {
             int CanvasWidth = KeyboardMap.CanvasWidth;
-            int key;
+            double fftAmplitude = 0;
+            double fftFrequency = 0;
 
-            //float[] fftData = new float[fftLength];
-            byte[] fftData = new byte[fftLength];
-            
-            for (int i = 0; i < fftLength - 1; i+=2)
+
+            int XPos = 0;
+            Bitmap bmp = new Bitmap(CanvasWidth, 7);
+            GraphicsPath fftPath = new GraphicsPath(FillMode.Winding);
+
+            fftPath.AddLine(0, bmp.Height, 0, bmp.Height);
+
+            bool useLogAmplitude = true;
+            bool useNewMethod = false;
+
+            if (useNewMethod)
             {
-                //fftData[i] = e.Result[i].Real;
-                double fftmag = Math.Sqrt((e.Result[i].Real * e.Result[i + 1].Real) + (e.Result[i].Imaginary * e.Result[i + 1].Imaginary));
-                //double fftmag = Math.Sqrt((e.Result[i].Value * e.Result[i + 1].Value));
-                fftData[i] = (byte)(fftmag);
-            }
-
-            byte[] compData = CompressFftToKeyboard(fftData, CanvasWidth);
-            //float[] compData = CompressFftToKeyboard(fftData, CanvasWidth);
-            //float[] compData = fftData;
-
-            for (int i = 0; i < CanvasWidth; i++)
-            {
-                for (int k = 0; k < 7; k++)
+                #region NewMethod
+                for (int i = 1; i < e.Result.Length / 2; i++)
                 {
-                    key = KeyboardMap.LedMatrix[k, i];
-                    if ((int)compData[i] > ((32 / (1 + (i * .95))) * (7 - k)))
-                    //if (compData[i] > (-Math.Log10(i)+2.2) * (7-k))
-                    //if (compData[i] > Math.Sqrt((7 - k) / 6))
+                    fftAmplitude = Math.Sqrt(Math.Pow(e.Result[i].X, 2) + Math.Pow(e.Result[i].Y, 2));
+                    fftFrequency = i * audioCapture.WaveFormat.SampleRate / e.Result.Length;
+
+                    XPos = (int)(fftFrequency / (audioCapture.WaveFormat.SampleRate / 2d) * CanvasWidth);
+                    if (XPos > CanvasWidth) { XPos = CanvasWidth; };
+                    if (XPos < 0) { XPos = 0; };
+                    
+                    if (useLogAmplitude)
                     {
-                        if (key >= 0 && key < 144) { SpectroKeys[key].KeyColor = new LightSingle(lightColor: Color.FromArgb(255, 255, 255, 255)); };
+                        // Logarithmic Amplitude
+                        if (fftAmplitude > 0) { fftAmplitude = Math.Log10(fftAmplitude); };
+                        fftAmplitude = Math.Pow(fftAmplitude, -1);
+                        fftAmplitude *= 400;
+                        fftAmplitude += 100;
+                        if (fftAmplitude > 0) { fftAmplitude = 0; };
+                        fftPath.AddLine((Single)XPos, (Single)(bmp.Height + fftAmplitude), (Single)XPos, (Single)(bmp.Height + fftAmplitude));
                     }
-                    else { if (key >= 0 && key < 144) { SpectroKeys[key].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0)); } };
+                    else
+                    {
+
+                        /*
+                        // Linear Amplitude
+                        fftAmplitude *= 4096;
+                        if (fftAmplitude < 0) { fftAmplitude = 0; };
+                        fftPath.AddLine((Single)XPos, (Single)(bmp.Height - fftAmplitude), (Single)XPos, (Single)(bmp.Height - fftAmplitude));
+                        */
+                    }
+                }
+
+                // Add end point.
+                fftPath.AddLine(bmp.Width, bmp.Height, bmp.Width, bmp.Height);
+
+                // Close image
+                fftPath.CloseFigure();
+
+                using (Graphics gr = Graphics.FromImage(bmp))
+                {
+                    gr.SmoothingMode = SmoothingMode.HighQuality;
+                    using (SolidBrush br = new SolidBrush(System.Drawing.Color.FromArgb(255, 255, 0, 128)))
+                    //using (System.Drawing.Drawing2D.LinearGradientBrush br = new System.Drawing.Drawing2D.LinearGradientBrush(
+                    //    new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Color.Red, System.Drawing.Color.Pink, 
+                    //    System.Drawing.Drawing2D.LinearGradientMode.Vertical))
+                    {
+                        gr.FillPath(br, fftPath);
+                    }
+
+                    //gr.DrawPath(new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 128, 0, 255)), fftPath);
+                }
+
+                BitmapToKeyboard(bmp);
+
+                //bmp.Save(Environment.CurrentDirectory + "/imgs/newimg" + DateTime.Now.ToFileTime() + ".bmp");
+            #endregion New Method
+            }
+            else
+            {
+                #region OldMethod
+                double[] fftData = new double[fftLength / 2];
+                for (int i = 0; i < fftLength / 2; i++)
+                {
+                    double fftMag = Math.Sqrt(Math.Pow(e.Result[i].X, 2) + Math.Pow(e.Result[i].Y, 2));
+                    fftData[i] = fftMag;
+                }
+
+                #endregion OldMethod
+            }
+        }
+
+        private static void BitmapToKeyboard(Bitmap bmp)
+        {
+            int key;
+            for (int c = 0; c < bmp.Width; c++)
+            {
+                for (int r = 0; r < bmp.Height ; r++)
+                {
+                    key = KeyboardMap.LedMatrix[r, c];
+                    if (key >= 0 && key < 144) {
+                    SpectroKeys[key].KeyColor = new LightSingle(lightColor: System.Windows.Media.Color.FromArgb(bmp.GetPixel(c, r).A,
+                                                                                                            bmp.GetPixel(c, r).R,
+                                                                                                            bmp.GetPixel(c, r).G,
+                                                                                                            bmp.GetPixel(c, r).B));
+                    }
                 }
             }
         }
-
-        private static float[] CompressFftToKeyboard(float[] fftData, int kWidth)
-        {
-            float[] compressedData = new float[kWidth];
-
-            int tempCalc;
-            double iPower;
-            string tempStr = "";
-            int prevCalc = 0;
-
-            for (int i = 0; i < kWidth; i++)
-            {
-                iPower = Math.Pow((double)i, 2);
-                float keyboardSizeMultiplier = (float)(Math.Pow(kWidth, 2));
-                tempCalc = (int)((330f / keyboardSizeMultiplier) * iPower) + 1;
-
-                while (prevCalc >= tempCalc) { tempCalc += 1; };
-
-                compressedData[i] = Math.Abs(fftData[tempCalc]);
-                prevCalc = tempCalc;
-
-                tempStr += tempCalc + ", ";
-            }
-
-            return compressedData;
-        }
-
-        private static byte[] CompressFftToKeyboard(byte[] fftData, int kWidth)
-        {
-            byte[] compressedData = new byte[kWidth];
-
-            int tempCalc;
-            double iPower;
-            string tempStr = "";
-            int prevCalc = 0;
-
-            for (int i = 0; i < kWidth; i++)
-            {
-                iPower = Math.Pow((double)i, 2);
-                float keyboardSizeMultiplier = (float)(Math.Pow(kWidth, 2));
-                tempCalc = (int)((330f / keyboardSizeMultiplier) * iPower) + 1;
-
-                while (prevCalc >= tempCalc) { tempCalc += 1; };
-
-                compressedData[i] = fftData[tempCalc];
-                prevCalc = tempCalc;
-
-                tempStr += tempCalc + ", ";
-            }
-
-            return compressedData;
-        }
-        
-        #endregion CSCore Methods
+        #endregion NAudio Methods
     }
 
     public class RawInputKeyCodes
@@ -814,66 +832,4 @@ namespace Corsair_Effects_Engine
         public int GetKeyCodeFromDict(int mcode, int vkey, int flag, bool numLock)
         { return (keyDict[Tuple.Create((byte)mcode, (byte)vkey, (byte)flag, numLock)]); }
     }
-
-    #region CSCore Supporting Classes
-
-    class SampleAggregator
-    {
-        public event EventHandler<FftEventArgs> FftCalculated;
-        public bool PerformFFT { get; set; }
-
-        private Complex[] fftBuffer;
-        private FftEventArgs fftArgs;
-        private int fftPos;
-        private int fftLength;
-        private int m;
-
-        public SampleAggregator(int fftLength)
-        {
-            if (!IsPowerOfTwo(fftLength))
-            {
-                throw new ArgumentException("FFT Length must be a power of two");
-            }
-            this.m = (int)Math.Log(fftLength, 2.0);
-            this.fftLength = fftLength;
-            this.fftBuffer = new Complex[fftLength];
-            this.fftArgs = new FftEventArgs(fftBuffer);
-        }
-
-        bool IsPowerOfTwo(int x)
-        {
-            return (x & (x - 1)) == 0;
-        }
-
-        public bool Add(float value)
-        {
-            if (PerformFFT && FftCalculated != null)
-            {
-                //fftBuffer[fftPos].Real = value * 0.5f * (float)Math.Cos((2 * Math.PI) / (fftLength - 1)) * 30 * 100;
-                //fftBuffer[fftPos].Real = (value / 2f) / (60f / 8.69f);
-                fftBuffer[fftPos].Real = (float)(value * FastFourierTransformation.HammingWindow(fftPos, fftLength));
-                fftBuffer[fftPos].Imaginary = 0; // This is always zero with audio.
-                fftPos++;
-                if (fftPos >= fftLength)
-                {
-                    fftPos = 0;
-                    FastFourierTransformation.Fft(fftBuffer, m, FftMode.Forward);
-                    FftCalculated(this, fftArgs);
-                    return true;
-                }
-            }
-            return false;
-        }
-    }
-
-    public class FftEventArgs : EventArgs
-    {
-        public FftEventArgs(Complex[] result)
-        {
-            this.Result = result;
-        }
-        public Complex[] Result { get; private set; }
-    }
-
-    #endregion CSCore Supporting Classes
 }

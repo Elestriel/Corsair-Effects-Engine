@@ -7,8 +7,7 @@
              xmlns:Themes="clr-namespace:Xceed.Wpf.Toolkit.Themes;assembly=Xceed.Wpf.Toolkit"
              xmlns:p="clr-namespace:Corsair_Effects_Engine.Properties"
              StartupUri="MainWindow.xaml">
-    <Application.Resources>
-
+    <Application.Resources>        
         <!-- Styles -->
         <!-- Window Style -->
         <local:BooleanToVisibilityConverter x:Key="bool2VisibilityConverter" />

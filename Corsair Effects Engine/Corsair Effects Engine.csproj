@@ -58,8 +58,8 @@
     <StartupObject>Corsair_Effects_Engine.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CSCore">
-      <HintPath>..\..\..\..\References\CSCore\CSCore.dll</HintPath>
+    <Reference Include="NAudio">
+      <HintPath>..\..\..\..\References\NAudio\NAudio.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -102,6 +102,7 @@
     </ApplicationDefinition>
     <Compile Include="EngineComponents\DeviceOutput.cs" />
     <Compile Include="EngineComponents\InitDevices.cs" />
+    <Compile Include="EngineComponents\SampleAggregator.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="XmlToKeyMap.cs" />
     <Page Include="Controls\RgbSliders.xaml">

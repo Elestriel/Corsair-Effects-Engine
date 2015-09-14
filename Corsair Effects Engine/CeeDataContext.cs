@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CSCore;
-using CSCore.CoreAudioAPI;
+using NAudio;
+using NAudio.CoreAudioApi;
 
 namespace Corsair_Effects_Engine
 {
@@ -22,8 +22,8 @@ namespace Corsair_Effects_Engine
         {
             // Audio Devices
             MMDeviceEnumerator deviceEnum = new MMDeviceEnumerator();
-            AudioOutputDeviceList = new ObservableCollection<MMDevice>(deviceEnum.EnumAudioEndpoints(DataFlow.Render, DeviceState.Active).ToArray());
-            AudioInputDeviceList = new ObservableCollection<MMDevice>(deviceEnum.EnumAudioEndpoints(DataFlow.Capture, DeviceState.Active).ToArray());
+            AudioOutputDeviceList = new ObservableCollection<MMDevice>(deviceEnum.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active).ToArray());
+            AudioInputDeviceList = new ObservableCollection<MMDevice>(deviceEnum.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.Active).ToArray());
         }
     }
 }

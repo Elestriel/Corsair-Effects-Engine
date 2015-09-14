@@ -1,4 +1,7 @@
-﻿Build 0021
+﻿Build 0022
+- Changed from CSCore to NAudio.
+
+Build 0021
 - Included the old spectro routines.
 - Inclusion of a self-updater.
 - Fixed a bug that caused Random Lights on the mouse to spazz out.
