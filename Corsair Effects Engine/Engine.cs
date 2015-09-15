@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -51,9 +52,10 @@ namespace Corsair_Effects_Engine
         private string LastBackgroundEffect = "";
         //private string LastStaticProfile = "";
 
-        // CSCore Stuff
+        // NAudio Stuff
         private static WasapiCapture audioCapture;
         private static SampleAggregator sampleAggregator;
+        private static OldSampleAggregator oldSampleAggregator;
         private static int fftLength;
 
         public Engine()
@@ -77,7 +79,7 @@ namespace Corsair_Effects_Engine
             }
 
             ClearAllKeys();
-
+            
             while (RunEngine)
             {
                 UpdateStatusMessage.NewMessage(5, "Initializing Devices.");
@@ -92,9 +94,9 @@ namespace Corsair_Effects_Engine
                 TimeSpan timeDifference;
                 double timeDifferenceMS;
 
-                // Creates handles for CSCore
+                // Creates handles for NAudio
                 NAudio_Initialize();
-
+                
                 UpdateStatusMessage.NewMessage(5, "Initialization Complete.");
 
                 while (!PauseEngine && RunEngine && !RestartEngine)
@@ -142,6 +144,8 @@ namespace Corsair_Effects_Engine
                 {
                     Thread.Sleep(1000);
                 }
+                NAudio_StopCapture();
+                NAudio_Dispose();
             }
             if (Properties.Settings.Default.OptRestoreLightingOnExit)
             {
@@ -151,7 +155,6 @@ namespace Corsair_Effects_Engine
             }
             InputHook.OnRawInputFromKeyboard -= InputFromKeyboard;
 
-            NAudio_StopCapture();
             UpdateStatusMessage.NewMessage(5, "Engine is shutting down.");
         }
 
@@ -241,7 +244,19 @@ namespace Corsair_Effects_Engine
                 System.Windows.Media.Color startColor = System.Windows.Media.Color.FromArgb(255, 255, 255, 255);
                 System.Windows.Media.Color endColor = System.Windows.Media.Color.FromArgb(0, 0, 0, 0);
 
-                if (LastForegroundEffect != Properties.Settings.Default.ForegroundEffect) { ClearAllKeys(); };
+                if (LastForegroundEffect != Properties.Settings.Default.ForegroundEffect) 
+                { 
+                    ClearAllKeys();
+                    if (LastForegroundEffect == "Spectrograph")
+                    {
+                        NAudio_StopCapture();
+                        NAudio_Dispose();
+                    }
+                    if (Properties.Settings.Default.ForegroundEffect == "Spectrograph")
+                    {
+                        RestartEngine = true;
+                    }
+                };
                 LastForegroundEffect = Properties.Settings.Default.ForegroundEffect;
 
                 switch (Properties.Settings.Default.ForegroundEffect)
@@ -290,8 +305,6 @@ namespace Corsair_Effects_Engine
                                                                             endColor: endColor,
                                                                             solidDuration: Properties.Settings.Default.ForegroundRandomLightsFadeSolidDuration,
                                                                             totalDuration: Properties.Settings.Default.ForegroundRandomLightsFadeTotalDuration);
-                                    if (keyLight == 145) { UpdateStatusMessage.NewMessage(0, "Mouse 2: " + startColor.ToString() + " " + endColor.ToString() + " " +
-                                        Properties.Settings.Default.ForegroundRandomLightsFadeSolidDuration + " " + Properties.Settings.Default.ForegroundRandomLightsFadeTotalDuration); };
                                     break;
                             }
                         }
@@ -343,7 +356,6 @@ namespace Corsair_Effects_Engine
                                          (byte)(FG.B - ((FG.B - BG.B) * alphaDifference)));
                 
                 Keys[i].KeyColor = new LightSingle(lightColor: AlphaBlend(ForegroundKeys[i].KeyColor.LightColor, BackgroundKeys[i].KeyColor.LightColor));
-                //Keys[i].KeyColor = new LightSingle(lightColor: newColor);
             }
         }
 
@@ -509,9 +521,13 @@ namespace Corsair_Effects_Engine
                 default: fftLength = 1024; break;
             }
 
-            sampleAggregator = new SampleAggregator();
+            sampleAggregator = new SampleAggregator(fftLength);
             sampleAggregator.PerformFFT = true;
             sampleAggregator.FftCalculated += new EventHandler<FftEventArgs>(FftCalculated);
+
+            oldSampleAggregator = new OldSampleAggregator(fftLength);
+            oldSampleAggregator.PerformFFT = true;
+            oldSampleAggregator.OldFftCalculated += new EventHandler<OldFftEventArgs>(OldFftCalculated);
 
             audioCapture.DataAvailable += new EventHandler<WaveInEventArgs>(NAudio_DataAvailable);
 
@@ -527,26 +543,39 @@ namespace Corsair_Effects_Engine
             for (int index = 0; index < bytesRecorded; index += bufferIncrement)
             {
                 float sample32 = BitConverter.ToSingle(buffer, index);
-                sampleAggregator.Add(sample32);
+                if (!Properties.Settings.Default.ForegroundSpectroUseOldMethod)
+                {
+                    sampleAggregator.Add(sample32);
+                }
+                else
+                {
+                    oldSampleAggregator.Add(sample32);
+                }
             }
         }
 
         private static void NAudio_StopCapture()
         {
-            UpdateStatusMessage.NewMessage(2, "Stopping Capture");
+            UpdateStatusMessage.NewMessage(6, "Stopping Capture");
             try { audioCapture.StopRecording(); }
             catch { }
-            NAudio_Cleanup();
         }
 
-        private static void NAudio_Cleanup()
+        private static void NAudio_Dispose()
         {
             if (audioCapture != null)
             {
+                audioCapture.DataAvailable -= NAudio_DataAvailable;
                 audioCapture.Dispose();
                 audioCapture = null;
             }
-            UpdateStatusMessage.NewMessage(2, "Capture Destroyed");
+
+            try { sampleAggregator.FftCalculated -= FftCalculated; }
+            catch { }
+            try { oldSampleAggregator.OldFftCalculated -= OldFftCalculated; }
+            catch { }
+
+            UpdateStatusMessage.NewMessage(6, "Capture Destroyed");
         }
 
         private static void FftCalculated(object sender, FftEventArgs e)
@@ -555,7 +584,6 @@ namespace Corsair_Effects_Engine
             double fftAmplitude = 0;
             double fftFrequency = 0;
 
-
             int XPos = 0;
             Bitmap bmp = new Bitmap(CanvasWidth, 7);
             GraphicsPath fftPath = new GraphicsPath(FillMode.Winding);
@@ -563,49 +591,45 @@ namespace Corsair_Effects_Engine
             fftPath.AddLine(0, bmp.Height, 0, bmp.Height);
 
             bool useLogAmplitude = true;
-            bool useNewMethod = false;
 
-            if (useNewMethod)
+
+            #region NewMethod
+            for (int i = 1; i < e.Result.Length / 2; i++)
             {
-                #region NewMethod
-                for (int i = 1; i < e.Result.Length / 2; i++)
-                {
-                    fftAmplitude = Math.Sqrt(Math.Pow(e.Result[i].X, 2) + Math.Pow(e.Result[i].Y, 2));
-                    fftFrequency = i * audioCapture.WaveFormat.SampleRate / e.Result.Length;
+                fftAmplitude = Math.Sqrt(Math.Pow(e.Result[i].X, 2) + Math.Pow(e.Result[i].Y, 2));
+                fftFrequency = i * audioCapture.WaveFormat.SampleRate / e.Result.Length;
 
-                    XPos = (int)(fftFrequency / (audioCapture.WaveFormat.SampleRate / 2d) * CanvasWidth);
-                    if (XPos > CanvasWidth) { XPos = CanvasWidth; };
-                    if (XPos < 0) { XPos = 0; };
+                XPos = (int)(fftFrequency / (audioCapture.WaveFormat.SampleRate / 2d) * CanvasWidth);
+                if (XPos > CanvasWidth) { XPos = CanvasWidth; };
+                if (XPos < 0) { XPos = 0; };
                     
-                    if (useLogAmplitude)
-                    {
-                        // Logarithmic Amplitude
-                        if (fftAmplitude > 0) { fftAmplitude = Math.Log10(fftAmplitude); };
-                        fftAmplitude = Math.Pow(fftAmplitude, -1);
-                        fftAmplitude *= 400;
-                        fftAmplitude += 100;
-                        if (fftAmplitude > 0) { fftAmplitude = 0; };
-                        fftPath.AddLine((Single)XPos, (Single)(bmp.Height + fftAmplitude), (Single)XPos, (Single)(bmp.Height + fftAmplitude));
-                    }
-                    else
-                    {
-
-                        /*
-                        // Linear Amplitude
-                        fftAmplitude *= 4096;
-                        if (fftAmplitude < 0) { fftAmplitude = 0; };
-                        fftPath.AddLine((Single)XPos, (Single)(bmp.Height - fftAmplitude), (Single)XPos, (Single)(bmp.Height - fftAmplitude));
-                        */
-                    }
+                if (useLogAmplitude)
+                {
+                    // Logarithmic Amplitude
+                    if (fftAmplitude > 0) { fftAmplitude = Math.Log10(fftAmplitude); };
+                    fftAmplitude = Math.Pow(fftAmplitude, -1);
+                    fftAmplitude *= 400;
+                    fftAmplitude += 100;
+                    if (fftAmplitude > 0) { fftAmplitude = 0; };
+                    fftPath.AddLine((Single)XPos, (Single)(bmp.Height + fftAmplitude), (Single)XPos, (Single)(bmp.Height + fftAmplitude));
                 }
+                else
+                {
+                    // Linear Amplitude
+                    fftAmplitude *= 4096;
+                    if (fftAmplitude < 0) { fftAmplitude = 0; };
+                    fftPath.AddLine((Single)XPos, (Single)(bmp.Height - fftAmplitude), (Single)XPos, (Single)(bmp.Height - fftAmplitude));
+                }
+            }
+            #endregion NewMethod
 
-                // Add end point.
-                fftPath.AddLine(bmp.Width, bmp.Height, bmp.Width, bmp.Height);
+            // Add end point.
+            fftPath.AddLine(bmp.Width, bmp.Height, bmp.Width, bmp.Height);
 
-                // Close image
-                fftPath.CloseFigure();
+            // Close image
+            fftPath.CloseFigure();
 
-                using (Graphics gr = Graphics.FromImage(bmp))
+            using (Graphics gr = Graphics.FromImage(bmp))
                 {
                     gr.SmoothingMode = SmoothingMode.HighQuality;
                     using (SolidBrush br = new SolidBrush(System.Drawing.Color.FromArgb(255, 255, 0, 128)))
@@ -615,27 +639,10 @@ namespace Corsair_Effects_Engine
                     {
                         gr.FillPath(br, fftPath);
                     }
-
                     //gr.DrawPath(new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 128, 0, 255)), fftPath);
                 }
 
-                BitmapToKeyboard(bmp);
-
-                //bmp.Save(Environment.CurrentDirectory + "/imgs/newimg" + DateTime.Now.ToFileTime() + ".bmp");
-            #endregion New Method
-            }
-            else
-            {
-                #region OldMethod
-                double[] fftData = new double[fftLength / 2];
-                for (int i = 0; i < fftLength / 2; i++)
-                {
-                    double fftMag = Math.Sqrt(Math.Pow(e.Result[i].X, 2) + Math.Pow(e.Result[i].Y, 2));
-                    fftData[i] = fftMag;
-                }
-
-                #endregion OldMethod
-            }
+            BitmapToKeyboard(bmp);
         }
 
         private static void BitmapToKeyboard(Bitmap bmp)
@@ -655,6 +662,67 @@ namespace Corsair_Effects_Engine
                 }
             }
         }
+
+        private static void OldFftCalculated(object sender, OldFftEventArgs e)
+        {
+            int CanvasWidth = KeyboardMap.CanvasWidth;
+
+            byte[] fftData = new byte[fftLength / 2];
+            for (int i = 0; i < fftLength / 2; i++)
+            {
+                double fftMag = Math.Sqrt(Math.Pow(e.Result[i].X, 2) + Math.Pow(e.Result[i].Y, 2));
+                fftData[i] = (byte)fftMag;
+            }
+
+            byte[] compData = CompressFftToKeyboard(fftData, CanvasWidth);
+            int key = 0;
+
+            for (int c = 0; c < CanvasWidth; c++)
+            {
+                for (int r = 0; r < 7; r++)
+                {
+                    key = KeyboardMap.LedMatrix[r, c];
+                    if (key > 0 && key < 144)
+                    {
+                        if ((int)compData[c] > ((32 / (1 + (c * .95))) * (7 - r)))
+                        {
+                            SpectroKeys[key].KeyColor = new LightSingle(lightColor: System.Windows.Media.Color.FromArgb(255, 128, 0, 255));
+                        }
+                        else
+                        {
+                            SpectroKeys[key].KeyColor = new LightSingle(lightColor: System.Windows.Media.Color.FromArgb(0, 0, 0, 0));
+                        }
+                    }
+                }
+            }
+        }
+
+        private static byte[] CompressFftToKeyboard(byte[] fftData, int kWidth)
+        {
+            byte[] compressedData = new byte[kWidth];
+
+            int tempCalc;
+            double iPower;
+            string tempStr = "";
+            int prevCalc = 0;
+
+            for (int i = 0; i < kWidth; i++)
+            {
+                iPower = Math.Pow((double)i, 2);
+                float keyboardSizeMultiplier = (float)(Math.Pow(KeyboardMap.CanvasWidth, 2));
+                tempCalc = (int)((330f / keyboardSizeMultiplier) * iPower) + 1;
+
+                while (prevCalc >= tempCalc) { tempCalc += 1; };
+
+                compressedData[i] = fftData[tempCalc];
+                prevCalc = tempCalc;
+
+                tempStr += tempCalc + ", ";
+            }
+
+            return compressedData;
+        }
+        
         #endregion NAudio Methods
     }
 
@@ -831,5 +899,63 @@ namespace Corsair_Effects_Engine
         
         public int GetKeyCodeFromDict(int mcode, int vkey, int flag, bool numLock)
         { return (keyDict[Tuple.Create((byte)mcode, (byte)vkey, (byte)flag, numLock)]); }
+    }
+
+
+    class OldSampleAggregator
+    {
+        public event EventHandler<OldFftEventArgs> OldFftCalculated;
+        public bool PerformFFT { get; set; }
+
+        private Complex[] fftBuffer;
+        private OldFftEventArgs fftArgs;
+        private int fftPos;
+        private int fftLength;
+        private int m;
+
+        public OldSampleAggregator(int fftLength)
+        {
+            if (!IsPowerOfTwo(fftLength))
+            {
+                throw new ArgumentException("FFT Length must be a power of two");
+            }
+            this.m = (int)Math.Log(fftLength, 2.0);
+            this.fftLength = fftLength;
+            this.fftBuffer = new Complex[fftLength];
+            this.fftArgs = new OldFftEventArgs(fftBuffer);
+        }
+
+        bool IsPowerOfTwo(int x)
+        {
+            return (x & (x - 1)) == 0;
+        }
+
+        public bool Add(float value)
+        {
+            if (PerformFFT && OldFftCalculated != null)
+            {
+                fftBuffer[fftPos].X = value * 0.5f * (float)Math.Cos((2 * Math.PI) / (fftLength - 1)) * Properties.Settings.Default.ForegroundSpectroOldVolume * 100;
+                fftBuffer[fftPos].Y = 0; // This is always zero with audio.
+                fftPos++;
+                if (fftPos >= fftLength)
+                {
+                    fftPos = 0;
+                    FastFourierTransform.FFT(true, m, fftBuffer);
+                    OldFftCalculated(this, fftArgs);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public class OldFftEventArgs : EventArgs
+    {
+        [DebuggerStepThrough]
+        public OldFftEventArgs(Complex[] result)
+        {
+            this.Result = result;
+        }
+        public Complex[] Result { get; private set; }
     }
 }

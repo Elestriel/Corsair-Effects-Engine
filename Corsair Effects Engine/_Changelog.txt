@@ -1,4 +1,8 @@
-﻿Build 0022
+﻿Build 0023
+- Reworked SampleAggregator and pretty much everything. Again. Then gave up. Again.
+- Implemented a temporary spectro similar to the original.
+
+Build 0022
 - Changed from CSCore to NAudio.
 
 Build 0021

@@ -61,7 +61,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6: Engine Rendering Output")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6: Engine Output")]
         public string LogLevel {
             get {
                 return ((string)(this["LogLevel"]));
@@ -728,6 +728,30 @@ namespace Corsair_Effects_Engine.Properties {
             }
             set {
                 this["BackgroundSolidColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public int ForegroundSpectroOldVolume {
+            get {
+                return ((int)(this["ForegroundSpectroOldVolume"]));
+            }
+            set {
+                this["ForegroundSpectroOldVolume"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ForegroundSpectroUseOldMethod {
+            get {
+                return ((bool)(this["ForegroundSpectroUseOldMethod"]));
+            }
+            set {
+                this["ForegroundSpectroUseOldMethod"] = value;
             }
         }
     }

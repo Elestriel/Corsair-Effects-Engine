@@ -26,7 +26,7 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0022";
+        private const string VersionNumber = "0023";
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;

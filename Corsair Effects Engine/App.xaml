@@ -1331,7 +1331,7 @@
             <sys:String>0: Default</sys:String>
             <sys:String>4: Hardware Messages</sys:String>
             <sys:String>5: Thread States</sys:String>
-            <sys:String>6: Engine Rendering Output</sys:String>
+            <sys:String>6: Engine Output</sys:String>
             <sys:String>7: Interface</sys:String>
         </x:Array>
 
