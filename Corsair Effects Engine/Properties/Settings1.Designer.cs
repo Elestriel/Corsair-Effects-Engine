@@ -754,5 +754,89 @@ namespace Corsair_Effects_Engine.Properties {
                 this["ForegroundSpectroUseOldMethod"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF0080")]
+        public string ForegroundSpectroColor {
+            get {
+                return ((string)(this["ForegroundSpectroColor"]));
+            }
+            set {
+                this["ForegroundSpectroColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Solid")]
+        public string ForegroundSpectroStyle {
+            get {
+                return ((string)(this["ForegroundSpectroStyle"]));
+            }
+            set {
+                this["ForegroundSpectroStyle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
+        public int BackgroundBreatheStepOne {
+            get {
+                return ((int)(this["BackgroundBreatheStepOne"]));
+            }
+            set {
+                this["BackgroundBreatheStepOne"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
+        public int BackgroundBreatheStepTwo {
+            get {
+                return ((int)(this["BackgroundBreatheStepTwo"]));
+            }
+            set {
+                this["BackgroundBreatheStepTwo"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2000")]
+        public int BackgroundBreatheTransition {
+            get {
+                return ((int)(this["BackgroundBreatheTransition"]));
+            }
+            set {
+                this["BackgroundBreatheTransition"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF0000")]
+        public string BackgroundBreatheStepOneColor {
+            get {
+                return ((string)(this["BackgroundBreatheStepOneColor"]));
+            }
+            set {
+                this["BackgroundBreatheStepOneColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF0000FF")]
+        public string BackgroundBreatheStepTwoColor {
+            get {
+                return ((string)(this["BackgroundBreatheStepTwoColor"]));
+            }
+            set {
+                this["BackgroundBreatheStepTwoColor"] = value;
+            }
+        }
     }
 }

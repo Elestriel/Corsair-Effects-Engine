@@ -84,7 +84,7 @@ namespace Corsair_Effects_Engine
                     eB = EndColor.B;
 
                     byte nA, nR, nG, nB;
-                    double StepMultiplier = (Difference.TotalMilliseconds - SolidDuration) / (TotalDuration - SolidDuration);
+                    double StepMultiplier = Math.Abs(Difference.TotalMilliseconds - SolidDuration) / (TotalDuration - SolidDuration);
                     nA = (byte)(sA - ((sA - eA) * StepMultiplier));
                     nR = (byte)(sR - ((sR - eR) * StepMultiplier));
                     nG = (byte)(sG - ((sG - eG) * StepMultiplier));

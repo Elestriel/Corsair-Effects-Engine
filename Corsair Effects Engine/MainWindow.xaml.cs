@@ -18,6 +18,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Corsair_Effects_Engine
 {
@@ -26,7 +28,8 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0023";
+        private const string VersionNumber = "0024";
+        private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
         private const double KEYBOARD_RATIO = 0.6;
@@ -55,6 +58,9 @@ namespace Corsair_Effects_Engine
         {
             InitializeComponent();
             DataContext = new CeeDataContext();
+
+            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+
             // Declarations for custom window layout
             this.CommandBindings.Add(new CommandBinding(SystemCommands.CloseWindowCommand, this.OnCloseWindow));
             this.CommandBindings.Add(new CommandBinding(SystemCommands.MaximizeWindowCommand, this.OnMaximizeWindow, this.OnCanResizeWindow));
@@ -85,8 +91,8 @@ namespace Corsair_Effects_Engine
             UpdateStatusMessage.NewMsg += UpdateStatusMessage_NewMsg;
             RefreshKeyboardPreview.ShowNewFrame += RefreshKeyboardPreview_ShowNewFrame;
 
-            SetWindowLayout("LogSettings");
-            //SetWindowLayout("Settings");
+            //SetWindowLayout("LogSettings");
+            SetWindowLayout("Settings");
             //SetWindowLayout("ForegroundEdit", "Spectrograph");
 
             // Initialize buttons for Keyboard Preview
@@ -119,6 +125,10 @@ namespace Corsair_Effects_Engine
 
             WindowInitialized = true;
             UpdateStatusMessage.NewMessage(0, "Welcome to the Corsair Effects Engine build " + VersionNumber + ".");
+
+            // Check for updates
+            Thread UpdateChecker = new Thread(this.CheckForUpdates);
+            UpdateChecker.Start();
         }
 
         private void NewBmp(System.Drawing.Bitmap bmp)
@@ -271,6 +281,66 @@ namespace Corsair_Effects_Engine
         private void PauseResumeEngine(object sender, RoutedEventArgs e)
         {
             newEngine.PauseEngine = !newEngine.PauseEngine;
+        }
+
+        private void CheckForUpdates()
+        {
+            string[] VersionCheckData = new string[3];
+            int UpdateStatus = 0;
+
+            UpdateStatusMessage.NewMessage(0, "Checking for updates.");
+
+            String URLString = "http://emily-maxwell.com/pages/cee/version.xml";
+            try
+            {
+                XmlTextReader reader = new XmlTextReader(URLString);
+                int i = 0;
+
+                while (reader.Read())
+                {
+                    switch (reader.NodeType)
+                    {
+                        case XmlNodeType.Text: //Display the text in each element.
+                            VersionCheckData[i] = reader.Value;
+                            i++;
+                            break;
+                    }
+                }
+                if (VersionCheckData[0] == VersionNumber) { UpdateStatus = 0; }
+                else { UpdateStatus = 1; };
+            }
+            catch
+            {
+                UpdateStatus = -1;
+            }
+
+            if (UpdateStatus == 1)
+            {
+                UpdateStatusMessage.NewMessage(0, "Build " + VersionCheckData[0] + " is available.");
+                NewVersionNumber = VersionCheckData[0];
+                this.UpdateButton.Dispatcher.Invoke(
+                    System.Windows.Threading.DispatcherPriority.Normal, new Action(() => UpdateButton.Visibility = System.Windows.Visibility.Visible));
+            }
+            else if (UpdateStatus == 0)
+            { UpdateStatusMessage.NewMessage(0, "You are running the latest version."); }
+            else if (UpdateStatus == -1)
+            { UpdateStatusMessage.NewMessage(0, "Could not find the latest version information."); };
+        }
+
+        private void UpdateButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                System.Diagnostics.Process.Start(Environment.CurrentDirectory + "\\SelfUpdater.exe",
+                    "-CurrentVersion=" + VersionNumber + " -NewVersion=" + NewVersionNumber + " -AccentColour=" + Properties.Settings.Default.OptAccentColor);
+            }
+            catch
+            {
+                UpdateStatusMessage.NewMessage(0, "Failed to launch updater.");
+                return;
+            }
+
+            CloseMainWindow(null, null);
         }
 
         #endregion MainWindow Events
@@ -501,15 +571,21 @@ namespace Corsair_Effects_Engine
 
                     switch (mode2)
                     {
-                        case "Rainbow":
-                            GridBackground.Visibility = System.Windows.Visibility.Visible;
-                            GridBackgroundRainbow.Visibility = System.Windows.Visibility.Visible;
+                        case "Solid":
+                            GridBackgroundSolid.Visibility = System.Windows.Visibility.Visible;
+                            break;
+                        case "Breathe":
+                            GridBackgroundBreathe.Visibility = System.Windows.Visibility.Visible;
                             break;
                         case "Spectrum Cycle":
                             GridBackground.Visibility = System.Windows.Visibility.Visible;
                             break;
-                        case "Solid":
-                            GridBackgroundSolid.Visibility = System.Windows.Visibility.Visible;
+                        case "Rainbow":
+                            GridBackground.Visibility = System.Windows.Visibility.Visible;
+                            GridBackgroundRainbow.Visibility = System.Windows.Visibility.Visible;
+                            break;
+                        case "Image":
+                            GridBackgroundImage.Visibility = System.Windows.Visibility.Visible;
                             break;
                     }
                     break;
@@ -554,16 +630,19 @@ namespace Corsair_Effects_Engine
 
             // Edit: Colour
             GridColor.Visibility = System.Windows.Visibility.Hidden;
-            
+
             // Edit: Foreground
+            GridForegroundSpectro.Visibility = System.Windows.Visibility.Hidden;
             GridForegroundRandomLights.Visibility = System.Windows.Visibility.Hidden;
             GridForegroundReactive.Visibility = System.Windows.Visibility.Hidden;
             GridForegroundHeatmap.Visibility = System.Windows.Visibility.Hidden;
 
             // Edit: Background
             GridBackground.Visibility = System.Windows.Visibility.Hidden;
-            GridBackgroundRainbow.Visibility = System.Windows.Visibility.Hidden;
             GridBackgroundSolid.Visibility = System.Windows.Visibility.Hidden;
+            GridBackgroundBreathe.Visibility = System.Windows.Visibility.Hidden;
+            GridBackgroundRainbow.Visibility = System.Windows.Visibility.Hidden;
+            GridBackgroundImage.Visibility = System.Windows.Visibility.Hidden;
 
             // Full Keyboard
             GridKeyboard.Visibility = System.Windows.Visibility.Hidden;
@@ -603,11 +682,6 @@ namespace Corsair_Effects_Engine
             if (LogTextBox == null) { return; };
             string messagePrefix;
             string logColour;
-
-            if (messageType == 10)
-            { this.Dispatcher.Invoke(new Action(delegate { ampLo.Content = messageText; })); return; }
-            if (messageType == 11)
-            { this.Dispatcher.Invoke(new Action(delegate { ampHi.Content = messageText; })); return; }
 
             // Determine the colour and prefix for the supplied messageType
             switch (messageType)

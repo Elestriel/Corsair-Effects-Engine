@@ -40,7 +40,10 @@ namespace SelfUpdater
 
         public MainWindow()
         {
-            InitializeComponent();            
+            InitializeComponent();
+
+            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+
             // Declarations for custom window layout
             this.CommandBindings.Add(new CommandBinding(SystemCommands.CloseWindowCommand, this.OnCloseWindow));
             this.CommandBindings.Add(new CommandBinding(SystemCommands.MaximizeWindowCommand, this.OnMaximizeWindow, this.OnCanResizeWindow));
@@ -58,17 +61,17 @@ namespace SelfUpdater
             if (CommandLineArgs["NewVersion"] != null) 
             { 
                 CLArgNewVersion = CommandLineArgs["NewVersion"];
-                CLArgNewVersionURL = "http://emily-maxwell.com/pages/cee/archive/CEE-Build-" + CLArgNewVersion + ".zip";
+                CLArgNewVersionURL = "http://emily-maxwell.com/pages/cee/archive/CEE-Build-" + CLArgNewVersion + "-Update.zip";
             }
             else { CLArgsAreGood = false; };
-            if (CommandLineArgs["AccentColour"] != null) { CLArgAccentColour = CommandLineArgs["AccentColour"]; }
+            if (CommandLineArgs["AccentColour"] != null) { CLArgAccentColour = CommandLineArgs["AccentColour"];}
             else { CLArgsAreGood = false; };
 
             if (CLArgsAreGood) 
             { 
                 Properties.Settings.Default.AccentColor = CLArgAccentColour;
                 UpdateStatusMessage.NewMessage(0, "You are running Build " + CLArgCurrentVersion + ".");
-                UpdateStatusMessage.NewMessage(0, "Select Update to download and install Build " + CLArgCurrentVersion + ".");
+                UpdateStatusMessage.NewMessage(0, "Select Update to download and install Build " + CLArgNewVersion + ".");
             }
             else 
             {

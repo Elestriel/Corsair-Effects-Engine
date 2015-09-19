@@ -57,7 +57,7 @@
                           SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=StaticProfileName, Mode=TwoWay}"/>
             <Button x:Name="StaticEditButton" Style="{StaticResource HyperlinkLikeButton}" Content="Edit" Margin="0,110,10,0" VerticalAlignment="Top" 
                     VerticalContentAlignment="Bottom" HorizontalAlignment="Right" Width="24" ToolTip="Edit the current static profile." Click="StaticEditButton_Click"/>
-            <Grid x:Name="GridControlsButtons" Margin="0,179,10,0" HorizontalAlignment="Right" Width="180" Height="150" VerticalAlignment="Top">
+            <Grid x:Name="GridControlsButtons" Margin="0,0,10,0" HorizontalAlignment="Right" Width="180" Height="150" VerticalAlignment="Bottom">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30*"/>
                     <RowDefinition Height="30*"/>
@@ -66,10 +66,13 @@
                     <RowDefinition Height="30*"/>
                 </Grid.RowDefinitions>
                 <Button x:Name="MouseButton" Content="Mouse" VerticalAlignment="Top" Grid.Row="0" HorizontalAlignment="Right"
-                        Click="MouseButton_Click" ToolTip="Show the Mouse Configuration Page."
+                        Click="MouseButton_Click" ToolTip="Show the Mouse Configuration Page." Visibility="Hidden"
                                    Style="{StaticResource BigTextOnlyButton}"/>
                 <Button x:Name="KeyboardButton" Content="Keyboard" VerticalAlignment="Top" Grid.Row="1" HorizontalAlignment="Right"
-                        Click="KeyboardButton_Click" ToolTip="Show the Keyboard Configuration and Visualizer Page."
+                        Click="KeyboardButton_Click" ToolTip="Show the Keyboard Configuration and Visualizer Page." Visibility="Hidden"
+                                   Style="{StaticResource BigTextOnlyButton}"/>
+                <Button x:Name="UpdateButton" Content="Update" VerticalAlignment="Top" Grid.Row="2" HorizontalAlignment="Right"
+                        Click="UpdateButton_Click" ToolTip="Update to the latest version." Visibility="Hidden"
                                    Style="{StaticResource BigTextOnlyButton}"/>
                 <Button x:Name="LogButton" Content="Log" VerticalAlignment="Top" Grid.Row="3" HorizontalAlignment="Right"
                         Click="LogButton_Click" ToolTip="Display the Log and Log Settings. (Click twice for log only)"
@@ -89,7 +92,8 @@
             <!-- Log -->
             <Grid x:Name="GridLeftLog" Grid.Column="0" Visibility="Hidden">
                 <RichTextBox x:Name="LogTextBox" Background="#FF303030" Margin="0,10,10,0" VerticalScrollBarVisibility="Auto" 
-                             ToolTip="Program output. Select Log again to hide or show settings." FontFamily="Consolas"/>
+                             ToolTip="Program output. Select Log again to hide or show settings." FontFamily="Consolas"
+                             IsReadOnly="True"/>
 
             </Grid>
             <Grid x:Name="GridRightLog" Grid.Column="1" Visibility="Hidden">
@@ -128,8 +132,8 @@
                 <CheckBox x:Name="CheckRestoreLightingOnExit" Content="Restore lighting on exit" HorizontalAlignment="Left" Margin="10,216,0,0" VerticalAlignment="Top"
                           ToolTip="Restore on-device lighting to the keyboard and mouse when quitting."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptRestoreLightingOnExit, Mode=TwoWay}"/>
-                <Label Content="Corsair Utility Engine (CUE) Path. Double click to browse." HorizontalAlignment="Left" Margin="10,0,0,28" Height="26" VerticalAlignment="Bottom"/>
-                <TextBox x:Name="CuePathTextBox" Margin="10,0,10,10" IsReadOnly="True"
+                <Label Content="Corsair Utility Engine (CUE) Path. Double click to browse." HorizontalAlignment="Left" Margin="10,0,0,20" Height="26" VerticalAlignment="Bottom"/>
+                <TextBox x:Name="CuePathTextBox" Margin="10,0,10,2" IsReadOnly="True"
                          ToolTip="Navigate to the path of your CUE executable. This is used to launch CUE when quitting CEE."
                          Text="{Binding Source={x:Static p:Settings.Default}, Path=OptCuePath, Mode=TwoWay}" 
                          Height="23" VerticalAlignment="Bottom" MouseDoubleClick="CuePathTextBox_MouseDoubleClick"
@@ -186,7 +190,7 @@
             </Grid>
 
             <!-- Edit Grid -->
-            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Visible" Margin="0,0,0,0">
+            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Hidden" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="296*"/>
                     <ColumnDefinition Width="200*"/>
@@ -221,10 +225,24 @@
                 </Grid>
 
                 <!-- Foreground: Spectrograph -->
-                <Grid x:Name="GridForegroundSpectro" Margin="0,0,0,0" Grid.Column="0" Visibility="Visible" Grid.Row="1"/>
+                <Grid x:Name="GridForegroundSpectro" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                    <Label Content="Colour" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <ComboBox x:Name="ForegroundSpectroStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" Height="24" 
+                                  ToolTip="The style of light to be used for this effect."
+                                  ItemsSource="{DynamicResource ForegroundSpectroStyleList}"
+                                  SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroStyle, Mode=TwoWay}"
+                                  HorizontalAlignment="Left" Width="150" SelectionChanged="ForegroundRandomLightsStyle_SelectionChanged"/>
+                    <xctk:ColorPicker SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroColor,
+                                  Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="165,28,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                    <Label Content="Sensitivity" Grid.Row="0" Grid.Column="0" Margin="10,67,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="99,67,0,0" VerticalAlignment="Top" Width="61" Maximum="100" Minimum="0"
+                                   Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroOldVolume, Mode=TwoWay}"/>
+                </Grid>
 
                 <!-- Foreground: Random Lights -->
-                <Grid x:Name="GridForegroundRandomLights" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                <Grid x:Name="GridForegroundRandomLights" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
                     <Grid Margin="0,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="55"/>
@@ -290,7 +308,7 @@
                 </Grid>
 
                 <!-- Foreground: Reactive Typing -->
-                <Grid x:Name="GridForegroundReactive" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                <Grid x:Name="GridForegroundReactive" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
                     <Grid Margin="0,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="55"/>
@@ -358,7 +376,7 @@
                 </Grid>
 
                 <!-- Foreground: Heatmap -->
-                <Grid x:Name="GridForegroundHeatmap" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                <Grid x:Name="GridForegroundHeatmap" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
                     <!-- Bottom Portion: Colour Options-->
                     <Label Content="Most Struck Colour" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Left" Width="auto"/>
                     <xctk:ColorPicker x:Name="ForegroundHeatmapColorMost"
@@ -377,14 +395,49 @@
                             Margin="10,104,0,0" VerticalAlignment="Top" Width="167" Style="{StaticResource MetroButton}" Click="HeatmapResetCountButton_Click"/>
                 </Grid>
 
+                <!-- Backround: Solid Colour -->
+                <Grid x:Name="GridBackgroundSolid" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                    <Label Content="Colour" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left" Margin="10,8,0,0"/>
+                    <xctk:ColorPicker SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundSolidColor, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="61,10,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                </Grid>
+
+                <!-- Background: Breathe -->
+                <Grid x:Name="GridBackgroundBreathe" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                    <Label Content="Duration" Grid.Column="0" VerticalAlignment="Top" 
+                    	Width="auto" Height="26" HorizontalAlignment="Left" Margin="154,3,0,0"/>
+                    <Label Content="Step One" Grid.Column="0" VerticalAlignment="Top" 
+                           Width="auto" Height="26" HorizontalAlignment="Left" Margin="12,33,0,0"/>
+                    <xctk:ColorPicker SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundBreatheStepOneColor, 
+                                  Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="75,34,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                    <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="151,34,0,0" VerticalAlignment="Top" Width="67"
+                                  Value="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundBreatheStepOne, Mode=TwoWay}"/>
+                    <Label Content="Transition" Grid.Column="0" VerticalAlignment="Top" 
+                    	Width="auto" Height="26" HorizontalAlignment="Left" Margin="12,64,0,0"/>
+                    <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="151,65,0,0" VerticalAlignment="Top" Width="67"
+                                  Value="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundBreatheTransition, Mode=TwoWay}"/>
+                    <Label Content="Step Two" Grid.Column="0" VerticalAlignment="Top" 
+                           Width="auto" Height="26" HorizontalAlignment="Left" Margin="12,95,0,0"/>
+                    <xctk:ColorPicker SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundBreatheStepTwoColor, 
+                                  Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="75,96,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                    <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="151,96,0,0" VerticalAlignment="Top" Width="67"
+                                  Value="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundBreatheStepTwo, Mode=TwoWay}"/>
+                </Grid>
+
                 <!-- Background: Rainbow and Spectrum Fade -->
-                <Grid x:Name="GridBackground" Margin="0,0,0,0" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                <Grid x:Name="GridBackground" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="55*"/>
                         <RowDefinition Height="296*"/>
                     </Grid.RowDefinitions>
                     <Label Content="Animation Cycle Time" Grid.Column="0" VerticalAlignment="Top" 
-                           Width="151" Height="26" HorizontalAlignment="Left" Margin="10,3,0,0"/>
+                           Width="auto" Height="26" HorizontalAlignment="Left" Margin="10,3,0,0"/>
                     <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="10,26,0,0" VerticalAlignment="Top" Width="65"
                     	Value="{Binding BackgroundRepeatTime, Mode=TwoWay, Source={x:Static p:Settings.Default}}" 
                                         Minimum="200" Maximum="60000" Increment="100" Height="20"
@@ -405,16 +458,10 @@
                     </Grid>
                 </Grid>
 
-                <!-- Backround: Solid Colour -->
-                <Grid x:Name="GridBackgroundSolid" Margin="0" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
-                    <Label Content="Colour" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left" Margin="10,8,0,0"/>
-                    <xctk:ColorPicker SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundSolidColor, 
-                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
-                                  HorizontalAlignment="Left" Margin="61,10,0,0" VerticalAlignment="Top" Width="50" 
-                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                <!-- Background: Image -->
+                <Grid x:Name="GridBackgroundImage" Visibility="Hidden" Grid.Row="1">
+                    <Label Content="Coming soon..."/>
                 </Grid>
-                <Label x:Name="ampHi" Content="Label" HorizontalAlignment="Left" Margin="47,151,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
-                <Label x:Name="ampLo" Content="Label" HorizontalAlignment="Left" Margin="47,126,0,0" VerticalAlignment="Top" Grid.Column="1" Grid.Row="1"/>
             </Grid>
         </Grid>
 

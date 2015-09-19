@@ -9,7 +9,6 @@
 - - VU Meter
 - - Oscilloscope
 - - Beat Analyzer (Basically a VU meter)
-- Breathe background effect.
-- Solid background effect.
 - Static profiles.
 - Live keyboard preview.
+- Add a link to my website.

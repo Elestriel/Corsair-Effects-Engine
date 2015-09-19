@@ -185,5 +185,26 @@
     <Setting Name="ForegroundSpectroUseOldMethod" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="ForegroundSpectroColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFF0080</Value>
+    </Setting>
+    <Setting Name="ForegroundSpectroStyle" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Solid</Value>
+    </Setting>
+    <Setting Name="BackgroundBreatheStepOne" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2000</Value>
+    </Setting>
+    <Setting Name="BackgroundBreatheStepTwo" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2000</Value>
+    </Setting>
+    <Setting Name="BackgroundBreatheTransition" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2000</Value>
+    </Setting>
+    <Setting Name="BackgroundBreatheStepOneColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFF0000</Value>
+    </Setting>
+    <Setting Name="BackgroundBreatheStepTwoColor" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF0000FF</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

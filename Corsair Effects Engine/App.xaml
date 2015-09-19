@@ -527,20 +527,27 @@
                                     Margin="12,0,0,0" 
                                     HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                     VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                            <Path
+                                Name="pathBackground"
+                                Opacity="0"
+                                Fill="Transparent"
+                                Data="M -2 -2 L 10 -2 L 10 10 L -2 10"
+                                Margin="0, 2, 0, 0"
+                                />
                             <Path 
                               Name="pathChecked"
                               Opacity="0"
                               Stroke="{StaticResource AccentColorBrush}"
                               StrokeThickness="2"
                               Data="M 0 5 L 4 10  M 4 10 L 10 -2"
-                              Margin="0,2,0,0" />
+                              Margin="0, 2, 0, 0" />
                             <Path 
                               Name="pathUnChecked"
                               Opacity="0"
                               Stroke="Red"
                               StrokeThickness="2"
                               Data="M 0 0 L 10 10  M 0 10 L 10 0"
-                              Margin="0,2,0,0" />
+                              Margin="0, 2, 0, 0" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsChecked" Value="true">
@@ -1346,12 +1353,20 @@
         
         <x:Array x:Key="BackgroundEffectsList" 
                  Type="sys:String">
-            <sys:String>Rainbow</sys:String>
-            <sys:String>Spectrum Cycle</sys:String>
+            <sys:String>Solid</sys:String>
             <sys:String>Breathe</sys:String>
+            <sys:String>Spectrum Cycle</sys:String>
+            <sys:String>Rainbow</sys:String>
+            <sys:String>Image</sys:String>
+        </x:Array>
+
+        <!-- Foreground: Spectro -->
+        <x:Array x:Key="ForegroundSpectroStyleList"
+                 Type="sys:String">
             <sys:String>Solid</sys:String>
         </x:Array>
-        
+
+
         <!-- Foreground: Random Keys -->
         <x:Array x:Key="ForegroundRandomLightsStyleList"
                  Type="sys:String">

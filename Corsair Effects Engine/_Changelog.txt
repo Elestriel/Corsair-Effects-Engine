@@ -1,4 +1,13 @@
-﻿Build 0023
+﻿Build 0024
+- Built UI elements to support Spectro.
+- Built new Breathe background effect.
+- Reordered the background effects list to flow better.
+- Added an invisible background to the checkmark/cross that appears for CheckBoxes. This makes them less finicky.
+- Moved the left buttons down to better line up with the bottom of the window.
+- Modified the formula behind fade style lighting.
+- Made the program always start in the center of the screen.
+
+Build 0023
 - Reworked SampleAggregator and pretty much everything. Again. Then gave up. Again.
 - Implemented a temporary spectro similar to the original.
 

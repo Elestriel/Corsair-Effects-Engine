@@ -286,4 +286,62 @@ namespace Corsair_Effects_Engine
             return 0.35875 - (0.48829 * Math.Cos((2 * Math.PI * n) / (frameSize - 1))) + (0.14128 * Math.Cos((4 * Math.PI * n) / (frameSize - 1))) - (0.01168 * Math.Cos((6 * Math.PI * n) / (frameSize - 1)));
         }
     }
+
+
+    class OldSampleAggregator
+    {
+        public event EventHandler<OldFftEventArgs> OldFftCalculated;
+        public bool PerformFFT { get; set; }
+
+        private Complex[] fftBuffer;
+        private OldFftEventArgs fftArgs;
+        private int fftPos;
+        private int fftLength;
+        private int m;
+
+        public OldSampleAggregator(int fftLength)
+        {
+            if (!IsPowerOfTwo(fftLength))
+            {
+                throw new ArgumentException("FFT Length must be a power of two");
+            }
+            this.m = (int)Math.Log(fftLength, 2.0);
+            this.fftLength = fftLength;
+            this.fftBuffer = new Complex[fftLength];
+            this.fftArgs = new OldFftEventArgs(fftBuffer);
+        }
+
+        bool IsPowerOfTwo(int x)
+        {
+            return (x & (x - 1)) == 0;
+        }
+
+        public bool Add(float value)
+        {
+            if (PerformFFT && OldFftCalculated != null)
+            {
+                fftBuffer[fftPos].X = value * 0.5f * (float)Math.Cos((2 * Math.PI) / (fftLength - 1)) * Properties.Settings.Default.ForegroundSpectroOldVolume * 100;
+                fftBuffer[fftPos].Y = 0; // This is always zero with audio.
+                fftPos++;
+                if (fftPos >= fftLength)
+                {
+                    fftPos = 0;
+                    FastFourierTransform.FFT(true, m, fftBuffer);
+                    OldFftCalculated(this, fftArgs);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public class OldFftEventArgs : EventArgs
+    {
+        [DebuggerStepThrough]
+        public OldFftEventArgs(Complex[] result)
+        {
+            this.Result = result;
+        }
+        public Complex[] Result { get; private set; }
+    }
 }
