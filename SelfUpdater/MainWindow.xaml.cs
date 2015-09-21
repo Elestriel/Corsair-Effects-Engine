@@ -17,9 +17,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
-using System.Xml.Linq;
 using System.Net;
 
 namespace SelfUpdater
@@ -158,9 +155,18 @@ namespace SelfUpdater
         private void RunUpdate_ExtractPackage()
         {
             UpdateStatusMessage.NewMessage(1, "Extracting Update.");
-
-            ZipFile.ExtractToDirectory(Environment.CurrentDirectory + "\\update.zip", Environment.CurrentDirectory);
-
+            string zipPath = Environment.CurrentDirectory + "\\update.zip";
+            string extPath = Environment.CurrentDirectory;
+            
+            using (ZipArchive archive = ZipFile.OpenRead(zipPath))
+            {
+                foreach (ZipArchiveEntry zae in archive.Entries) 
+                {
+                    UpdateStatusMessage.NewMessage(3, "Extracting: " + zae.FullName);
+                    zae.ExtractToFile(Path.Combine(extPath, zae.FullName), true);
+                }
+            }
+            
             UpdateStatusMessage.NewMessage(1, "Cleaning Up.");
 
             try { File.Delete(Environment.CurrentDirectory + "\\update.zip"); }
@@ -169,6 +175,7 @@ namespace SelfUpdater
             UpdateStatusMessage.NewMessage(1, "Done!");
 
             UpdateButton.IsEnabled = false;
+            CancelButton.Content = "Close";
         }
 
         private void Download_ProgressChanged(object sender, DownloadProgressChangedEventArgs e)

@@ -36,7 +36,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0025";
+        private const string VersionNumber = "0026";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -187,14 +187,16 @@ namespace Corsair_Effects_Engine
             UpdateStatusMessage.NewMessage(0, "Rendered");
 
             // Load the previous background image, if there is one
-            LoadBackgroundImage();
-            BackgroundImageSelection.OriginalImage = new System.Drawing.Bitmap(Properties.Settings.Default.BackgroundImagePath);
-            BackgroundImageSelection.NewImage = new System.Drawing.Bitmap(BackgroundImageSelection.OriginalImage);
+            if (LoadBackgroundImage())
+            {
+                BackgroundImageSelection.OriginalImage = new System.Drawing.Bitmap(Properties.Settings.Default.BackgroundImagePath);
+                BackgroundImageSelection.NewImage = new System.Drawing.Bitmap(BackgroundImageSelection.OriginalImage);
 
-            BackgroundImageSelection.Rectangle = Properties.Settings.Default.BackgroundImageRectangle;
+                BackgroundImageSelection.Rectangle = Properties.Settings.Default.BackgroundImageRectangle;
 
-            DrawRectangle(BackgroundImageSelection.Rectangle);
-            UpdateImagePreview(BackgroundImageSelection.Rectangle);
+                DrawRectangle(BackgroundImageSelection.Rectangle);
+                UpdateImagePreview(BackgroundImageSelection.Rectangle);
+            }
         }
 
         private void NewBmp(System.Drawing.Bitmap bmp)
@@ -1209,14 +1211,17 @@ namespace Corsair_Effects_Engine
             };
         }
 
-        private void LoadBackgroundImage()
+        private bool LoadBackgroundImage()
         {
+            if (!File.Exists(Properties.Settings.Default.BackgroundImagePath)) { return false; }
+
             try
             {
                 ImageBrush newBrush = new ImageBrush(new BitmapImage(new Uri(Properties.Settings.Default.BackgroundImagePath)));
                 BackgroundImageCanvas.Background = newBrush;
             }
-            catch { }
+            catch { return false; }
+            return true;
         }
 
         private void BackgroundImageCanvas_MouseDown(object sender, MouseButtonEventArgs e)

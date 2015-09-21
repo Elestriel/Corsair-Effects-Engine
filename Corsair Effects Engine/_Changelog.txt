@@ -1,4 +1,8 @@
-﻿Build 0025
+﻿Build 0026
+- Fixed an issue with loading an image.
+- Fixed an issue where the Self Updater would blow up when it tried to overwrite files.
+
+Build 0025
 - Implemented the following settings:
 - - Start with Windows.
 - - Start minimized.

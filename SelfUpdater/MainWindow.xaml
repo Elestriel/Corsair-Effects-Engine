@@ -10,7 +10,7 @@
 
     <Grid>
         <Button x:Name="UpdateButton" Content="Update" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Top" Width="75" Style="{DynamicResource MetroButton}" Click="UpdateButton_Click"/>
-        <Button Content="Cancel" HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Top" Width="75" Style="{DynamicResource MetroButton}" Click="CancelButton_Click"/>
+        <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Right" Margin="0,0,5,0" VerticalAlignment="Top" Width="75" Style="{DynamicResource MetroButton}" Click="CancelButton_Click"/>
         <RichTextBox x:Name="LogTextBox" Background="#FF303030" Margin="5,30,5,5" VerticalScrollBarVisibility="Auto" 
                              ToolTip="Program output. Select Log again to hide or show settings." FontFamily="Consolas"/>
 
