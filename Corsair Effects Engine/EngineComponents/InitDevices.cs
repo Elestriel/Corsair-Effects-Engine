@@ -423,7 +423,7 @@ namespace Corsair_Effects_Engine.EngineComponents
                 UpdateStatusMessage.NewMessage(3, "The selected layout is empty");
                 return false;
             }
-
+            
             switch (Properties.Settings.Default.KeyboardModel)
             {
                 case "K65-RGB":
@@ -437,7 +437,7 @@ namespace Corsair_Effects_Engine.EngineComponents
                     KeyboardMap.CanvasWidth = 104;
                     break;
             }
-
+            
             return true;
         }
 

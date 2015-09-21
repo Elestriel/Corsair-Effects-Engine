@@ -7,8 +7,9 @@
         xmlns:src="clr-namespace:Corsair_Effects_Engine"
         x:Class="Corsair_Effects_Engine.MainWindow"
         Title="Corsair Effects Engine" 
-        Height="440" Width="900" ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing" Icon="Resources/CorsairLogoTransparent.ico"
-        Style="{StaticResource MyWindowStyle}">
+        Height="440" Width="900" ResizeMode="CanMinimize" Loaded="Window_Loaded" Closing="Window_Closing" 
+        Icon="Resources/CorsairLogoTransparent.ico"
+        Style="{StaticResource MyWindowStyle}" ContentRendered="Window_ContentRendered">
 
     <Window.Resources>
         <src:ColorToBrushConverter x:Key="ColorToBrushConverter"/>
@@ -108,28 +109,25 @@
                 <CheckBox x:Name="CheckMinimizeToTray" Content="Minimize to System Tray" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
                           ToolTip="Minimize to the System Tray instead of the Task Bar."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeToTray, Mode=TwoWay}"/>
-                <CheckBox x:Name="CheckMinimizeInsteadOfClose" Content="Minimize instead of close" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"
-                          ToolTip="Minimize instead of quitting when clicking on the red X."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeOnClose, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckStartWithWindows" Content="Start with Windows" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"
+                <CheckBox x:Name="CheckStartWithWindows" Content="Start with Windows" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"
                           ToolTip="Start CEE when Windows starts."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptStartMinimized, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckStartMinimized" Content="Start minimized" HorizontalAlignment="Left" Margin="10,90,0,0" VerticalAlignment="Top"
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptStartWithWindows, Mode=TwoWay}" Checked="CheckStartWithWindows_Checked" Unchecked="CheckStartWithWindows_Unchecked"/>
+                <CheckBox x:Name="CheckStartMinimized" Content="Start minimized" HorizontalAlignment="Left" Margin="10,70,0,0" VerticalAlignment="Top"
                           ToolTip="Start CEE in a minimized state."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptStartMinimized, Mode=TwoWay}" IsEnabled="False"/>
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptStartMinimized, Mode=TwoWay}"/>
                 <CheckBox x:Name="Check16MColours" Content="16.8 Million colours" HorizontalAlignment="Left" Margin="270,10,0,0" VerticalAlignment="Top"
                           ToolTip="Run the keyboard in 16.8 million colour mode."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=Opt16MColours, Mode=TwoWay}"/>
-                <CheckBox x:Name="CheckDisplayLiveKeyboardPreview" Content="Display live keyboard preview" HorizontalAlignment="Left" Margin="10,132,0,0" VerticalAlignment="Top"
+                <CheckBox x:Name="CheckDisplayLiveKeyboardPreview" Content="Display live keyboard preview" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top"
                           ToolTip="Show effects and animations on the Keyboard page as they're being rendered."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptLiveKeyboardPreview, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckWarnIfCueIsOpen" Content="Display a warning if CUE is open" HorizontalAlignment="Left" Margin="10,153,0,0" VerticalAlignment="Top"
+                <CheckBox x:Name="CheckWarnIfCueIsOpen" Content="Display a warning if CUE is open" HorizontalAlignment="Left" Margin="10,130,0,0" VerticalAlignment="Top"
                           ToolTip="Show a warning before starting effects if CUE is running."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptWarnIfCueRunning, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckLaunchCueOnExit" Content="Launch CUE on exit" HorizontalAlignment="Left" Margin="10,195,0,0" VerticalAlignment="Top"
+                <CheckBox x:Name="CheckLaunchCueOnExit" Content="Launch CUE on exit" HorizontalAlignment="Left" Margin="10,170,0,0" VerticalAlignment="Top"
                           ToolTip="Launch CUE upon quitting CEE. This requires the path to CUE to be entered below."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptLaunchCueOnExit, Mode=TwoWay}" IsEnabled="False"/>
-                <CheckBox x:Name="CheckRestoreLightingOnExit" Content="Restore lighting on exit" HorizontalAlignment="Left" Margin="10,216,0,0" VerticalAlignment="Top"
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptLaunchCueOnExit, Mode=TwoWay}"/>
+                <CheckBox x:Name="CheckRestoreLightingOnExit" Content="Restore lighting on exit" HorizontalAlignment="Left" Margin="10,190,0,0" VerticalAlignment="Top"
                           ToolTip="Restore on-device lighting to the keyboard and mouse when quitting."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptRestoreLightingOnExit, Mode=TwoWay}"/>
                 <Label Content="Corsair Utility Engine (CUE) Path. Double click to browse." HorizontalAlignment="Left" Margin="10,0,0,20" Height="26" VerticalAlignment="Bottom"/>
@@ -190,7 +188,7 @@
             </Grid>
 
             <!-- Edit Grid -->
-            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Hidden" Margin="0,0,0,0">
+            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Visible" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="296*"/>
                     <ColumnDefinition Width="200*"/>
@@ -459,8 +457,11 @@
                 </Grid>
 
                 <!-- Background: Image -->
-                <Grid x:Name="GridBackgroundImage" Visibility="Hidden" Grid.Row="1">
-                    <Label Content="Coming soon..."/>
+                <Grid x:Name="GridBackgroundImage" Visibility="Visible" Grid.Row="1" Grid.ColumnSpan="2">
+                    <Button x:Name="BackgroundImageBrowseButton" Content="Browse..." HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75"
+                            Style="{StaticResource MetroButton}" Click="BackgroundImageBrowseButton_Click"/>
+                    <Canvas x:Name="BackgroundImageCanvas" HorizontalAlignment="Left" Height="240" Margin="10,38,0,0" VerticalAlignment="Top" Width="459" MouseMove="BackgroundImageCanvas_MouseMove" MouseDown="BackgroundImageCanvas_MouseDown" MouseUp="BackgroundImageCanvas_MouseUp"/>
+                    <Canvas x:Name="BackgroundImageResizedCanvas" HorizontalAlignment="Left" Height="7" Margin="126,26,0,0" VerticalAlignment="Top" Width="104"/>
                 </Grid>
             </Grid>
         </Grid>

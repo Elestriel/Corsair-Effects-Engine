@@ -10,9 +10,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-//using System.Drawing;
-//using System.Drawing.Drawing2D;
-
 using NAudio;
 using NAudio.CoreAudioApi;
 using NAudio.Dsp;
@@ -36,7 +33,7 @@ namespace Corsair_Effects_Engine
         private IntPtr MousePointer;
 
         // Key Data
-        private KeyData[] BackgroundKeys = new KeyData[149];
+        private static KeyData[] BackgroundKeys = new KeyData[149];
         private KeyData[] ForegroundKeys = new KeyData[149];
         private KeyData[] ReactiveKeys = new KeyData[149];
         private static KeyData[] SpectroKeys = new KeyData[149];
@@ -191,6 +188,7 @@ namespace Corsair_Effects_Engine
                             lightColor:  (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundSolidColor)); }
                         break;
                     case "Breathe":
+                        #region Breathe Code
                         int Step1T = Properties.Settings.Default.BackgroundBreatheStepOne;
                         int TransT = Properties.Settings.Default.BackgroundBreatheTransition;
                         int Step2T = Properties.Settings.Default.BackgroundBreatheStepTwo;
@@ -281,6 +279,7 @@ namespace Corsair_Effects_Engine
                         { BackgroundKeys[i].KeyColor = new LightSingle(lightColor: breatheColor); };
 
                         break;
+                        #endregion Breathe Code
                     case "Spectrum Cycle":
                         for (int i = 0; i < 149; i++)
                         { BackgroundKeys[i].KeyColor = new LightSingle(
@@ -315,6 +314,9 @@ namespace Corsair_Effects_Engine
                             }
                         }
                         #endregion Rainbow Code
+                        break;
+                    case "Image":
+                        if (MainWindow.BackgroundImageSelection.OutputImage != null) { BitmapToKeyboard(MainWindow.BackgroundImageSelection.OutputImage); }
                         break;
                 }
             }
@@ -460,6 +462,7 @@ namespace Corsair_Effects_Engine
 
             if (Properties.Settings.Default.ForegroundEffect == "Reactive Typing")
             {
+                #region Reactive Typing
                 Color SL =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartLower);
                 Color SU =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartUpper);
                 Color EL =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndLower);
@@ -504,9 +507,11 @@ namespace Corsair_Effects_Engine
                                                                 totalDuration: Properties.Settings.Default.ForegroundReactiveFadeTotalDuration);
                         break;
                 }
-            } //Reactive Typing
+                #endregion Reactive Typing
+            } 
             else if (Properties.Settings.Default.ForegroundEffect == "Heatmap")
             {
+                #region Heatmap
                 Color CM =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorMost);
                 Color CL =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorLeast);
 
@@ -532,10 +537,9 @@ namespace Corsair_Effects_Engine
                     { newColor = Color.FromArgb(0, 0, 0, 0); }
 
                     ReactiveKeys[i].KeyColor = new LightSingle(lightColor: newColor);
-
-                    //ReactiveKeys[i].KeyColor = new LightSingle(lightColor: AlphaBlend(CM, CL));
+                #endregion Heatmap
                 }
-            } //Heatmap
+            } 
         }
 
         public static Color ColorFromHSV(double hue, double saturation, double value)
@@ -738,8 +742,8 @@ namespace Corsair_Effects_Engine
             BitmapToKeyboard(bmp);
             */
         }
-        /*
-        private static void BitmapToKeyboard(Bitmap bmp)
+        
+        private static void BitmapToKeyboard(System.Drawing.Bitmap bmp)
         {
             int key;
             for (int c = 0; c < bmp.Width; c++)
@@ -748,15 +752,14 @@ namespace Corsair_Effects_Engine
                 {
                     key = KeyboardMap.LedMatrix[r, c];
                     if (key >= 0 && key < 144) {
-                    SpectroKeys[key].KeyColor = new LightSingle(lightColor: Color.FromArgb(bmp.GetPixel(c, r).A,
-                                                                                                            bmp.GetPixel(c, r).R,
-                                                                                                            bmp.GetPixel(c, r).G,
-                                                                                                            bmp.GetPixel(c, r).B));
+                    BackgroundKeys[key].KeyColor = new LightSingle(lightColor: Color.FromArgb(bmp.GetPixel(c, r).A,
+                                                                                            bmp.GetPixel(c, r).R,
+                                                                                            bmp.GetPixel(c, r).G,
+                                                                                            bmp.GetPixel(c, r).B));
                     }
                 }
             }
         }
-        */
 
         private static void OldFftCalculated(object sender, OldFftEventArgs e)
         {

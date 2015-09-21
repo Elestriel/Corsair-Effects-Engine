@@ -1,5 +1,4 @@
 ﻿using Microsoft.Win32;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,6 +14,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -28,11 +28,24 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string VersionNumber = "0024";
+        // Used to cleans the GDI Bitmap used in 
+        [System.Runtime.InteropServices.DllImport("gdi32.dll")]
+        public static extern bool DeleteObject(IntPtr hObject);
+
+        // Start with Windows registry key
+        RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+
+        // Application variables
+        private const string VersionNumber = "0025";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
+        public static ImageSelection BackgroundImageSelection = new ImageSelection();
+
+        // Ratio for the loaded image of the keyboard
         private const double KEYBOARD_RATIO = 0.6;
+
+        // Key matrices
         public static KeyData[] keyData = new KeyData[149];
         private Button[] keyboardButtons = new Button[144];
         private Button[] mouseButtons = new Button[5];
@@ -49,6 +62,7 @@ namespace Corsair_Effects_Engine
         System.Windows.Forms.NotifyIcon SystemTrayIcon;
         ContextMenu SystemTrayContextMenu;
 
+        // Threads
         Engine newEngine = new Engine();
         Task EngineTask = null;
 
@@ -84,8 +98,24 @@ namespace Corsair_Effects_Engine
                         this.WindowState = WindowState.Normal;
                     }
                 };
+
+            // Launch at startup
+            // Check to see the current state (running at startup or not)
+            if (rkApp.GetValue("CorsairEffectsEngine") == null)
+            {
+                // The value doesn't exist, the application is not set to run at startup
+                Properties.Settings.Default.OptStartWithWindows = false;
+            }
+            else
+            {
+                // The value exists, the application is set to run at startup
+                Properties.Settings.Default.OptStartWithWindows = true;
+            }
         }
 
+        /// <summary>
+        /// Window load tasks.
+        /// </summary>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             UpdateStatusMessage.NewMsg += UpdateStatusMessage_NewMsg;
@@ -119,7 +149,7 @@ namespace Corsair_Effects_Engine
                                                        duration: 0);
                 //KeyboardImage.Children.Add(keyboardButtons[i]);
             }
-
+            
             GetDeviceIDs();
             StartEngine();
 
@@ -129,6 +159,42 @@ namespace Corsair_Effects_Engine
             // Check for updates
             Thread UpdateChecker = new Thread(this.CheckForUpdates);
             UpdateChecker.Start();
+
+            // Automatically minimize if the option is set
+            if (Properties.Settings.Default.OptStartMinimized)
+            { WindowState = WindowState.Minimized; }
+
+            // Set canvas size
+            switch (Properties.Settings.Default.KeyboardModel)
+            {
+                case "K65-RGB":
+                    KeyboardMap.CanvasWidth = 76;
+                    break;
+                case "K70-RGB":
+                case "STRAFE":
+                    KeyboardMap.CanvasWidth = 92;
+                    break;
+                case "K95-RGB":
+                    KeyboardMap.CanvasWidth = 104;
+                    break;
+            }
+
+            //Dispatcher.BeginInvoke(new Action(() => PostLoadTasks()), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
+        }
+
+        private void Window_ContentRendered(object sender, EventArgs e)
+        {
+            UpdateStatusMessage.NewMessage(0, "Rendered");
+
+            // Load the previous background image, if there is one
+            LoadBackgroundImage();
+            BackgroundImageSelection.OriginalImage = new System.Drawing.Bitmap(Properties.Settings.Default.BackgroundImagePath);
+            BackgroundImageSelection.NewImage = new System.Drawing.Bitmap(BackgroundImageSelection.OriginalImage);
+
+            BackgroundImageSelection.Rectangle = Properties.Settings.Default.BackgroundImageRectangle;
+
+            DrawRectangle(BackgroundImageSelection.Rectangle);
+            UpdateImagePreview(BackgroundImageSelection.Rectangle);
         }
 
         private void NewBmp(System.Drawing.Bitmap bmp)
@@ -145,8 +211,6 @@ namespace Corsair_Effects_Engine
         /// <summary>
         /// Prevent the window from closing until cleanup is done.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private async void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (WindowClosing == false) 
@@ -169,6 +233,13 @@ namespace Corsair_Effects_Engine
                 // Save settings
                 Properties.Settings.Default.Save();
 
+                // Launch CUE
+                if (Properties.Settings.Default.OptLaunchCueOnExit)
+                {
+                    try { System.Diagnostics.Process.Start(Properties.Settings.Default.OptCuePath); }
+                    catch { }
+                }
+
                 // Close the window
                 Application.Current.Windows[0].Close(); 
             }
@@ -177,7 +248,6 @@ namespace Corsair_Effects_Engine
         /// <summary>
         /// Handle minimization.
         /// </summary>
-        /// <param name="e"></param>
         protected override void OnStateChanged(EventArgs e)
         {
             if (WindowState == System.Windows.WindowState.Minimized &&
@@ -187,6 +257,9 @@ namespace Corsair_Effects_Engine
             base.OnStateChanged(e);
         }
 
+        /// <summary>
+        /// Handle right-click for the system tray icon.
+        /// </summary>
         void SystemTrayIcon_MouseClick(object sender, EventArgs e)
         {
             System.Windows.Forms.MouseEventArgs me = (System.Windows.Forms.MouseEventArgs)e;
@@ -232,6 +305,9 @@ namespace Corsair_Effects_Engine
 
         #endregion Methods for custom window
 
+        /// <summary>
+        /// Gets the device HID handle.
+        /// </summary>
         public void GetDeviceIDs()
         {
             switch (Properties.Settings.Default.KeyboardModel)
@@ -253,12 +329,18 @@ namespace Corsair_Effects_Engine
             }
         }
 
+        /// <summary>
+        /// Closes the MainWindow.
+        /// </summary>
         private void CloseMainWindow(object sender, RoutedEventArgs e)
         {
             //Application.Current.Shutdown();
             this.Close();
         }
 
+        /// <summary>
+        /// Launches the Engine.
+        /// </summary>
         private void StartEngine()
         {
             newEngine.PauseEngine = false;
@@ -266,6 +348,9 @@ namespace Corsair_Effects_Engine
             EngineTask = Task.Run(() => newEngine.Start());
         }
 
+        /// <summary>
+        /// Stops the Engine.
+        /// </summary>
         private async void StopEngine()
         {
             if (EngineTask != null)
@@ -278,11 +363,18 @@ namespace Corsair_Effects_Engine
             };
         }
 
+        /// <summary>
+        /// Toggles pause/resume for the currently running engine.
+        /// </summary>
         private void PauseResumeEngine(object sender, RoutedEventArgs e)
         {
             newEngine.PauseEngine = !newEngine.PauseEngine;
         }
 
+        /// <summary>
+        /// Checks update server for an update, and displays a message and button
+        /// if there is one available. This is intended to be run as a separate thread.
+        /// </summary>
         private void CheckForUpdates()
         {
             string[] VersionCheckData = new string[3];
@@ -327,6 +419,9 @@ namespace Corsair_Effects_Engine
             { UpdateStatusMessage.NewMessage(0, "Could not find the latest version information."); };
         }
 
+        /// <summary>
+        /// Starts the self-updater and closes MainWindow.
+        /// </summary>
         private void UpdateButton_Click(object sender, EventArgs e)
         {
             try
@@ -341,6 +436,24 @@ namespace Corsair_Effects_Engine
             }
 
             CloseMainWindow(null, null);
+        }
+
+        /// <summary>
+        /// Set the registry key when this is checked.
+        /// </summary>
+        private void CheckStartWithWindows_Checked(object sender, RoutedEventArgs e)
+        {
+            // Add the value in the registry so that the application runs at startup
+            rkApp.SetValue("CorsairEffectsEngine", System.Reflection.Assembly.GetExecutingAssembly().Location);
+        }
+
+        /// <summary>
+        /// Remove the registry key when this is unchecked.
+        /// </summary>
+        private void CheckStartWithWindows_Unchecked(object sender, RoutedEventArgs e)
+        {
+            // Remove the value from the registry so that the application doesn't start
+            rkApp.DeleteValue("CorsairEffectsEngine", false);
         }
 
         #endregion MainWindow Events
@@ -1076,6 +1189,185 @@ namespace Corsair_Effects_Engine
 
         #endregion ForegroundEdit
 
+        #region Page: BackgroundEdit
+
+        #region Page: BackgroundEdit: Image
+
+        private void BackgroundImageBrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.InitialDirectory = "%USERPROFILE%";
+            openFileDialog.Filter = "Bitmap|*.bmp|JPEG Image|*.jpg;*.jpeg|PNG Image|*.png|GIF Image|*.gif|All Images|*.bmp;*.gif;*.jpg;*.jpeg;*.png|All Files (*.*)|*.*";
+            openFileDialog.FilterIndex = 5;
+            openFileDialog.RestoreDirectory = true;
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                Properties.Settings.Default.BackgroundImagePath = openFileDialog.FileName;
+                LoadBackgroundImage();
+            };
+        }
+
+        private void LoadBackgroundImage()
+        {
+            try
+            {
+                ImageBrush newBrush = new ImageBrush(new BitmapImage(new Uri(Properties.Settings.Default.BackgroundImagePath)));
+                BackgroundImageCanvas.Background = newBrush;
+            }
+            catch { }
+        }
+
+        private void BackgroundImageCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            BackgroundImageSelection.IsEditing = true;
+
+            // Make a Bitmap to display the selection rectangle.
+            BackgroundImageSelection.OriginalImage = new System.Drawing.Bitmap(Properties.Settings.Default.BackgroundImagePath);
+
+            Point p = e.GetPosition(BackgroundImageCanvas);
+            
+            int relX = (int)(p.X * (BackgroundImageSelection.OriginalImage.Width / BackgroundImageCanvas.Width));
+            int relY = (int)(p.Y * (BackgroundImageSelection.OriginalImage.Height / BackgroundImageCanvas.Height));
+            BackgroundImageSelection.MouseDownX = relX;
+            BackgroundImageSelection.MouseDownY = relY;
+
+            if (relX > BackgroundImageSelection.X &&
+                relX < (BackgroundImageSelection.X + BackgroundImageSelection.W) &&
+                relY > BackgroundImageSelection.Y &&
+                relY < (BackgroundImageSelection.Y + BackgroundImageSelection.H))
+            { BackgroundImageSelection.IsMoveMode = true; }
+            else
+            { BackgroundImageSelection.IsMoveMode = false; }
+        }
+
+        private void BackgroundImageCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            BackgroundImageSelection.IsEditing = false;
+        }
+
+        private void BackgroundImageCanvas_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (BackgroundImageSelection.IsEditing)
+            {
+                BackgroundImageSelection.NewImage = new System.Drawing.Bitmap(BackgroundImageSelection.OriginalImage);
+                Point p = e.GetPosition(BackgroundImageCanvas);
+                System.Drawing.Rectangle rect;
+
+                if (BackgroundImageSelection.IsMoveMode) 
+                {
+                    int relX = (int)(BackgroundImageSelection.MouseDownX - p.X * (BackgroundImageSelection.OriginalImage.Width / BackgroundImageCanvas.Width));
+                    int relY = (int)(BackgroundImageSelection.MouseDownY - p.Y * (BackgroundImageSelection.OriginalImage.Height / BackgroundImageCanvas.Height));
+                    int newX = (int)(BackgroundImageSelection.X - relX);
+                    int newY = (int)(BackgroundImageSelection.Y - relY);
+                    int newW = (int)(BackgroundImageSelection.W);
+                    int newH = (int)(BackgroundImageSelection.H);
+
+                    if (newX < 0) { newX = 0; }
+                    if (newY < 0) { newY = 0; }
+                    if (newX > BackgroundImageSelection.OriginalImage.Width - newW) { newX = BackgroundImageSelection.OriginalImage.Width - newW; }
+                    if (newY > BackgroundImageSelection.OriginalImage.Height - newH) { newY = BackgroundImageSelection.OriginalImage.Height - newH; }
+                    
+                    rect = new System.Drawing.Rectangle(newX, newY, newW, newH);
+                }
+                else
+                {
+                    int X = (int)BackgroundImageSelection.MouseDownX;
+                    int Y = (int)BackgroundImageSelection.MouseDownY;
+
+                    // Save the new point.
+                    int W = (int)(p.X * (BackgroundImageSelection.NewImage.Width / BackgroundImageCanvas.Width));
+                    int H = (int)(p.Y * (BackgroundImageSelection.NewImage.Height / BackgroundImageCanvas.Height));
+
+                    int PX = Math.Min(X, W);
+                    int PY = Math.Min(Y, H);
+                    int PW;
+                    if (W > X) { PW = W; } else { PW = X; };
+                    PW = Math.Abs(W - X);
+                    int PH;
+                    if (H > Y) { PH = H; } else { PH = Y; };
+                    PH = Math.Abs(H - Y);
+
+                    BackgroundImageSelection.X = PX;
+                    BackgroundImageSelection.Y = PY;
+                    BackgroundImageSelection.W = PW;
+                    BackgroundImageSelection.H = PH;
+
+                    rect = new System.Drawing.Rectangle(PX, PY, PW, PH);
+                }
+
+                DrawRectangle(rect);
+            }
+        }
+
+        private void DrawRectangle(System.Drawing.Rectangle rect)
+        {
+            // Draw the rectangle.
+            using (System.Drawing.Graphics gr = System.Drawing.Graphics.FromImage(BackgroundImageSelection.NewImage))
+            {
+                Properties.Settings.Default.BackgroundImageRectangle = rect;
+                System.Drawing.SolidBrush brush = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(127, 255, 255, 255));
+                gr.FillRectangle(brush, rect);
+                gr.Dispose();
+            }
+
+            IntPtr hBitmap = BackgroundImageSelection.NewImage.GetHbitmap();
+            try
+            {
+                ImageSource source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                ImageBrush newBrush = new ImageBrush(source);
+                BackgroundImageCanvas.Background = newBrush;
+                UpdateImagePreview(rect);
+            }
+            finally
+            { DeleteObject(hBitmap); }
+        }
+
+        private void UpdateImagePreview(System.Drawing.Rectangle rect)
+        {
+            if (rect.Width < 1 && rect.Height < 1) { return; }
+            // Adjust size of preview
+            if (KeyboardMap.CanvasWidth > 0 && KeyboardMap.CanvasWidth != BackgroundImageResizedCanvas.Width)
+            { BackgroundImageResizedCanvas.Width = KeyboardMap.CanvasWidth; };
+
+            // Resize image
+            System.Drawing.Rectangle destRect = new System.Drawing.Rectangle(0, 0, KeyboardMap.CanvasWidth, 7);
+            System.Drawing.Bitmap destImage = new System.Drawing.Bitmap(KeyboardMap.CanvasWidth, 7);
+
+            destImage.SetResolution(BackgroundImageSelection.OriginalImage.HorizontalResolution, BackgroundImageSelection.OriginalImage.VerticalResolution);
+
+            using (System.Drawing.Graphics graphics = System.Drawing.Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+
+                using (System.Drawing.Imaging.ImageAttributes wrapMode = new System.Drawing.Imaging.ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
+                    graphics.DrawImage(BackgroundImageSelection.OriginalImage, destRect, rect, System.Drawing.GraphicsUnit.Pixel);
+                }
+            }
+
+            IntPtr hBitmap = destImage.GetHbitmap();
+            try
+            {
+                ImageSource source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
+                ImageBrush newBrush = new ImageBrush(source);
+                BackgroundImageResizedCanvas.Background = newBrush;
+                BackgroundImageSelection.OutputImage = destImage;
+            }
+            finally
+            { DeleteObject(hBitmap); }
+        }
+        
+        #endregion Page: BackgroundEdit: Image
+
+        #endregion Page: BackgroundEdit
+
         #region Color Sliders and Picker
 
         private void SetNewColorSlidersBinding(string lowerPath, string upperPath)
@@ -1158,7 +1450,7 @@ namespace Corsair_Effects_Engine
         }
 
         #endregion Color Sliders and Picker
-
+        
         #endregion Pages
     }
 
@@ -1291,6 +1583,33 @@ namespace Corsair_Effects_Engine
         public ILight KeyColor;
     }
 
+    public class ImageSelection
+    {
+        public bool IsEditing;
+        public bool IsMoveMode;
+        public double X;
+        public double Y;
+        public double W;
+        public double H;
+        public double MouseDownX;
+        public double MouseDownY;
+        public System.Drawing.Bitmap OriginalImage;
+        public System.Drawing.Bitmap NewImage;
+        public System.Drawing.Bitmap OutputImage;
+
+        public System.Drawing.Rectangle Rectangle
+        {
+            get { return new System.Drawing.Rectangle((int)X, (int)Y, (int)W, (int)H); }
+            set
+            {
+                X = value.X;
+                Y = value.Y;
+                W = value.Width;
+                H = value.Height; 
+            }
+        }
+    }
+
     #endregion Data Classes
 
     #region Class Extensions
@@ -1309,6 +1628,107 @@ namespace Corsair_Effects_Engine
                 box.ScrollToEnd();
             }
             catch (FormatException) { }
+        }
+    }
+
+    class GifImage : Image
+    {
+        private bool _isInitialized;
+        private GifBitmapDecoder _gifDecoder;
+        private Int32Animation _animation;
+
+        public int FrameIndex
+        {
+            get { return (int)GetValue(FrameIndexProperty); }
+            set { SetValue(FrameIndexProperty, value); }
+        }
+
+        private void Initialize()
+        {
+            _gifDecoder = new GifBitmapDecoder(new Uri("pack://application:,,," + this.GifSource), BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+            _animation = new Int32Animation(0, _gifDecoder.Frames.Count - 1, new Duration(new TimeSpan(0, 0, 0, _gifDecoder.Frames.Count / 10, (int)((_gifDecoder.Frames.Count / 10.0 - _gifDecoder.Frames.Count / 10) * 1000))));
+            _animation.RepeatBehavior = RepeatBehavior.Forever;
+            this.Source = _gifDecoder.Frames[0];
+
+            _isInitialized = true;
+        }
+
+        static GifImage()
+        {
+            VisibilityProperty.OverrideMetadata(typeof(GifImage),
+                new FrameworkPropertyMetadata(VisibilityPropertyChanged));
+        }
+
+        private static void VisibilityPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((Visibility)e.NewValue == Visibility.Visible)
+            {
+                ((GifImage)sender).StartAnimation();
+            }
+            else
+            {
+                ((GifImage)sender).StopAnimation();
+            }
+        }
+
+        public static readonly DependencyProperty FrameIndexProperty =
+            DependencyProperty.Register("FrameIndex", typeof(int), typeof(GifImage), new UIPropertyMetadata(0, new PropertyChangedCallback(ChangingFrameIndex)));
+
+        static void ChangingFrameIndex(DependencyObject obj, DependencyPropertyChangedEventArgs ev)
+        {
+            var gifImage = obj as GifImage;
+            gifImage.Source = gifImage._gifDecoder.Frames[(int)ev.NewValue];
+        }
+
+        /// <summary>
+        /// Defines whether the animation starts on it's own
+        /// </summary>
+        public bool AutoStart
+        {
+            get { return (bool)GetValue(AutoStartProperty); }
+            set { SetValue(AutoStartProperty, value); }
+        }
+
+        public static readonly DependencyProperty AutoStartProperty =
+            DependencyProperty.Register("AutoStart", typeof(bool), typeof(GifImage), new UIPropertyMetadata(false, AutoStartPropertyChanged));
+
+        private static void AutoStartPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            if ((bool)e.NewValue)
+                (sender as GifImage).StartAnimation();
+        }
+
+        public string GifSource
+        {
+            get { return (string)GetValue(GifSourceProperty); }
+            set { SetValue(GifSourceProperty, value); }
+        }
+
+        public static readonly DependencyProperty GifSourceProperty =
+            DependencyProperty.Register("GifSource", typeof(string), typeof(GifImage), new UIPropertyMetadata(string.Empty, GifSourcePropertyChanged));
+
+        private static void GifSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            (sender as GifImage).Initialize();
+        }
+
+        /// <summary>
+        /// Starts the animation
+        /// </summary>
+        public void StartAnimation()
+        {
+            if (!_isInitialized)
+                this.Initialize();
+
+            BeginAnimation(FrameIndexProperty, _animation);
+        }
+
+        /// <summary>
+        /// Stops the animation
+        /// </summary>
+        public void StopAnimation()
+        {
+            BeginAnimation(FrameIndexProperty, null);
         }
     }
 

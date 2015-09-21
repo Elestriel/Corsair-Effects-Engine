@@ -205,13 +205,13 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool OptStartEffectsOnLoad {
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptStartMinimized {
             get {
-                return ((bool)(this["OptStartEffectsOnLoad"]));
+                return ((bool)(this["OptStartMinimized"]));
             }
             set {
-                this["OptStartEffectsOnLoad"] = value;
+                this["OptStartMinimized"] = value;
             }
         }
         
@@ -836,6 +836,30 @@ namespace Corsair_Effects_Engine.Properties {
             }
             set {
                 this["BackgroundBreatheStepTwoColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BackgroundImagePath {
+            get {
+                return ((string)(this["BackgroundImagePath"]));
+            }
+            set {
+                this["BackgroundImagePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0, 0, 0")]
+        public global::System.Drawing.Rectangle BackgroundImageRectangle {
+            get {
+                return ((global::System.Drawing.Rectangle)(this["BackgroundImageRectangle"]));
+            }
+            set {
+                this["BackgroundImageRectangle"] = value;
             }
         }
     }

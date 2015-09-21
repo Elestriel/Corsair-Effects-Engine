@@ -1,5 +1,4 @@
 ﻿- Make the heatmap update on changes, and not require a new keystroke.
-- Set floor for heatmap.
 - Audio capture
 - - Proper volume representation
 - - Automatic volume control based on peak
@@ -12,3 +11,6 @@
 - Static profiles.
 - Live keyboard preview.
 - Add a link to my website.
+- Support animated GIFs in Image mode.
+- Improve image selection box controls.
+- - Add expand/shrink handles on all four corners.

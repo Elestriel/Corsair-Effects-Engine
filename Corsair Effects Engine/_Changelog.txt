@@ -1,4 +1,13 @@
-﻿Build 0024
+﻿Build 0025
+- Implemented the following settings:
+- - Start with Windows.
+- - Start minimized.
+- - Launch CUE on exit.
+- Removed the Minimize instead of close option, as it is not needed and over-complicates things.
+- Fixed case for control box tooltips.
+- Implemented the Image background mode. Support for animated GIFs is coming soon.
+
+Build 0024
 - Built UI elements to support Spectro.
 - Built new Breathe background effect.
 - Reordered the background effects list to flow better.
