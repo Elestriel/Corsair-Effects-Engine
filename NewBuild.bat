@@ -3,15 +3,16 @@ cls
 
 set /p newVer="Build: " 
 mkdir "CEE-Build-%newVer%"
+mkdir "CEE-Build-%newVer%\Corsair Effects Engine"
 
-copy /y "Corsair Effects Engine\bin\Debug\Corsair Effects Engine.exe" "CEE-Build-%newVer%\Corsair Effects Engine.exe"
-copy /y "Corsair Effects Engine\bin\Debug\Corsair Effects Engine.exe.config" "CEE-Build-%newVer%\Corsair Effects Engine.exe.config"
-copy /y "Corsair Effects Engine\bin\Debug\NAudio.dll" "CEE-Build-%newVer%\NAudio.dll"
-copy /y "Corsair Effects Engine\bin\Debug\Xceed.Wpf.Toolkit.dll" "CEE-Build-%newVer%\Xceed.Wpf.Toolkit.dll"
-xcopy /s /i /y "Corsair Effects Engine\bin\Debug\CorsairDevices"  "CEE-Build-%newVer%\CorsairDevices"
+copy /y "Corsair Effects Engine\bin\Debug\Corsair Effects Engine.exe" "CEE-Build-%newVer%\Corsair Effects Engine\Corsair Effects Engine.exe"
+copy /y "Corsair Effects Engine\bin\Debug\Corsair Effects Engine.exe.config" "CEE-Build-%newVer%\Corsair Effects Engine\Corsair Effects Engine.exe.config"
+copy /y "Corsair Effects Engine\bin\Debug\NAudio.dll" "CEE-Build-%newVer%\Corsair Effects Engine\NAudio.dll"
+copy /y "Corsair Effects Engine\bin\Debug\Xceed.Wpf.Toolkit.dll" "CEE-Build-%newVer%\Corsair Effects Engine\Xceed.Wpf.Toolkit.dll"
+xcopy /s /i /y "Corsair Effects Engine\bin\Debug\CorsairDevices"  "CEE-Build-%newVer%\Corsair Effects Engine\CorsairDevices"
 
-copy /y "SelfUpdater\bin\Debug\SelfUpdater.exe" "CEE-Build-%newVer%\SelfUpdater.exe"
-copy /y "SelfUpdater\bin\Debug\SelfUpdater.exe.config" "CEE-Build-%newVer%\SelfUpdater.exe.config"
+copy /y "SelfUpdater\bin\Debug\SelfUpdater.exe" "CEE-Build-%newVer%\Corsair Effects Engine\SelfUpdater.exe"
+copy /y "SelfUpdater\bin\Debug\SelfUpdater.exe.config" "CEE-Build-%newVer%\Corsair Effects Engine\SelfUpdater.exe.config"
 
 
 mkdir "CEE-Build-%newVer%-Update"
