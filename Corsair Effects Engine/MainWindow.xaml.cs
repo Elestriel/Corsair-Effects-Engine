@@ -36,7 +36,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0027";
+        private const string VersionNumber = "0028";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -182,6 +182,9 @@ namespace Corsair_Effects_Engine
             //Dispatcher.BeginInvoke(new Action(() => PostLoadTasks()), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
         }
 
+        /// <summary>
+        /// Window post-load tasks.
+        /// </summary>
         private void Window_ContentRendered(object sender, EventArgs e)
         {
             UpdateStatusMessage.NewMessage(0, "Rendered");
@@ -1217,7 +1220,21 @@ namespace Corsair_Effects_Engine
 
             try
             {
-                ImageBrush newBrush = new ImageBrush(new BitmapImage(new Uri(Properties.Settings.Default.BackgroundImagePath)));
+                BitmapImage newImage = new BitmapImage(new Uri(Properties.Settings.Default.BackgroundImagePath));
+                double aspectRatio = newImage.Width / newImage.Height;
+                int originalCanvasHeight = 240;
+                int originalCanvasWidth = 459;
+                if (aspectRatio > 1.9125)
+                {
+                    BackgroundImageCanvas.Height = (int)(originalCanvasWidth * aspectRatio);
+                    BackgroundImageCanvas.Width = originalCanvasWidth;
+                }
+                else
+                {
+                    BackgroundImageCanvas.Width = (int)(originalCanvasHeight * aspectRatio);
+                    BackgroundImageCanvas.Height = originalCanvasHeight;
+                }
+                ImageBrush newBrush = new ImageBrush(newImage);
                 BackgroundImageCanvas.Background = newBrush;
             }
             catch { return false; }
@@ -1332,6 +1349,7 @@ namespace Corsair_Effects_Engine
         private void UpdateImagePreview(System.Drawing.Rectangle rect)
         {
             if (rect.Width < 1 && rect.Height < 1) { return; }
+            if (KeyboardMap.CanvasWidth == 0) { return; }
             // Adjust size of preview
             if (KeyboardMap.CanvasWidth > 0 && KeyboardMap.CanvasWidth != BackgroundImageResizedCanvas.Width)
             { BackgroundImageResizedCanvas.Width = KeyboardMap.CanvasWidth; };
@@ -1455,6 +1473,11 @@ namespace Corsair_Effects_Engine
         }
 
         #endregion Color Sliders and Picker
+
+        private void DonateButton_Click(object sender, RoutedEventArgs e)
+        {
+            System.Diagnostics.Process.Start("http://emily-maxwell.com/?page=donate");
+        }
         
         #endregion Pages
     }

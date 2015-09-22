@@ -1,4 +1,9 @@
-﻿Build 0027
+﻿Build 0028
+- Fixed aspect ratio of loaded images.
+- Fixed an issue that would cause the program to crash if an image was used without a keyboard selected.
+- By popular demand, added a link to my donation page in the program.
+
+Build 0027
 - Incremented the build number properly. -_-
 
 Build 0026
