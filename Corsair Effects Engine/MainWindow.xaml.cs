@@ -36,7 +36,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0030";
+        private const string VersionNumber = "0031";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;

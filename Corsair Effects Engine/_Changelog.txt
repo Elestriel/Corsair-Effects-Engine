@@ -1,4 +1,7 @@
-﻿Build 0030
+﻿Build 0031
+- New self-updater tests.
+
+Build 0030
 - Corrected a crash in the self-updater.
 
 Build 0029
