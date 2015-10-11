@@ -54,8 +54,9 @@ namespace Corsair_Effects_Engine
         // NAudio Stuff
         private static WasapiCapture audioCapture;
         private static SampleAggregator sampleAggregator;
-        private static OldSampleAggregator oldSampleAggregator;
-        private static int fftLength;
+        private static int captureSampleRate;
+        private static int lowestBin;
+        private static int highestBin;
 
         public Engine()
         {
@@ -65,6 +66,8 @@ namespace Corsair_Effects_Engine
         public void Start()
         {
             UpdateStatusMessage.NewMessage(5, "Initializing Engine.");
+
+            bool NoEffects = false;
 
             EngineComponents.InitDevices DeviceInit = new EngineComponents.InitDevices();
             EngineComponents.DeviceOutput Output = new EngineComponents.DeviceOutput();
@@ -124,12 +127,30 @@ namespace Corsair_Effects_Engine
 
                     // Output frame to keyboard preview
 
-                    // Output frame to devices
-                    if (Properties.Settings.Default.Opt16MColours)
-                    { Output.UpdateKeyboard16M(KeyboardPointer, Keys); }
-                    else { Output.UpdateKeyboard(KeyboardPointer, Keys); };
+                    // As long as an effect is enabled, output a frame
+                    if (Properties.Settings.Default.BackgroundEffectEnabled ||
+                         Properties.Settings.Default.ForegroundEffectEnabled ||
+                         Properties.Settings.Default.StaticProfileEnabled)
+                    {
+                        NoEffects = false;
 
-                    Output.UpdateMouse(MousePointer, Keys);
+                        // Output frame to devices
+                        if (Properties.Settings.Default.Opt16MColours)
+                        { Output.UpdateKeyboard16M(KeyboardPointer, Keys); }
+                        else { Output.UpdateKeyboard(KeyboardPointer, Keys); };
+
+                        Output.UpdateMouse(MousePointer, Keys);
+                    }
+                    else
+                    {
+                        if (!NoEffects) // Output a black frame
+                        {
+                            ClearAllKeys();
+                            Output.UpdateKeyboard(KeyboardPointer, Keys);
+                            Output.UpdateMouse(MousePointer, Keys);
+                            NoEffects = true;
+                        }
+                    }
 
                     //UpdateStatusMessage.NewMessage(5, "Engine MainLoop");
                     Thread.Sleep(Properties.Settings.Default.OptFrameDelay);
@@ -316,7 +337,7 @@ namespace Corsair_Effects_Engine
                         #endregion Rainbow Code
                         break;
                     case "Image":
-                        if (MainWindow.BackgroundImageSelection.OutputImage != null) { BitmapToKeyboard(MainWindow.BackgroundImageSelection.OutputImage); }
+                        if (MainWindow.BackgroundImageSelection.OutputImage != null) { BitmapToKeyboard(MainWindow.BackgroundImageSelection.OutputImage, "Background"); }
                         break;
                 }
             }
@@ -568,10 +589,11 @@ namespace Corsair_Effects_Engine
         }
 
         #region NAudio Methods
-        
-        private static void NAudio_Initialize()
+
+        private void NAudio_Initialize()
         {
             MMDeviceEnumerator deviceEnum = new MMDeviceEnumerator();
+            audioCapture = null;
 
             List<MMDevice> AudioDeviceList;
             if (Properties.Settings.Default.OptAudioFromInput)
@@ -579,58 +601,32 @@ namespace Corsair_Effects_Engine
             else
             { AudioDeviceList = new List<MMDevice>(deviceEnum.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active).ToArray()); }
 
-            MMDevice captureDevice = deviceEnum.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia);
-
             foreach (MMDevice dev in AudioDeviceList)
             {
-                if ((dev.FriendlyName == Properties.Settings.Default.AudioOutputDevice &&
-                    Properties.Settings.Default.OptAudioFromOutput) ||
-                    (dev.FriendlyName == Properties.Settings.Default.AudioInputDevice &&
-                    Properties.Settings.Default.OptAudioFromInput))
-                    { captureDevice = dev; };
+                if (dev.FriendlyName == Properties.Settings.Default.AudioOutputDevice &&
+                    Properties.Settings.Default.OptAudioFromOutput) 
+                {
+                    audioCapture = new WasapiLoopbackCapture(dev);
+                }
+                else if (dev.FriendlyName == Properties.Settings.Default.AudioInputDevice &&
+                    Properties.Settings.Default.OptAudioFromInput)
+                { audioCapture = new WasapiCapture(dev); }
             }
 
-            switch (Properties.Settings.Default.OptAudioFromOutput)
-            {
-                case true:
-                    audioCapture = new WasapiLoopbackCapture();
-                    break;
-                case false:
-                    audioCapture = new WasapiCapture();
-                    //audioCapture.Device = captureDevice;
-                    break;
-                default:
-                    audioCapture = new WasapiLoopbackCapture();
-                    break;
-            }
-
-            UpdateStatusMessage.NewMessage(6, captureDevice.FriendlyName);
-            //audioCapture.Initialize();
-
+            if (audioCapture == null) { return; };
+            
             UpdateStatusMessage.NewMessage(0, audioCapture.WaveFormat.Channels.ToString());
-            int captureSampleRate = audioCapture.WaveFormat.SampleRate;
-            switch (captureSampleRate)
-            {
-                case 48000: fftLength = 1024; break;
-                case 96000: fftLength = 2048; break;
-                case 192000: fftLength = 4096; break;
-                default: fftLength = 1024; break;
-            }
+            captureSampleRate = audioCapture.WaveFormat.SampleRate;
 
-            sampleAggregator = new SampleAggregator(fftLength);
-            sampleAggregator.PerformFFT = true;
+            sampleAggregator = new SampleAggregator(Int32.Parse(Properties.Settings.Default.FftSize));
             sampleAggregator.FftCalculated += new EventHandler<FftEventArgs>(FftCalculated);
 
-            oldSampleAggregator = new OldSampleAggregator(fftLength);
-            oldSampleAggregator.PerformFFT = true;
-            oldSampleAggregator.OldFftCalculated += new EventHandler<OldFftEventArgs>(OldFftCalculated);
-
             audioCapture.DataAvailable += new EventHandler<WaveInEventArgs>(NAudio_DataAvailable);
-
+            
             audioCapture.StartRecording();
         }
 
-        private static void NAudio_DataAvailable(object sender, WaveInEventArgs e)
+        private void NAudio_DataAvailable(object sender, WaveInEventArgs e)
         {
             byte[] buffer = e.Buffer;
             int bytesRecorded = e.BytesRecorded;
@@ -638,26 +634,19 @@ namespace Corsair_Effects_Engine
 
             for (int index = 0; index < bytesRecorded; index += bufferIncrement)
             {
-                float sample32 = BitConverter.ToSingle(buffer, index);
-                if (!Properties.Settings.Default.ForegroundSpectroUseOldMethod)
-                {
-                    sampleAggregator.Add(sample32);
-                }
-                else
-                {
-                    oldSampleAggregator.Add(sample32);
-                }
+                sampleAggregator.Add(BitConverter.ToSingle(buffer, index), 
+                                     BitConverter.ToSingle(buffer, index + 4));
             }
         }
 
-        private static void NAudio_StopCapture()
+        private void NAudio_StopCapture()
         {
             UpdateStatusMessage.NewMessage(6, "Stopping Capture");
             try { audioCapture.StopRecording(); }
             catch { }
         }
 
-        private static void NAudio_Dispose()
+        private void NAudio_Dispose()
         {
             if (audioCapture != null)
             {
@@ -668,57 +657,102 @@ namespace Corsair_Effects_Engine
 
             try { sampleAggregator.FftCalculated -= FftCalculated; }
             catch { }
-            try { oldSampleAggregator.OldFftCalculated -= OldFftCalculated; }
-            catch { }
 
             UpdateStatusMessage.NewMessage(6, "Capture Destroyed");
         }
 
-        private static void FftCalculated(object sender, FftEventArgs e)
+        private int CalculateBinPos(int col, int first, int last, int maxWidth)
         {
-            /*
-            int CanvasWidth = KeyboardMap.CanvasWidth;
-            double fftAmplitude = 0;
-            double fftFrequency = 0;
+            double multiplier;
+            multiplier = ((double)col - (double)first) / ((double)last - 1 - (double)first);
 
-            int XPos = 0;
-            Bitmap bmp = new Bitmap(CanvasWidth, 7);
-            GraphicsPath fftPath = new GraphicsPath(FillMode.Winding);
+            if (Properties.Settings.Default.FftUseLogX)
+            { return (int)(multiplier * maxWidth); }
+            else
+            {
+                if (multiplier <= 0.01) { return 0; }
+                else if (multiplier >= 1) { return 1; }
+                else { return (int)((1 + Math.Log(multiplier, 100)) * maxWidth); }
+            }
+        }
+
+        private int FindLowestBin(int inputFrequency, int sampleCount, int minFrequency)
+        {
+            int freq;
+            for (int b = 0; b < sampleCount / 2; b++)
+            {
+                freq = b * inputFrequency / sampleCount;
+                if (freq >= minFrequency) { return b; }
+            }
+            return 0;
+        }
+
+        private int FindHighestBin(int inputFrequency, int sampleCount, int maxFrequency)
+        {
+            int freq;
+            for (int b = sampleCount / 2; b > 0; b--)
+            {
+                freq = b * inputFrequency / sampleCount;
+                if (freq <= maxFrequency) { return b; }
+            }
+            return sampleCount / 2;
+
+        }
+
+        private double GetYPosLog(Complex c, int maxWidth)
+        {
+            double intensityDB = 10 * Math.Log10(Math.Sqrt(c.X * c.X + c.Y * c.Y));
+            double minDB = (double)Properties.Settings.Default.FftAmplitudeMin;
+            double maxDB = (double)Properties.Settings.Default.FftAmplitudeMax;
+
+            if (intensityDB < minDB) { intensityDB = minDB; }
+            if (intensityDB > maxDB) { intensityDB = maxDB; }
+
+            // Linear
+            double intensityPercent = (intensityDB - maxDB) / (minDB - maxDB);
+
+            // Logarithmic
+            if (Properties.Settings.Default.FftUseLogY)
+            {
+                if (intensityPercent != 0)
+                {
+                    intensityPercent = 1 + Math.Log(intensityPercent, 100);
+                }
+            }
+            double yPos = intensityPercent * 7;
+            return yPos;
+        }
+
+        private void AddResult(int index, double power, System.Drawing.Drawing2D.GraphicsPath path)
+        {
+            int binToUse = CalculateBinPos(index, lowestBin, highestBin, KeyboardMap.CanvasWidth);
+
+            path.AddLine(binToUse, (int)power, binToUse, (int)power);
+        }
+
+        private void FftCalculated(object sender, FftEventArgs e)
+        {
+            System.Drawing.Drawing2D.GraphicsPath fftPath;
+            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(KeyboardMap.CanvasWidth, 7);
+            fftPath = new System.Drawing.Drawing2D.GraphicsPath(System.Drawing.Drawing2D.FillMode.Winding);
 
             fftPath.AddLine(0, bmp.Height, 0, bmp.Height);
 
-            bool useLogAmplitude = true;
+            lowestBin = FindLowestBin(captureSampleRate, e.Result.Length, Properties.Settings.Default.FftFrequencyMin);
+            highestBin = FindHighestBin(captureSampleRate, e.Result.Length, Properties.Settings.Default.FftFrequencyMax);
+            int binsPerPoint = Int32.Parse(Properties.Settings.Default.FftBinsPerPoint);
 
-
-            #region NewMethod
-            for (int i = 1; i < e.Result.Length / 2; i++)
+            for (int n = lowestBin; n < highestBin; n += binsPerPoint)
             {
-                fftAmplitude = Math.Sqrt(Math.Pow(e.Result[i].X, 2) + Math.Pow(e.Result[i].Y, 2));
-                fftFrequency = i * audioCapture.WaveFormat.SampleRate / e.Result.Length;
-
-                XPos = (int)(fftFrequency / (audioCapture.WaveFormat.SampleRate / 2d) * CanvasWidth);
-                if (XPos > CanvasWidth) { XPos = CanvasWidth; };
-                if (XPos < 0) { XPos = 0; };
-                    
-                if (useLogAmplitude)
+                // Average the bins
+                double yPos = 0;
+                for (int b = 0; b < binsPerPoint; b++)
                 {
-                    // Logarithmic Amplitude
-                    if (fftAmplitude > 0) { fftAmplitude = Math.Log10(fftAmplitude); };
-                    fftAmplitude = Math.Pow(fftAmplitude, -1);
-                    fftAmplitude *= 400;
-                    fftAmplitude += 100;
-                    if (fftAmplitude > 0) { fftAmplitude = 0; };
-                    fftPath.AddLine((Single)XPos, (Single)(bmp.Height + fftAmplitude), (Single)XPos, (Single)(bmp.Height + fftAmplitude));
+                    yPos += GetYPosLog(e.Result[n + b], KeyboardMap.CanvasWidth);
                 }
-                else
-                {
-                    // Linear Amplitude
-                    fftAmplitude *= 4096;
-                    if (fftAmplitude < 0) { fftAmplitude = 0; };
-                    fftPath.AddLine((Single)XPos, (Single)(bmp.Height - fftAmplitude), (Single)XPos, (Single)(bmp.Height - fftAmplitude));
-                }
+                //AddResult(n / binsPerPoint, yPos / binsPerPoint, (Single)XPos);
+                AddResult(n, yPos / binsPerPoint, fftPath);
             }
-            #endregion NewMethod
 
             // Add end point.
             fftPath.AddLine(bmp.Width, bmp.Height, bmp.Width, bmp.Height);
@@ -726,24 +760,21 @@ namespace Corsair_Effects_Engine
             // Close image
             fftPath.CloseFigure();
 
-            using (Graphics gr = Graphics.FromImage(bmp))
+            using (System.Drawing.Graphics gr = System.Drawing.Graphics.FromImage(bmp))
+            {
+                gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                Color c = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
+                using (System.Drawing.SolidBrush br = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B)))
                 {
-                    gr.SmoothingMode = SmoothingMode.HighQuality;
-                    using (SolidBrush br = new SolidBrush(System.Drawing.Color.FromArgb(255, 255, 0, 128)))
-                    //using (System.Drawing.Drawing2D.LinearGradientBrush br = new System.Drawing.Drawing2D.LinearGradientBrush(
-                    //    new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Color.Red, System.Drawing.Color.Pink, 
-                    //    System.Drawing.Drawing2D.LinearGradientMode.Vertical))
-                    {
-                        gr.FillPath(br, fftPath);
-                    }
-                    //gr.DrawPath(new System.Drawing.Pen(System.Drawing.Color.FromArgb(255, 128, 0, 255)), fftPath);
+                    gr.FillPath(br, fftPath);
                 }
-
-            BitmapToKeyboard(bmp);
-            */
+            }
+            BitmapToKeyboard(bmp, "Spectro");
         }
-        
-        private static void BitmapToKeyboard(System.Drawing.Bitmap bmp)
+
+        #endregion NAudio Methods
+
+        private static void BitmapToKeyboard(System.Drawing.Bitmap bmp, string keySet)
         {
             int key;
             for (int c = 0; c < bmp.Width; c++)
@@ -752,72 +783,17 @@ namespace Corsair_Effects_Engine
                 {
                     key = KeyboardMap.LedMatrix[r, c];
                     if (key >= 0 && key < 144) {
-                    BackgroundKeys[key].KeyColor = new LightSingle(lightColor: Color.FromArgb(bmp.GetPixel(c, r).A,
-                                                                                            bmp.GetPixel(c, r).R,
-                                                                                            bmp.GetPixel(c, r).G,
-                                                                                            bmp.GetPixel(c, r).B));
+                        Color keyCol = Color.FromArgb(bmp.GetPixel(c, r).A,
+                                                      bmp.GetPixel(c, r).R,
+                                                      bmp.GetPixel(c, r).G,
+                                                      bmp.GetPixel(c, r).B);
+                        if (keySet == "Background") { BackgroundKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
+                        if (keySet == "Spectro") { SpectroKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
+
                     }
                 }
             }
         }
-
-        private static void OldFftCalculated(object sender, OldFftEventArgs e)
-        {
-            int CanvasWidth = KeyboardMap.CanvasWidth;
-
-            byte[] fftData = new byte[fftLength / 2];
-            for (int i = 0; i < fftLength / 2; i++)
-            {
-                double fftMag = Math.Sqrt(Math.Pow(e.Result[i].X, 2) + Math.Pow(e.Result[i].Y, 2));
-                fftData[i] = (byte)fftMag;
-            }
-
-            byte[] compData = CompressFftToKeyboard(fftData, CanvasWidth);
-            int key = 0;
-
-            for (int c = 0; c < CanvasWidth; c++)
-            {
-                for (int r = 0; r < 7; r++)
-                {
-                    key = KeyboardMap.LedMatrix[r, c];
-                    if (key > 0 && key < 144)
-                    {
-                        if ((int)compData[c] > ((32 / (1 + (c * .95))) * (7 - r)))
-                        { SpectroKeys[key].KeyColor = new LightSingle(lightColor: (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor)); }
-                        else
-                        { SpectroKeys[key].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0)); }
-                    }
-                }
-            }
-        }
-
-        private static byte[] CompressFftToKeyboard(byte[] fftData, int kWidth)
-        {
-            byte[] compressedData = new byte[kWidth];
-
-            int tempCalc;
-            double iPower;
-            string tempStr = "";
-            int prevCalc = 0;
-
-            for (int i = 0; i < kWidth; i++)
-            {
-                iPower = Math.Pow((double)i, 2);
-                float keyboardSizeMultiplier = (float)(Math.Pow(KeyboardMap.CanvasWidth, 2));
-                tempCalc = (int)((330f / keyboardSizeMultiplier) * iPower) + 1;
-
-                while (prevCalc >= tempCalc) { tempCalc += 1; };
-
-                compressedData[i] = fftData[tempCalc];
-                prevCalc = tempCalc;
-
-                tempStr += tempCalc + ", ";
-            }
-
-            return compressedData;
-        }
-        
-        #endregion NAudio Methods
     }
 
     public class RawInputKeyCodes

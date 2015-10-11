@@ -39,7 +39,7 @@
         <!-- Left Column -->
         <Grid x:Name="GridControls" Grid.Column="0" Margin="0,0,0,10">
             <CheckBox x:Name="ForegroundCheck" Content="Foreground Effects" Margin="10,10,10,0" VerticalAlignment="Top" Height="16" ToolTip="Display foreground effects?"
-                      IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundEffectEnabled, Mode=TwoWay}"/>
+                      IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundEffectEnabled, Mode=TwoWay}" Checked="ForegroundCheck_Checked"/>
             <ComboBox x:Name="ForegroundComboBox" Margin="10,26,10,0" VerticalAlignment="Top" Height="24" ToolTip="The foreground effects to display."
                           ItemsSource="{DynamicResource ForegroundEffectsList}"
                           SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundEffect, Mode=TwoWay}"/>
@@ -105,7 +105,7 @@
             </Grid>
 
             <!-- Settings -->
-            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Visible">
+            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Hidden">
                 <CheckBox x:Name="CheckMinimizeToTray" Content="Minimize to System Tray" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
                           ToolTip="Minimize to the System Tray instead of the Task Bar."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeToTray, Mode=TwoWay}"/>
@@ -147,7 +147,7 @@
                 <Button x:Name="DonateButton" Content="Make a donation" HorizontalAlignment="Left" Margin="380,271,0,0" VerticalAlignment="Top" Width="auto"
                     Style="{StaticResource HyperlinkLikeButton}" Click="DonateButton_Click"/>
             </Grid>
-            <Grid x:Name="GridRightSettings" Grid.Column="1" Visibility="Hidden">
+            <Grid x:Name="GridRightSettings" Grid.Column="1" Visibility="Visible">
                 <Label Content="Keyboard Model" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
                 <ComboBox x:Name="KeyboardModelComboBox" Margin="10,26,10,0" VerticalAlignment="Top" ToolTip="Select the keyboard you wish to use."
                           ItemsSource="{DynamicResource KeyboardModelList}"
@@ -190,7 +190,7 @@
             </Grid>
 
             <!-- Edit Grid -->
-            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Hidden" Margin="0,0,0,0">
+            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Visible" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="296*"/>
                     <ColumnDefinition Width="200*"/>
@@ -225,7 +225,7 @@
                 </Grid>
 
                 <!-- Foreground: Spectrograph -->
-                <Grid x:Name="GridForegroundSpectro" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Visible" Grid.Row="1">
                     <Label Content="Colour" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <ComboBox x:Name="ForegroundSpectroStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" Height="24" 
                                   ToolTip="The style of light to be used for this effect."
@@ -236,9 +236,39 @@
                                   Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
                                   HorizontalAlignment="Left" Margin="165,28,0,0" VerticalAlignment="Top" Width="50" 
                                   ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
-                    <Label Content="Sensitivity" Grid.Row="0" Grid.Column="0" Margin="10,67,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
-                    <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="99,67,0,0" VerticalAlignment="Top" Width="61" Maximum="100" Minimum="0"
-                                   Value="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroOldVolume, Mode=TwoWay}"/>
+                    <Label Content="FFT Size" Grid.Row="0" Grid.Column="0" Margin="42,53,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <ComboBox HorizontalAlignment="Left" Margin="99,55,0,0" VerticalAlignment="Top" Width="61"
+                              ItemsSource="{DynamicResource FftSizeList}"
+                              SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=FftSize, Mode=TwoWay}"/>
+                    <Label Content="Bins per Point" Grid.Row="0" Grid.Column="0" Margin="11,79,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <ComboBox HorizontalAlignment="Left" Margin="99,81,0,0" VerticalAlignment="Top" Width="61"
+                    	ItemsSource="{DynamicResource FftBinsPerPointList}"
+                    	SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=FftBinsPerPoint, Mode=TwoWay}"/>
+                    <Button x:Name="ApplySpectroChangesButton" Content="Apply" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Bottom" Width="75"
+                            Style="{StaticResource MetroButton}" Click="ApplySpectroChangesButton_Click"/>
+                    <Label Content="Decibel Range" Grid.Row="0" Grid.Column="0" Margin="9,107,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:IntegerUpDown x:Name="dbMinUpDown" HorizontalAlignment="Left" Margin="99,107,0,0" VerticalAlignment="Top" Width="61" Maximum="-10" Minimum="-120"
+                    	Value="{Binding FftAmplitudeMin, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ValueChanged="dbMinUpDown_ValueChanged"/>
+                    <Label Content="to" Grid.Row="0" Grid.Column="0" Margin="165,107,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:IntegerUpDown x:Name="dbMaxUpDown" HorizontalAlignment="Left" Margin="191,107,0,0" VerticalAlignment="Top" Width="61" Maximum="0" Minimum="-110"
+                    	Value="{Binding FftAmplitudeMax, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ValueChanged="dbMaxUpDown_ValueChanged"/>
+                    <xctk:IntegerUpDown x:Name="freqMinUpDown" HorizontalAlignment="Left" Margin="99,137,0,0" VerticalAlignment="Top" Width="61" Maximum="19900" Minimum="0"
+                    	Value="{Binding FftFrequencyMin, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ValueChanged="freqMinUpDown_ValueChanged" Increment="10"/>
+                    <Label Content="to" Grid.Row="0" Grid.Column="0" Margin="165,136,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <Label Content="Frequencies" Grid.Row="0" Grid.Column="0" Margin="21,136,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:IntegerUpDown x:Name="freqMaxUpDown" HorizontalAlignment="Left" Margin="191,137,0,0" VerticalAlignment="Top" Width="61" Maximum="20000" Minimum="100"
+                    	Value="{Binding FftFrequencyMax, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ValueChanged="freqMaxUpDown_ValueChanged" Increment="10"/>
+                    <Label Content="Hz" Grid.Row="0" Grid.Column="0" Margin="257,136,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <Label Content="Window" Grid.Row="0" Grid.Column="0" Margin="10,167,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <ComboBox x:Name="ForegroundSpectroStyle_Copy" Grid.Row="0" Grid.Column="0" Margin="10,189,0,0" VerticalAlignment="Top" Height="24" 
+                    	ToolTip="The style of light to be used for this effect."
+                    	ItemsSource="{DynamicResource FftWindowingModeList}"
+                    	SelectedValue="{Binding FftWindowingMode, Mode=TwoWay, Source={x:Static p:Settings.Default}}"
+                    	HorizontalAlignment="Left" Width="150" SelectionChanged="ForegroundRandomLightsStyle_SelectionChanged"/>
+                    <CheckBox Content="Logarithmic Volume" HorizontalAlignment="Left" Margin="11,218,0,0" VerticalAlignment="Top"
+                              IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=FftUseLogY, Mode=TwoWay}"/>
+                    <CheckBox Content="Logarithmic Frequencies" HorizontalAlignment="Left" Margin="11,238,0,0" VerticalAlignment="Top"
+                              IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=FftUseLogX, Mode=TwoWay}"/>
                 </Grid>
 
                 <!-- Foreground: Random Lights -->

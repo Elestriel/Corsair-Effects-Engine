@@ -745,18 +745,6 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ForegroundSpectroUseOldMethod {
-            get {
-                return ((bool)(this["ForegroundSpectroUseOldMethod"]));
-            }
-            set {
-                this["ForegroundSpectroUseOldMethod"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("#FFFF0080")]
         public string ForegroundSpectroColor {
             get {
@@ -860,6 +848,114 @@ namespace Corsair_Effects_Engine.Properties {
             }
             set {
                 this["BackgroundImageRectangle"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-20")]
+        public int FftAmplitudeMax {
+            get {
+                return ((int)(this["FftAmplitudeMax"]));
+            }
+            set {
+                this["FftAmplitudeMax"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-60")]
+        public int FftAmplitudeMin {
+            get {
+                return ((int)(this["FftAmplitudeMin"]));
+            }
+            set {
+                this["FftAmplitudeMin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public string FftBinsPerPoint {
+            get {
+                return ((string)(this["FftBinsPerPoint"]));
+            }
+            set {
+                this["FftBinsPerPoint"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1024")]
+        public string FftSize {
+            get {
+                return ((string)(this["FftSize"]));
+            }
+            set {
+                this["FftSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Hann")]
+        public string FftWindowingMode {
+            get {
+                return ((string)(this["FftWindowingMode"]));
+            }
+            set {
+                this["FftWindowingMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("17000")]
+        public int FftFrequencyMax {
+            get {
+                return ((int)(this["FftFrequencyMax"]));
+            }
+            set {
+                this["FftFrequencyMax"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        public int FftFrequencyMin {
+            get {
+                return ((int)(this["FftFrequencyMin"]));
+            }
+            set {
+                this["FftFrequencyMin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FftUseLogX {
+            get {
+                return ((bool)(this["FftUseLogX"]));
+            }
+            set {
+                this["FftUseLogX"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool FftUseLogY {
+            get {
+                return ((bool)(this["FftUseLogY"]));
+            }
+            set {
+                this["FftUseLogY"] = value;
             }
         }
     }

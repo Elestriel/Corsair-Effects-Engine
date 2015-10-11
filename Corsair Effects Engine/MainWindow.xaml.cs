@@ -36,7 +36,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0028";
+        private const string VersionNumber = "0030";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -172,6 +172,7 @@ namespace Corsair_Effects_Engine
                     break;
                 case "K70-RGB":
                 case "STRAFE":
+                case "STRAFE-RGB":
                     KeyboardMap.CanvasWidth = 92;
                     break;
                 case "K95-RGB":
@@ -321,6 +322,7 @@ namespace Corsair_Effects_Engine
                 case "K70-RGB": DeviceHID.Keyboard = 0x1B13; break;
                 case "K95-RGB": DeviceHID.Keyboard = 0x1B11; break;
                 case "STRAFE": DeviceHID.Keyboard = 0x1B15; break;
+                case "STRAFE-RGB": DeviceHID.Keyboard = 0x1B20; break;
                 default: DeviceHID.Keyboard = 0x0; break;
             }
 
@@ -1318,8 +1320,8 @@ namespace Corsair_Effects_Engine
 
                     rect = new System.Drawing.Rectangle(PX, PY, PW, PH);
                 }
-
                 DrawRectangle(rect);
+                BackgroundImageSelection.NewImage.Dispose();
             }
         }
 
@@ -1333,17 +1335,20 @@ namespace Corsair_Effects_Engine
                 gr.FillRectangle(brush, rect);
                 gr.Dispose();
             }
-
+            
             IntPtr hBitmap = BackgroundImageSelection.NewImage.GetHbitmap();
             try
             {
+                
                 ImageSource source = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(hBitmap, IntPtr.Zero, Int32Rect.Empty, System.Windows.Media.Imaging.BitmapSizeOptions.FromEmptyOptions());
                 ImageBrush newBrush = new ImageBrush(source);
+
                 BackgroundImageCanvas.Background = newBrush;
                 UpdateImagePreview(rect);
             }
             finally
             { DeleteObject(hBitmap); }
+
         }
 
         private void UpdateImagePreview(System.Drawing.Rectangle rect)
@@ -1373,6 +1378,7 @@ namespace Corsair_Effects_Engine
                     wrapMode.SetWrapMode(System.Drawing.Drawing2D.WrapMode.TileFlipXY);
                     graphics.DrawImage(BackgroundImageSelection.OriginalImage, destRect, rect, System.Drawing.GraphicsUnit.Pixel);
                 }
+                graphics.Dispose();
             }
 
             IntPtr hBitmap = destImage.GetHbitmap();
@@ -1385,6 +1391,9 @@ namespace Corsair_Effects_Engine
             }
             finally
             { DeleteObject(hBitmap); }
+
+            destImage.Dispose();
+
         }
         
         #endregion Page: BackgroundEdit: Image
@@ -1480,6 +1489,66 @@ namespace Corsair_Effects_Engine
         }
         
         #endregion Pages
+
+        private void ForegroundCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            if (Properties.Settings.Default.ForegroundEffect == "Spectrograph")
+            {
+                newEngine.RestartEngine = true;
+            }
+        }
+
+        private void ApplySpectroChangesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Properties.Settings.Default.ForegroundEffect == "Spectrograph")
+            {
+                newEngine.RestartEngine = true;
+            }
+        }
+
+        private void dbMinUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (Properties.Settings.Default.FftAmplitudeMin > Properties.Settings.Default.FftAmplitudeMax - 10)
+            {
+                if (Properties.Settings.Default.FftAmplitudeMin <= -10)
+                { Properties.Settings.Default.FftAmplitudeMax = Properties.Settings.Default.FftAmplitudeMin + 10; }
+                else
+                { Properties.Settings.Default.FftAmplitudeMin = -10; }
+            }
+        }
+
+        private void dbMaxUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (Properties.Settings.Default.FftAmplitudeMax < Properties.Settings.Default.FftAmplitudeMin + 10)
+            {
+                if (Properties.Settings.Default.FftAmplitudeMax >= -110)
+                { Properties.Settings.Default.FftAmplitudeMin = Properties.Settings.Default.FftAmplitudeMax - 10; }
+                else
+                { Properties.Settings.Default.FftAmplitudeMax = -110; }
+            }
+        }
+
+        private void freqMinUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (Properties.Settings.Default.FftFrequencyMin > Properties.Settings.Default.FftFrequencyMax - 100)
+            {
+                if (Properties.Settings.Default.FftFrequencyMin <= 19900)
+                { Properties.Settings.Default.FftFrequencyMax = Properties.Settings.Default.FftFrequencyMin + 100; }
+                else
+                { Properties.Settings.Default.FftFrequencyMin = 19900; }
+            }
+        }
+
+        private void freqMaxUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (Properties.Settings.Default.FftFrequencyMax < Properties.Settings.Default.FftFrequencyMin + 100)
+            {
+                if (Properties.Settings.Default.FftFrequencyMax >= 100)
+                { Properties.Settings.Default.FftFrequencyMin = Properties.Settings.Default.FftFrequencyMax - 100; }
+                else
+                { Properties.Settings.Default.FftFrequencyMax = 100; }
+            }
+        }
     }
 
     #region Type Converters

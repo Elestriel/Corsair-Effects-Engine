@@ -1,4 +1,19 @@
-﻿Build 0028
+﻿Build 0030
+- Corrected a crash in the self-updater.
+
+Build 0029
+- Added support for the Strafe RGB.
+- When no effects are enabled, nothing is sent to the devices. This allows CUE to work while CEE is stopped.
+- Redesigned the inner workings of the FFT process. The following options can now be chosen:
+- - FFT Size (changing this requires you to hit "Apply")
+- - Bins per point
+- - Windowing type
+- - Minimum and maximum dB response levels
+- - Minimum and maximum frequencies to display
+- - Color (Special effects such as rainbow are coming, but blending with the background does work)
+- - Logarithmic or linear representation of frequencies or volumes
+
+Build 0028
 - Fixed aspect ratio of loaded images.
 - Fixed an issue that would cause the program to crash if an image was used without a keyboard selected.
 - By popular demand, added a link to my donation page in the program.

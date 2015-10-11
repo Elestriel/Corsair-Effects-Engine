@@ -182,9 +182,6 @@
     <Setting Name="ForegroundSpectroOldVolume" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">30</Value>
     </Setting>
-    <Setting Name="ForegroundSpectroUseOldMethod" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="ForegroundSpectroColor" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FFFF0080</Value>
     </Setting>
@@ -211,6 +208,33 @@
     </Setting>
     <Setting Name="BackgroundImageRectangle" Type="System.Drawing.Rectangle" Scope="User">
       <Value Profile="(Default)">0, 0, 0, 0</Value>
+    </Setting>
+    <Setting Name="FftAmplitudeMax" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-20</Value>
+    </Setting>
+    <Setting Name="FftAmplitudeMin" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-60</Value>
+    </Setting>
+    <Setting Name="FftBinsPerPoint" Type="System.String" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="FftSize" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1024</Value>
+    </Setting>
+    <Setting Name="FftWindowingMode" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Hann</Value>
+    </Setting>
+    <Setting Name="FftFrequencyMax" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">17000</Value>
+    </Setting>
+    <Setting Name="FftFrequencyMin" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">60</Value>
+    </Setting>
+    <Setting Name="FftUseLogX" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="FftUseLogY" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -397,7 +397,7 @@
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
             <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
-            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="MinWidth" Value="60"/>
             <Setter Property="MinHeight" Value="20"/>
             <Setter Property="Background" Value="{StaticResource AccentColorBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource TextColorBrush}"/>
@@ -791,6 +791,71 @@
             </Setter>
         </Style>
 
+
+        <!-- XCTK DoubleUpDown -->
+        <Style x:Key="{x:Type xctk:DoubleUpDown}" TargetType="{x:Type xctk:DoubleUpDown}">
+            <Setter Property="Background" Value="{StaticResource ControlBackgroundColorBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextColorBrush}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource {ComponentResourceKey ResourceId=ControlNormalBorderKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Right"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="TextAlignment" Value="Right"/>
+            <Setter Property="WatermarkTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <ContentControl Content="{Binding}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Focusable="False" Margin="0,0,3,0"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type xctk:DoubleUpDown}">
+                        <xctk:ButtonSpinner x:Name="PART_Spinner" AllowSpin="{Binding AllowSpin, RelativeSource={RelativeSource TemplatedParent}}" 
+                                            BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+                                            Background="{TemplateBinding Background}" IsTabStop="False" 
+                                            ShowButtonSpinner="{Binding ShowButtonSpinner, RelativeSource={RelativeSource TemplatedParent}}" 
+                                            Style="{DynamicResource ButtonSpinnerStyle}">
+                            <xctk:WatermarkTextBox x:Name="PART_TextBox" 
+                                                   AutoMoveFocus="{Binding AutoMoveFocus, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                   AutoSelectBehavior="{Binding AutoSelectBehavior, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                   AcceptsReturn="False" BorderThickness="0" Background="{TemplateBinding Background}" 
+                                                   ContextMenu="{TemplateBinding ContextMenu}" Foreground="{TemplateBinding Foreground}" 
+                                                   FontWeight="{TemplateBinding FontWeight}" FontStyle="{TemplateBinding FontStyle}" 
+                                                   FontStretch="{TemplateBinding FontStretch}" FontSize="{TemplateBinding FontSize}" 
+                                                   FontFamily="{TemplateBinding FontFamily}" 
+                                                   HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                                   IsTabStop="{TemplateBinding IsTabStop}" 
+                                                   IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                   MinWidth="20" Padding="{TemplateBinding Padding}" 
+                                                   SelectAllOnGotFocus="{Binding SelectAllOnGotFocus, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                   TextAlignment="{Binding TextAlignment, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                   TextWrapping="NoWrap" TabIndex="{TemplateBinding TabIndex}" 
+                                                   VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                                   WatermarkTemplate="{Binding WatermarkTemplate, RelativeSource={RelativeSource TemplatedParent}}" 
+                                                   Watermark="{Binding Watermark, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </xctk:ButtonSpinner>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="BorderBrush" 
+                                        Value="{DynamicResource {ComponentResourceKey ResourceId=ControlMouseOverBorderKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}"/>
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource {ComponentResourceKey ResourceId=ControlSelectedBorderKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="FocusManager.FocusedElement" TargetName="PART_TextBox" Value="{Binding ElementName=PART_TextBox}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
         <!-- XCTK ColorPicker -->
         <Style x:Key="{x:Type xctk:ColorPicker}" TargetType="{x:Type xctk:ColorPicker}">
             <Setter Property="Background" Value="{StaticResource ControlBackgroundColorBrush}"/>
@@ -1290,6 +1355,7 @@
             </Setter>
         </Style>
         
+        
         <!-- Data -->
         <!-- Settings Data -->
         <x:Array x:Key="KeyboardModelList" 
@@ -1299,10 +1365,9 @@
             <sys:String>K70-RGB</sys:String>
             <sys:String>K95-RGB</sys:String>
             <sys:String>STRAFE</sys:String>
+            <sys:String>STRAFE-RGB</sys:String>
         </x:Array>
         
-        <!--<sys:String>STRAFE-RGB</sys:String>-->
-
         <x:Array x:Key="KeyboardLayoutList" 
                  Type="sys:String">
             <sys:String>None</sys:String>
@@ -1361,11 +1426,34 @@
         </x:Array>
 
         <!-- Foreground: Spectro -->
-        <x:Array x:Key="ForegroundSpectroStyleList"
-                 Type="sys:String">
+        <x:Array x:Key="ForegroundSpectroStyleList" Type="sys:String">
             <sys:String>Solid</sys:String>
         </x:Array>
 
+        <x:Array x:Key="FftSizeList" Type="sys:String">
+            <sys:String>128</sys:String>
+            <sys:String>256</sys:String>
+            <sys:String>512</sys:String>
+            <sys:String>1024</sys:String>
+            <sys:String>2048</sys:String>
+            <sys:String>4096</sys:String>
+            <sys:String>8192</sys:String>
+        </x:Array>
+        
+        <x:Array x:Key="FftBinsPerPointList" Type="sys:String">
+            <sys:String>1</sys:String>
+            <sys:String>2</sys:String>
+            <sys:String>4</sys:String>
+            <sys:String>8</sys:String>
+            <sys:String>16</sys:String>
+            <sys:String>32</sys:String>
+        </x:Array>
+
+        <x:Array x:Key="FftWindowingModeList" Type="sys:String">
+            <sys:String>Hann</sys:String>
+            <sys:String>Hamming</sys:String>
+            <sys:String>Blackman-Harris</sys:String>
+        </x:Array>
 
         <!-- Foreground: Random Keys -->
         <x:Array x:Key="ForegroundRandomLightsStyleList"

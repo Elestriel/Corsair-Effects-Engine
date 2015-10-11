@@ -1,6 +1,5 @@
 ﻿- Make the heatmap update on changes, and not require a new keystroke.
 - Audio capture
-- - Proper volume representation
 - - Automatic volume control based on peak
 - Audio effects:
 - - Spectrograph

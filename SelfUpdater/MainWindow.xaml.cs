@@ -163,7 +163,8 @@ namespace SelfUpdater
                 foreach (ZipArchiveEntry zae in archive.Entries) 
                 {
                     UpdateStatusMessage.NewMessage(3, "Extracting: " + zae.FullName);
-                    zae.ExtractToFile(Path.Combine(extPath, zae.FullName), true);
+                    try { zae.ExtractToFile(Path.Combine(extPath, zae.FullName), true); }
+                    catch (Exception e) { UpdateStatusMessage.NewMessage(2, e.ToString()); }
                 }
             }
             
