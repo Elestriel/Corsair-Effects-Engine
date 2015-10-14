@@ -958,5 +958,17 @@ namespace Corsair_Effects_Engine.Properties {
                 this["FftUseLogY"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OptUseSdk {
+            get {
+                return ((bool)(this["OptUseSdk"]));
+            }
+            set {
+                this["OptUseSdk"] = value;
+            }
+        }
     }
 }

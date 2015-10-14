@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Corsair_Effects_Engine</RootNamespace>
     <AssemblyName>Corsair Effects Engine</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -31,6 +31,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -58,6 +59,9 @@
     <StartupObject>Corsair_Effects_Engine.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CUE.NET">
+      <HintPath>..\..\..\..\References\CUE.NET_0.1.0_x86\CUE.NET.dll</HintPath>
+    </Reference>
     <Reference Include="NAudio">
       <HintPath>..\..\..\..\References\NAudio\NAudio.dll</HintPath>
     </Reference>
@@ -103,6 +107,7 @@
     <Compile Include="EngineComponents\DeviceOutput.cs" />
     <Compile Include="EngineComponents\InitDevices.cs" />
     <Compile Include="EngineComponents\SampleAggregator.cs" />
+    <Compile Include="EngineComponents\SdkOutput.cs" />
     <Compile Include="Properties\Settings1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -162,6 +167,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CUESDK_2013.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="_Todo.txt" />
     <None Include="_Changelog.txt" />
     <Content Include="CorsairDevices\K65-RGB.xml">

@@ -71,6 +71,7 @@ namespace Corsair_Effects_Engine
 
             EngineComponents.InitDevices DeviceInit = new EngineComponents.InitDevices();
             EngineComponents.DeviceOutput Output = new EngineComponents.DeviceOutput();
+            EngineComponents.SdkOutput sdkOutput = new EngineComponents.SdkOutput(); 
 
             for (int i = 0; i < 149; i++)
             {
@@ -98,7 +99,7 @@ namespace Corsair_Effects_Engine
 
                 // Creates handles for NAudio
                 NAudio_Initialize();
-                
+               
                 UpdateStatusMessage.NewMessage(5, "Initialization Complete.");
 
                 while (!PauseEngine && RunEngine && !RestartEngine)
@@ -134,12 +135,21 @@ namespace Corsair_Effects_Engine
                     {
                         NoEffects = false;
 
-                        // Output frame to devices
-                        if (Properties.Settings.Default.Opt16MColours)
-                        { Output.UpdateKeyboard16M(KeyboardPointer, Keys); }
-                        else { Output.UpdateKeyboard(KeyboardPointer, Keys); };
+                        // Use direct control
+                        if (!Properties.Settings.Default.OptUseSdk)
+                        {
+                            // Output frame to devices
+                            if (Properties.Settings.Default.Opt16MColours)
+                            { Output.UpdateKeyboard16M(KeyboardPointer, Keys); }
+                            else { Output.UpdateKeyboard(KeyboardPointer, Keys); };
 
-                        Output.UpdateMouse(MousePointer, Keys);
+                            Output.UpdateMouse(MousePointer, Keys);
+                        }
+                        // Use SDK control
+                        else
+                        {
+                            sdkOutput.UpdateKeyboard(Keys);
+                        }
                     }
                     else
                     {

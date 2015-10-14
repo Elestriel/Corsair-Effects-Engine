@@ -105,7 +105,7 @@
             </Grid>
 
             <!-- Settings -->
-            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Hidden">
+            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Visible">
                 <CheckBox x:Name="CheckMinimizeToTray" Content="Minimize to System Tray" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
                           ToolTip="Minimize to the System Tray instead of the Task Bar."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeToTray, Mode=TwoWay}"/>
@@ -141,11 +141,14 @@
                 	IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptInvertM1, Mode=TwoWay}"/>
                 <xctk:ColorPicker SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=OptAccentColor, 
                                     Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
-                                  HorizontalAlignment="Left" Margin="420,66,0,0" VerticalAlignment="Top" Width="50" 
+                                  HorizontalAlignment="Left" Margin="410,106,0,0" VerticalAlignment="Top" Width="50" 
                                   ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
-                <Label Content="Program Accent Colour:" HorizontalAlignment="Left" Margin="277,65,0,0" VerticalAlignment="Top"/>
+                <Label Content="Program Accent Colour:" HorizontalAlignment="Left" Margin="267,105,0,0" VerticalAlignment="Top"/>
                 <Button x:Name="DonateButton" Content="Make a donation" HorizontalAlignment="Left" Margin="380,271,0,0" VerticalAlignment="Top" Width="auto"
                     Style="{StaticResource HyperlinkLikeButton}" Click="DonateButton_Click"/>
+                <CheckBox x:Name="UseSdkCheckBox" Content="Use SDK" HorizontalAlignment="Left" Margin="270,70,0,0" VerticalAlignment="Top"
+                	ToolTip="Use the CUE SDK instead of direct hardware control."
+                	IsChecked="{Binding OptUseSdk, Mode=TwoWay, Source={x:Static p:Settings.Default}}"/>
             </Grid>
             <Grid x:Name="GridRightSettings" Grid.Column="1" Visibility="Visible">
                 <Label Content="Keyboard Model" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top"/>
@@ -190,7 +193,7 @@
             </Grid>
 
             <!-- Edit Grid -->
-            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Visible" Margin="0,0,0,0">
+            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Hidden" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="296*"/>
                     <ColumnDefinition Width="200*"/>
@@ -225,7 +228,7 @@
                 </Grid>
 
                 <!-- Foreground: Spectrograph -->
-                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Visible" Grid.Row="1">
+                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Hidden" Grid.Row="1">
                     <Label Content="Colour" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <ComboBox x:Name="ForegroundSpectroStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" Height="24" 
                                   ToolTip="The style of light to be used for this effect."
