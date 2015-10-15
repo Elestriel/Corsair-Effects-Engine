@@ -9,7 +9,6 @@
 - - Beat Analyzer (Basically a VU meter)
 - Static profiles.
 - Live keyboard preview.
-- Add a link to my website.
 - Support animated GIFs in Image mode.
 - Improve image selection box controls.
 - - Add expand/shrink handles on all four corners.

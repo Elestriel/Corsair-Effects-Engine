@@ -970,5 +970,65 @@ namespace Corsair_Effects_Engine.Properties {
                 this["OptUseSdk"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
+        public double FftBoostHighFrequencies {
+            get {
+                return ((double)(this["FftBoostHighFrequencies"]));
+            }
+            set {
+                this["FftBoostHighFrequencies"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool FftUseFrequencyBoost {
+            get {
+                return ((bool)(this["FftUseFrequencyBoost"]));
+            }
+            set {
+                this["FftUseFrequencyBoost"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF0000FF")]
+        public string ForegroundSpectroColorGradient {
+            get {
+                return ((string)(this["ForegroundSpectroColorGradient"]));
+            }
+            set {
+                this["ForegroundSpectroColorGradient"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("255")]
+        public int FftRainbowBrightness {
+            get {
+                return ((int)(this["FftRainbowBrightness"]));
+            }
+            set {
+                this["FftRainbowBrightness"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Right")]
+        public string SpectroRainbowDirection {
+            get {
+                return ((string)(this["SpectroRainbowDirection"]));
+            }
+            set {
+                this["SpectroRainbowDirection"] = value;
+            }
+        }
     }
 }

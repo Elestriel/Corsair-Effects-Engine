@@ -57,6 +57,8 @@ namespace Corsair_Effects_Engine
         private static int captureSampleRate;
         private static int lowestBin;
         private static int highestBin;
+        private static float[] spectroRainbowPositions;
+        private static System.Drawing.Color[] spectroRainbowColors;
 
         public Engine()
         {
@@ -71,7 +73,9 @@ namespace Corsair_Effects_Engine
 
             EngineComponents.InitDevices DeviceInit = new EngineComponents.InitDevices();
             EngineComponents.DeviceOutput Output = new EngineComponents.DeviceOutput();
-            EngineComponents.SdkOutput sdkOutput = new EngineComponents.SdkOutput(); 
+            EngineComponents.SdkOutput sdkOutput = new EngineComponents.SdkOutput();
+            bool sdkInitSuccess = sdkOutput.InitializeSdk();
+            if (!sdkInitSuccess) { Properties.Settings.Default.OptUseSdk = false; }
 
             for (int i = 0; i < 149; i++)
             {
@@ -80,6 +84,7 @@ namespace Corsair_Effects_Engine
                 ReactiveKeys[i] = new KeyData();
                 SpectroKeys[i] = new KeyData();
             }
+
 
             ClearAllKeys();
             
@@ -99,7 +104,9 @@ namespace Corsair_Effects_Engine
 
                 // Creates handles for NAudio
                 NAudio_Initialize();
-               
+
+                RainbowSpectroPositions();
+
                 UpdateStatusMessage.NewMessage(5, "Initialization Complete.");
 
                 while (!PauseEngine && RunEngine && !RestartEngine)
@@ -138,6 +145,7 @@ namespace Corsair_Effects_Engine
                         // Use direct control
                         if (!Properties.Settings.Default.OptUseSdk)
                         {
+
                             // Output frame to devices
                             if (Properties.Settings.Default.Opt16MColours)
                             { Output.UpdateKeyboard16M(KeyboardPointer, Keys); }
@@ -149,6 +157,9 @@ namespace Corsair_Effects_Engine
                         else
                         {
                             sdkOutput.UpdateKeyboard(Keys);
+                            // Methods aren't yet made in the wrapper
+                            //sdkOutput.UpdateMouse(Keys);
+                            //sdkOutput.UpdateHeadset(System.Drawing.Color.Red);
                         }
                     }
                     else
@@ -729,15 +740,53 @@ namespace Corsair_Effects_Engine
                     intensityPercent = 1 + Math.Log(intensityPercent, 100);
                 }
             }
-            double yPos = intensityPercent * 7;
-            return yPos;
+            //double yPos = intensityPercent * 7;
+            return intensityPercent;
         }
 
         private void AddResult(int index, double power, System.Drawing.Drawing2D.GraphicsPath path)
         {
             int binToUse = CalculateBinPos(index, lowestBin, highestBin, KeyboardMap.CanvasWidth);
 
+            if (Properties.Settings.Default.FftUseFrequencyBoost)
+            {
+                power = 1 - power;
+                double position = (double)binToUse / ((double)highestBin - (double)lowestBin);
+                double multiplier = 1 + ((Properties.Settings.Default.FftBoostHighFrequencies - 1) * position);
+                power = power / multiplier;
+                if (power > 1) power = 1;
+                if (power < 0) power = 0;
+                power = 1 - power;
+            }
+            power = power * 7;
+
             path.AddLine(binToUse, (int)power, binToUse, (int)power);
+        }
+
+        private void RainbowSpectroPositions()
+        {
+            spectroRainbowPositions = new float[KeyboardMap.CanvasWidth];
+            for (int i = 0; i < KeyboardMap.CanvasWidth; i++)
+            { spectroRainbowPositions[i] = (float)((double)i / ((double)KeyboardMap.CanvasWidth - 1)); }
+        }
+
+        private void RainbowSpectroColors(string direction)
+        {
+            double tBrightness = ((double)Properties.Settings.Default.FftRainbowBrightness / 255D);
+            spectroRainbowColors = new System.Drawing.Color[KeyboardMap.CanvasWidth];
+            Color tc;
+            double pos;
+
+            for (int i = 0; i < KeyboardMap.CanvasWidth; i++) 
+            {
+
+                if (direction == "Right" || direction == "Down")
+                { pos = 1 - ((double)i - (double)BackgroundAnim) / (double)KeyboardMap.CanvasWidth; }
+                else
+                { pos = ((double)i + (double)BackgroundAnim) / (double)KeyboardMap.CanvasWidth; }
+                tc = ColorFromHSV(pos * 360, 1, tBrightness);
+                spectroRainbowColors[i] = System.Drawing.Color.FromArgb(tc.A, tc.R, tc.G, tc.B);
+            }
         }
 
         private void FftCalculated(object sender, FftEventArgs e)
@@ -773,11 +822,53 @@ namespace Corsair_Effects_Engine
             using (System.Drawing.Graphics gr = System.Drawing.Graphics.FromImage(bmp))
             {
                 gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                Color c = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
-                using (System.Drawing.SolidBrush br = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B)))
+
+                Color c;
+
+                if (Properties.Settings.Default.ForegroundSpectroStyle == "Solid")
                 {
+                    c = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
+                    using (System.Drawing.SolidBrush br = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B)))
+                    {
+                        gr.FillPath(br, fftPath);
+                    }
+                }
+                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient")
+                {
+                    Color tc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
+                    Color tc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColorGradient);
+                    System.Drawing.Color c1 = System.Drawing.Color.FromArgb(tc1.A, tc1.R, tc1.G, tc1.B);
+                    System.Drawing.Color c2 = System.Drawing.Color.FromArgb(tc2.A, tc2.R, tc2.G, tc2.B);
+                    System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 104, 7);
+                    using (System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, c1, c2, (Single)0))
+                    {
+                        gr.FillPath(lbr, fftPath);
+                    }
+                }
+                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Rainbow")
+                {
+                    System.Drawing.Rectangle rect;
+                    if (Properties.Settings.Default.SpectroRainbowDirection == "Left" ||
+                        Properties.Settings.Default.SpectroRainbowDirection == "Right")
+                    { rect = new System.Drawing.Rectangle(0, 0, 104, 7); }
+                    else
+                    { rect = new System.Drawing.Rectangle(0, 0, 7, 104); }
+                    System.Drawing.Drawing2D.LinearGradientBrush br = 
+                        new System.Drawing.Drawing2D.LinearGradientBrush(rect, System.Drawing.Color.Black, System.Drawing.Color.Black, 0, false);
+                    System.Drawing.Drawing2D.ColorBlend cb = new System.Drawing.Drawing2D.ColorBlend();
+
+                    cb.Positions = spectroRainbowPositions;
+                    RainbowSpectroColors(Properties.Settings.Default.SpectroRainbowDirection);
+                    cb.Colors = spectroRainbowColors;
+                    br.InterpolationColors = cb;
+
+                    if (Properties.Settings.Default.SpectroRainbowDirection == "Up" ||
+                        Properties.Settings.Default.SpectroRainbowDirection == "Down")
+                    { br.RotateTransform(90); }
+
                     gr.FillPath(br, fftPath);
                 }
+
             }
             BitmapToKeyboard(bmp, "Spectro");
         }

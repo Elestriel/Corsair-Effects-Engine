@@ -1,4 +1,14 @@
-﻿Build 0031
+﻿Build 0033
+- SDK support. Currently only supports the keyboard, the rest are coming soon.
+- Added Rainbow effects to the Spectro. Rainbows can travel all four directions.
+- Added Gradient effects to the Spectro. Two-colour gradients can be selected.
+- Added tooltips to all Spectro options to help users understand them a bit better.
+- Added Spectro high frequency gain.
+
+Build 0032
+- Initial SDK support.
+
+Build 0031
 - New self-updater tests.
 
 Build 0030

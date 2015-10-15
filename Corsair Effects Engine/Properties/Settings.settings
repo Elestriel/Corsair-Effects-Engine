@@ -239,5 +239,20 @@
     <Setting Name="OptUseSdk" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="FftBoostHighFrequencies" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.5</Value>
+    </Setting>
+    <Setting Name="FftUseFrequencyBoost" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ForegroundSpectroColorGradient" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF0000FF</Value>
+    </Setting>
+    <Setting Name="FftRainbowBrightness" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">255</Value>
+    </Setting>
+    <Setting Name="SpectroRainbowDirection" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Right</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

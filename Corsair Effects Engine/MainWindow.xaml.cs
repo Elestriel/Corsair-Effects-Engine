@@ -36,7 +36,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0032";
+        private const string VersionNumber = "0033";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -653,6 +653,7 @@ namespace Corsair_Effects_Engine
                     switch (mode2)
                     {
                         case "Spectrograph":
+                            ForegroundSpectroStyle_SelectionChanged(null, null);
                             GridForegroundSpectro.Visibility = System.Windows.Visibility.Visible;
                             break;
                         case "Random Lights":
@@ -938,6 +939,42 @@ namespace Corsair_Effects_Engine
         #region Pages
 
         #region Page: ForegroundEdit
+
+        #region Page: ForegroundEdit: Spectro
+
+        private void ForegroundSpectroStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient")
+                {
+                    fftColorPicker.Visibility = System.Windows.Visibility.Visible;
+                    fftColorPicker_Gradient.Visibility = System.Windows.Visibility.Visible;
+                    fftRainbowBrightness.Visibility = System.Windows.Visibility.Hidden;
+                    fftRainbowBrightnessLabel.Visibility = System.Windows.Visibility.Hidden;
+                    SpectroRainbowDirection.Visibility = System.Windows.Visibility.Hidden;
+                }
+                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Rainbow")
+                {
+                    fftColorPicker.Visibility = System.Windows.Visibility.Hidden;
+                    fftColorPicker_Gradient.Visibility = System.Windows.Visibility.Hidden;
+                    fftRainbowBrightness.Visibility = System.Windows.Visibility.Visible;
+                    fftRainbowBrightnessLabel.Visibility = System.Windows.Visibility.Visible;
+                    SpectroRainbowDirection.Visibility = System.Windows.Visibility.Visible;
+                }
+                else // Solid
+                {
+                    fftColorPicker.Visibility = System.Windows.Visibility.Visible;
+                    fftColorPicker_Gradient.Visibility = System.Windows.Visibility.Hidden;
+                    fftRainbowBrightness.Visibility = System.Windows.Visibility.Hidden;
+                    fftRainbowBrightnessLabel.Visibility = System.Windows.Visibility.Hidden;
+                    SpectroRainbowDirection.Visibility = System.Windows.Visibility.Hidden;
+                }
+            }
+            catch { }
+        }
+
+        #endregion Page: ForegroundEdit: Spectro
 
         #region Page: ForegroundEdit: Random Lights
 

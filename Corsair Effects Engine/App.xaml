@@ -1426,8 +1426,20 @@
         </x:Array>
 
         <!-- Foreground: Spectro -->
+
+        <x:Array x:Key="SpectroRainbowDirectionList"
+                 Type="sys:String">
+            <sys:String>Right</sys:String>
+            <sys:String>Left</sys:String>
+            <sys:String>Up</sys:String>
+            <sys:String>Down</sys:String>
+        </x:Array>
+        
+        
         <x:Array x:Key="ForegroundSpectroStyleList" Type="sys:String">
             <sys:String>Solid</sys:String>
+            <sys:String>Gradient</sys:String>
+            <sys:String>Rainbow</sys:String>
         </x:Array>
 
         <x:Array x:Key="FftSizeList" Type="sys:String">

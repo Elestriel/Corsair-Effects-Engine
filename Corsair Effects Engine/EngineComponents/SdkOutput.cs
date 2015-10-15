@@ -5,7 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 using CUE.NET;
+using CUE.NET.Devices.Generic;
 using CUE.NET.Devices.Generic.Enums;
+using CUE.NET.Devices.Headset;
+using CUE.NET.Devices.Headset.Enums;
+using CUE.NET.Devices.Mouse;
+using CUE.NET.Devices.Mouse.Enums;
 using CUE.NET.Devices.Keyboard;
 using CUE.NET.Devices.Keyboard.Enums;
 using CUE.NET.Devices.Keyboard.Extensions;
@@ -17,22 +22,28 @@ namespace Corsair_Effects_Engine.EngineComponents
     class SdkOutput
     {
         private CorsairKeyboard sdkKeyboard;
+        private CorsairMouse sdkMouse;
+        private CorsairHeadset sdkHeadset;
         private CorsairKeyCodes sdkKeys = new CorsairKeyCodes();
 
         public SdkOutput()
         {
-            InitializeSdk();
+
         }
-        private bool InitializeSdk()
+
+        public bool InitializeSdk()
         {
             UpdateStatusMessage.NewMessage(4, "Initializing SDK");
-            CueSDK.Initialize();
+            try { CueSDK.Initialize(); }
+            catch (Exception e) { UpdateStatusMessage.NewMessage(3, e.Message.ToString()); return false; }
             if (CueSDK.LastError != CorsairError.Success) 
             {
                 UpdateStatusMessage.NewMessage(3, "Error initializing SDK.");
                 return false; 
             }
             FindKeyboard();
+            FindMouse();
+            FindHeadset();
             return true;
         }
 
@@ -42,6 +53,30 @@ namespace Corsair_Effects_Engine.EngineComponents
             if (!CheckForCUEError() || sdkKeyboard == null)
             {
                 UpdateStatusMessage.NewMessage(3, "Could not connect to keyboard using SDK.");
+                return false;
+            }
+            else
+            { return true; }
+        }
+
+        private bool FindMouse()
+        {
+            sdkMouse = CueSDK.MouseSDK;
+            if (!CheckForCUEError() || sdkMouse == null)
+            {
+                UpdateStatusMessage.NewMessage(3, "Could not connect to mouse using SDK.");
+                return false;
+            }
+            else
+            { return true; }
+        }
+
+        private bool FindHeadset()
+        {
+            sdkHeadset = CueSDK.HeadsetSDK;
+            if (!CheckForCUEError() || sdkHeadset == null)
+            {
+                UpdateStatusMessage.NewMessage(3, "Could not connect to headset using SDK.");
                 return false;
             }
             else
@@ -58,6 +93,7 @@ namespace Corsair_Effects_Engine.EngineComponents
 
         public void UpdateKeyboard(KeyData[] Keys)
         {
+            if (!CheckForCUEError()) { return; }
             CorsairKeyboardKeyId ckey;
             sdkKeyboard.Color = System.Drawing.Color.Transparent;
             
@@ -76,6 +112,20 @@ namespace Corsair_Effects_Engine.EngineComponents
                 }
             }
             sdkKeyboard.UpdateLeds();
+        }
+
+        public void UpdateMouse(KeyData[] Keys)
+        {
+            if (!CheckForCUEError()) { return; }
+            // TODO
+            return;
+        }
+
+        public void UpdateHeadset(System.Drawing.Color color)
+        {
+            if (!CheckForCUEError()) { return; }
+            // TODO
+            return;
         }
     }
 }
