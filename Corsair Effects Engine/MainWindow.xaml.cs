@@ -36,7 +36,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0033";
+        private const string VersionNumber = "0034";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -121,9 +121,7 @@ namespace Corsair_Effects_Engine
             UpdateStatusMessage.NewMsg += UpdateStatusMessage_NewMsg;
             RefreshKeyboardPreview.ShowNewFrame += RefreshKeyboardPreview_ShowNewFrame;
 
-            //SetWindowLayout("LogSettings");
             SetWindowLayout("Settings");
-            //SetWindowLayout("ForegroundEdit", "Spectrograph");
 
             // Initialize buttons for Keyboard Preview
             for (int i = 0; i < 144; i++)
@@ -179,8 +177,6 @@ namespace Corsair_Effects_Engine
                     KeyboardMap.CanvasWidth = 104;
                     break;
             }
-
-            //Dispatcher.BeginInvoke(new Action(() => PostLoadTasks()), System.Windows.Threading.DispatcherPriority.ContextIdle, null);
         }
 
         /// <summary>
@@ -946,7 +942,8 @@ namespace Corsair_Effects_Engine
         {
             try
             {
-                if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient")
+                if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient Horizontal" ||
+                    Properties.Settings.Default.ForegroundSpectroStyle == "Gradient Vertical")
                 {
                     fftColorPicker.Visibility = System.Windows.Visibility.Visible;
                     fftColorPicker_Gradient.Visibility = System.Windows.Visibility.Visible;
@@ -972,6 +969,66 @@ namespace Corsair_Effects_Engine
                 }
             }
             catch { }
+        }
+
+        private void ForegroundCheck_Checked(object sender, RoutedEventArgs e)
+        {
+            if (Properties.Settings.Default.ForegroundEffect == "Spectrograph")
+            {
+                newEngine.RestartEngine = true;
+            }
+        }
+
+        private void ApplySpectroChangesButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Properties.Settings.Default.ForegroundEffect == "Spectrograph")
+            {
+                newEngine.RestartEngine = true;
+            }
+        }
+
+        private void dbMinUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (Properties.Settings.Default.FftAmplitudeMin > Properties.Settings.Default.FftAmplitudeMax - 10)
+            {
+                if (Properties.Settings.Default.FftAmplitudeMin <= -10)
+                { Properties.Settings.Default.FftAmplitudeMax = Properties.Settings.Default.FftAmplitudeMin + 10; }
+                else
+                { Properties.Settings.Default.FftAmplitudeMin = -10; }
+            }
+        }
+
+        private void dbMaxUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (Properties.Settings.Default.FftAmplitudeMax < Properties.Settings.Default.FftAmplitudeMin + 10)
+            {
+                if (Properties.Settings.Default.FftAmplitudeMax >= -110)
+                { Properties.Settings.Default.FftAmplitudeMin = Properties.Settings.Default.FftAmplitudeMax - 10; }
+                else
+                { Properties.Settings.Default.FftAmplitudeMax = -110; }
+            }
+        }
+
+        private void freqMinUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (Properties.Settings.Default.FftFrequencyMin > Properties.Settings.Default.FftFrequencyMax - 100)
+            {
+                if (Properties.Settings.Default.FftFrequencyMin <= 19900)
+                { Properties.Settings.Default.FftFrequencyMax = Properties.Settings.Default.FftFrequencyMin + 100; }
+                else
+                { Properties.Settings.Default.FftFrequencyMin = 19900; }
+            }
+        }
+
+        private void freqMaxUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (Properties.Settings.Default.FftFrequencyMax < Properties.Settings.Default.FftFrequencyMin + 100)
+            {
+                if (Properties.Settings.Default.FftFrequencyMax >= 100)
+                { Properties.Settings.Default.FftFrequencyMin = Properties.Settings.Default.FftFrequencyMax - 100; }
+                else
+                { Properties.Settings.Default.FftFrequencyMax = 100; }
+            }
         }
 
         #endregion Page: ForegroundEdit: Spectro
@@ -1526,66 +1583,6 @@ namespace Corsair_Effects_Engine
         }
         
         #endregion Pages
-
-        private void ForegroundCheck_Checked(object sender, RoutedEventArgs e)
-        {
-            if (Properties.Settings.Default.ForegroundEffect == "Spectrograph")
-            {
-                newEngine.RestartEngine = true;
-            }
-        }
-
-        private void ApplySpectroChangesButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (Properties.Settings.Default.ForegroundEffect == "Spectrograph")
-            {
-                newEngine.RestartEngine = true;
-            }
-        }
-
-        private void dbMinUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (Properties.Settings.Default.FftAmplitudeMin > Properties.Settings.Default.FftAmplitudeMax - 10)
-            {
-                if (Properties.Settings.Default.FftAmplitudeMin <= -10)
-                { Properties.Settings.Default.FftAmplitudeMax = Properties.Settings.Default.FftAmplitudeMin + 10; }
-                else
-                { Properties.Settings.Default.FftAmplitudeMin = -10; }
-            }
-        }
-
-        private void dbMaxUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (Properties.Settings.Default.FftAmplitudeMax < Properties.Settings.Default.FftAmplitudeMin + 10)
-            {
-                if (Properties.Settings.Default.FftAmplitudeMax >= -110)
-                { Properties.Settings.Default.FftAmplitudeMin = Properties.Settings.Default.FftAmplitudeMax - 10; }
-                else
-                { Properties.Settings.Default.FftAmplitudeMax = -110; }
-            }
-        }
-
-        private void freqMinUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (Properties.Settings.Default.FftFrequencyMin > Properties.Settings.Default.FftFrequencyMax - 100)
-            {
-                if (Properties.Settings.Default.FftFrequencyMin <= 19900)
-                { Properties.Settings.Default.FftFrequencyMax = Properties.Settings.Default.FftFrequencyMin + 100; }
-                else
-                { Properties.Settings.Default.FftFrequencyMin = 19900; }
-            }
-        }
-
-        private void freqMaxUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (Properties.Settings.Default.FftFrequencyMax < Properties.Settings.Default.FftFrequencyMin + 100)
-            {
-                if (Properties.Settings.Default.FftFrequencyMax >= 100)
-                { Properties.Settings.Default.FftFrequencyMin = Properties.Settings.Default.FftFrequencyMax - 100; }
-                else
-                { Properties.Settings.Default.FftFrequencyMax = 100; }
-            }
-        }
     }
 
     #region Type Converters

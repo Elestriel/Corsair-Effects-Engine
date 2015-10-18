@@ -1435,10 +1435,10 @@
             <sys:String>Down</sys:String>
         </x:Array>
         
-        
         <x:Array x:Key="ForegroundSpectroStyleList" Type="sys:String">
             <sys:String>Solid</sys:String>
-            <sys:String>Gradient</sys:String>
+            <sys:String>Gradient Horizontal</sys:String>
+            <sys:String>Gradient Vertical</sys:String>
             <sys:String>Rainbow</sys:String>
         </x:Array>
 

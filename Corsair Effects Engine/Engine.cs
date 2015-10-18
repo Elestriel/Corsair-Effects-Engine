@@ -720,11 +720,20 @@ namespace Corsair_Effects_Engine
 
         }
 
-        private double GetYPosLog(Complex c, int maxWidth)
+        private double GetYPosLog(Complex c, int maxWidth, int xPos)
         {
             double intensityDB = 10 * Math.Log10(Math.Sqrt(c.X * c.X + c.Y * c.Y));
             double minDB = (double)Properties.Settings.Default.FftAmplitudeMin;
             double maxDB = (double)Properties.Settings.Default.FftAmplitudeMax;
+
+            if (Properties.Settings.Default.FftUseFrequencyBoost)
+            {
+                double position;
+                if (Properties.Settings.Default.FftUseLogX)
+                { position = Math.Log((double)xPos, (double)maxWidth) / ((double)highestBin - (double)lowestBin); }
+                else { position = (double)xPos / ((double)highestBin - (double)lowestBin); }
+                intensityDB += (position * (double)Properties.Settings.Default.FftBoostHighFrequencies);
+            }
 
             if (intensityDB < minDB) { intensityDB = minDB; }
             if (intensityDB > maxDB) { intensityDB = maxDB; }
@@ -740,26 +749,13 @@ namespace Corsair_Effects_Engine
                     intensityPercent = 1 + Math.Log(intensityPercent, 100);
                 }
             }
-            //double yPos = intensityPercent * 7;
-            return intensityPercent;
+            return intensityPercent * 7;
         }
 
         private void AddResult(int index, double power, System.Drawing.Drawing2D.GraphicsPath path)
         {
             int binToUse = CalculateBinPos(index, lowestBin, highestBin, KeyboardMap.CanvasWidth);
-
-            if (Properties.Settings.Default.FftUseFrequencyBoost)
-            {
-                power = 1 - power;
-                double position = (double)binToUse / ((double)highestBin - (double)lowestBin);
-                double multiplier = 1 + ((Properties.Settings.Default.FftBoostHighFrequencies - 1) * position);
-                power = power / multiplier;
-                if (power > 1) power = 1;
-                if (power < 0) power = 0;
-                power = 1 - power;
-            }
-            power = power * 7;
-
+            
             path.AddLine(binToUse, (int)power, binToUse, (int)power);
         }
 
@@ -807,7 +803,7 @@ namespace Corsair_Effects_Engine
                 double yPos = 0;
                 for (int b = 0; b < binsPerPoint; b++)
                 {
-                    yPos += GetYPosLog(e.Result[n + b], KeyboardMap.CanvasWidth);
+                    yPos += GetYPosLog(e.Result[n + b], KeyboardMap.CanvasWidth, n);
                 }
                 //AddResult(n / binsPerPoint, yPos / binsPerPoint, (Single)XPos);
                 AddResult(n, yPos / binsPerPoint, fftPath);
@@ -833,7 +829,7 @@ namespace Corsair_Effects_Engine
                         gr.FillPath(br, fftPath);
                     }
                 }
-                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient")
+                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient Horizontal")
                 {
                     Color tc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
                     Color tc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColorGradient);
@@ -841,6 +837,18 @@ namespace Corsair_Effects_Engine
                     System.Drawing.Color c2 = System.Drawing.Color.FromArgb(tc2.A, tc2.R, tc2.G, tc2.B);
                     System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 104, 7);
                     using (System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, c1, c2, (Single)0))
+                    {
+                        gr.FillPath(lbr, fftPath);
+                    }
+                }
+                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient Vertical")
+                {
+                    Color tc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
+                    Color tc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColorGradient);
+                    System.Drawing.Color c1 = System.Drawing.Color.FromArgb(tc1.A, tc1.R, tc1.G, tc1.B);
+                    System.Drawing.Color c2 = System.Drawing.Color.FromArgb(tc2.A, tc2.R, tc2.G, tc2.B);
+                    System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 104, 7);
+                    using (System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, c1, c2, (Single)90))
                     {
                         gr.FillPath(lbr, fftPath);
                     }

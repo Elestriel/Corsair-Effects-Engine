@@ -1,4 +1,10 @@
-﻿Build 0033
+﻿Build 0034
+- New high-end gain algorithms. These should look a lot better than what was in build 0033.
+- Changed the spectro Gradient to Gradient Horizontal.
+- Added Gradient Vertical.
+- Mapped M keys, brightness, and WinLock keys through the SDK.
+
+Build 0033
 - SDK support. Currently only supports the keyboard, the rest are coming soon.
 - Added Rainbow effects to the Spectro. Rainbows can travel all four directions.
 - Added Gradient effects to the Spectro. Two-colour gradients can be selected.

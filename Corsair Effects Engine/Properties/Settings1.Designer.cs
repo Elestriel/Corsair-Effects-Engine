@@ -985,7 +985,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool FftUseFrequencyBoost {
             get {
                 return ((bool)(this["FftUseFrequencyBoost"]));

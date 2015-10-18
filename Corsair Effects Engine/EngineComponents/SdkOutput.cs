@@ -108,7 +108,13 @@ namespace Corsair_Effects_Engine.EngineComponents
                         (byte)((double)Keys[i].KeyColor.LightColor.G * (opacityMultiplier)),
                         (byte)((double)Keys[i].KeyColor.LightColor.B * (opacityMultiplier)));
                     if (sdkKeyboard[ckey] != null)
-                    { sdkKeyboard[ckey].Led.Color = keyColor; }
+                    {
+                        if (ckey == CorsairKeyboardKeyId.M1 && Properties.Settings.Default.OptInvertM1)
+                        {
+                            keyColor = System.Drawing.Color.FromArgb(255, Math.Abs(255 - keyColor.R), Math.Abs(255 - keyColor.G), Math.Abs(255 - keyColor.B));
+                        }
+                        { sdkKeyboard[ckey].Led.Color = keyColor; }
+                    }
                 }
             }
             sdkKeyboard.UpdateLeds();
@@ -146,10 +152,10 @@ public class CorsairKeyCodes
         sdkKeyDict.Add(5, CorsairKeyboardKeyId.LeftCtrl);
         sdkKeyDict.Add(6, CorsairKeyboardKeyId.F12);
         sdkKeyDict.Add(7, CorsairKeyboardKeyId.EqualsAndPlus);
-        sdkKeyDict.Add(8, CorsairKeyboardKeyId.Invalid);
+        sdkKeyDict.Add(8, CorsairKeyboardKeyId.WinLock);
         sdkKeyDict.Add(9, CorsairKeyboardKeyId.Keypad7);
         sdkKeyDict.Add(10, CorsairKeyboardKeyId.G1);
-        sdkKeyDict.Add(11, CorsairKeyboardKeyId.Invalid);
+        sdkKeyDict.Add(11, CorsairKeyboardKeyId.MR);
         sdkKeyDict.Add(12, CorsairKeyboardKeyId.F1);
         sdkKeyDict.Add(13, CorsairKeyboardKeyId.D1);
         sdkKeyDict.Add(14, CorsairKeyboardKeyId.Q);
@@ -161,7 +167,7 @@ public class CorsairKeyCodes
         sdkKeyDict.Add(20, CorsairKeyboardKeyId.Mute);
         sdkKeyDict.Add(21, CorsairKeyboardKeyId.Keypad8);
         sdkKeyDict.Add(22, CorsairKeyboardKeyId.G2);
-        sdkKeyDict.Add(23, CorsairKeyboardKeyId.Invalid);
+        sdkKeyDict.Add(23, CorsairKeyboardKeyId.M1);
         sdkKeyDict.Add(24, CorsairKeyboardKeyId.F2);
         sdkKeyDict.Add(25, CorsairKeyboardKeyId.D2);
         sdkKeyDict.Add(26, CorsairKeyboardKeyId.W);
@@ -173,7 +179,7 @@ public class CorsairKeyCodes
         sdkKeyDict.Add(32, CorsairKeyboardKeyId.Stop);
         sdkKeyDict.Add(33, CorsairKeyboardKeyId.Keypad9);
         sdkKeyDict.Add(34, CorsairKeyboardKeyId.G3);
-        sdkKeyDict.Add(35, CorsairKeyboardKeyId.Invalid);
+        sdkKeyDict.Add(35, CorsairKeyboardKeyId.M2);
         sdkKeyDict.Add(36, CorsairKeyboardKeyId.F3);
         sdkKeyDict.Add(37, CorsairKeyboardKeyId.D3);
         sdkKeyDict.Add(38, CorsairKeyboardKeyId.E);
@@ -185,7 +191,7 @@ public class CorsairKeyCodes
         sdkKeyDict.Add(44, CorsairKeyboardKeyId.ScanPreviousTrack);
         sdkKeyDict.Add(45, CorsairKeyboardKeyId.Invalid);
         sdkKeyDict.Add(46, CorsairKeyboardKeyId.G4);
-        sdkKeyDict.Add(47, CorsairKeyboardKeyId.Invalid);
+        sdkKeyDict.Add(47, CorsairKeyboardKeyId.M3);
         sdkKeyDict.Add(48, CorsairKeyboardKeyId.F4);
         sdkKeyDict.Add(49, CorsairKeyboardKeyId.D4);
         sdkKeyDict.Add(50, CorsairKeyboardKeyId.R);
@@ -275,7 +281,7 @@ public class CorsairKeyCodes
         sdkKeyDict.Add(134, CorsairKeyboardKeyId.BracketLeft);
         sdkKeyDict.Add(135, CorsairKeyboardKeyId.ApostropheAndDoubleQuote);
         sdkKeyDict.Add(136, CorsairKeyboardKeyId.SlashAndQuestionMark);
-        sdkKeyDict.Add(137, CorsairKeyboardKeyId.Invalid);
+        sdkKeyDict.Add(137, CorsairKeyboardKeyId.Brightness);
         sdkKeyDict.Add(138, CorsairKeyboardKeyId.Invalid);
         sdkKeyDict.Add(139, CorsairKeyboardKeyId.RightArrow);
         sdkKeyDict.Add(140, CorsairKeyboardKeyId.KeypadEnter);
