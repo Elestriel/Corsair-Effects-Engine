@@ -348,6 +348,16 @@ namespace Corsair_Effects_Engine
                                             case "Left":
                                                 rainbowKey = ((double)x + (double)BackgroundAnim) / (double)KeyboardMap.CanvasWidth;
                                                 break;
+                                            case "Up":
+                                                rainbowKey = 1 - (double)BackgroundAnim / (double)KeyboardMap.CanvasWidth;
+                                                rainbowKey = ((double)y / 7d) - rainbowKey;
+                                                if (rainbowKey < 0) { rainbowKey += 1; };
+                                                break;
+                                            case "Down":
+                                                rainbowKey = (double)BackgroundAnim / (double)KeyboardMap.CanvasWidth;
+                                                rainbowKey = 1 - (((double)y / 7d) - rainbowKey);
+                                                if (rainbowKey < 0) { rainbowKey += 1; };
+                                                break;
                                         }
                                         BackgroundKeys[key].KeyColor = new LightSingle(ColorFromHSV(rainbowKey * 360, 1, tBrightness));
                                         for (int k = 0; k < 5; k++) { BackgroundKeys[144 + k].KeyColor = BackgroundKeys[refKey].KeyColor; };
@@ -636,7 +646,7 @@ namespace Corsair_Effects_Engine
 
             if (audioCapture == null) { return; };
             
-            UpdateStatusMessage.NewMessage(0, audioCapture.WaveFormat.Channels.ToString());
+            UpdateStatusMessage.NewMessage(4, "Audio Channels: " + audioCapture.WaveFormat.Channels.ToString());
             captureSampleRate = audioCapture.WaveFormat.SampleRate;
 
             sampleAggregator = new SampleAggregator(Int32.Parse(Properties.Settings.Default.FftSize));

@@ -1,4 +1,19 @@
-﻿Build 0034
+﻿Build 0035
+- Removed the "Image" background effect. This may eventually be re-implemented in a better way later on.
+- Added up and down directions for background rainbow.
+- Added "Default Device" options for input and output.
+- When Default Device is selected, CEE will check the default device in Windows every two seconds and update itself if needed.
+- Changing audio devices will now apply the changes automatically.
+- When "Use SDK" is enabled, the "16.8 Million Colors" option is disabled, as the settings in CUE are used.
+- Changed the default log level to 0.
+- Swapped positions of the rainbow direction and brightness controls.
+- "Apply" button in Spectro Settings page has been renamed to "Restart".
+- Adjusted the position of the Frequency settings in Spectro.
+- Modified the Disabled look of ComboBoxes.
+- Moved the Donation button to be in a less awkward spot.
+- Adjusted the location of the "Frame Delay" label to line up properly with the content of the value next to it.
+
+Build 0034
 - New high-end gain algorithms. These should look a lot better than what was in build 0033.
 - Changed the spectro Gradient to Gradient Horizontal.
 - Added Gradient Vertical.

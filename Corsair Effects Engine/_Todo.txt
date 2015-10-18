@@ -1,14 +1,17 @@
-﻿- Make the heatmap update on changes, and not require a new keystroke.
+﻿- Build new timing for the engine, allowing a frames-per-second option.
+- - Have the Spectro only update on a new frame, not every time new data is available.
+- Help with development of the .NET wrapper.
+- Add the ability to switch effects to the right-click menu.
+- Make the heatmap update on changes, and not require a new keystroke.
 - Audio capture
 - - Automatic volume control based on peak
 - Audio effects:
 - - Spectrograph
 - - - Allow each row's colour to be customized
+- - - Mouse support
+- - - Headset support
 - - VU Meter
 - - Oscilloscope
-- - Beat Analyzer (Basically a VU meter)
+- Add background gradient effect.
 - Static profiles.
-- Live keyboard preview.
-- Support animated GIFs in Image mode.
-- Improve image selection box controls.
-- - Add expand/shrink handles on all four corners.
+- Live keyboard preview. (Probably not going to happen)

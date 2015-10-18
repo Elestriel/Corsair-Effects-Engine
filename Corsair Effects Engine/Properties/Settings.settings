@@ -12,7 +12,7 @@
       <Value Profile="(Default)">None</Value>
     </Setting>
     <Setting Name="LogLevel" Type="System.String" Scope="User">
-      <Value Profile="(Default)">6: Engine Output</Value>
+      <Value Profile="(Default)">0: Default</Value>
     </Setting>
     <Setting Name="ForegroundEffect" Type="System.String" Scope="User">
       <Value Profile="(Default)">Spectrograph</Value>
@@ -253,6 +253,12 @@
     </Setting>
     <Setting Name="SpectroRainbowDirection" Type="System.String" Scope="User">
       <Value Profile="(Default)">Right</Value>
+    </Setting>
+    <Setting Name="OptAudioUseDefaultOutput" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="OptAudioUseDefaultInput" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

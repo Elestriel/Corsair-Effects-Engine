@@ -105,7 +105,7 @@
             </Grid>
 
             <!-- Settings -->
-            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Hidden">
+            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Visible">
                 <CheckBox x:Name="CheckMinimizeToTray" Content="Minimize to System Tray" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
                           ToolTip="Minimize to the System Tray instead of the Task Bar."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeToTray, Mode=TwoWay}"/>
@@ -117,7 +117,8 @@
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptStartMinimized, Mode=TwoWay}"/>
                 <CheckBox x:Name="Check16MColours" Content="16.8 Million colours" HorizontalAlignment="Left" Margin="270,10,0,0" VerticalAlignment="Top"
                           ToolTip="Run the keyboard in 16.8 million colour mode."
-                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=Opt16MColours, Mode=TwoWay}"/>
+                          IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=Opt16MColours, Mode=TwoWay}"
+                          IsEnabled="{Binding Source={x:Static p:Settings.Default}, Path=OptUseSdk, Mode=TwoWay, Converter={StaticResource boolSwap}}"/>
                 <CheckBox x:Name="CheckDisplayLiveKeyboardPreview" Content="Display live keyboard preview" HorizontalAlignment="Left" Margin="10,110,0,0" VerticalAlignment="Top"
                           ToolTip="Show effects and animations on the Keyboard page as they're being rendered."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptLiveKeyboardPreview, Mode=TwoWay}" IsEnabled="False"/>
@@ -144,8 +145,8 @@
                                   HorizontalAlignment="Left" Margin="410,106,0,0" VerticalAlignment="Top" Width="50" 
                                   ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
                 <Label Content="Program Accent Colour:" HorizontalAlignment="Left" Margin="267,105,0,0" VerticalAlignment="Top"/>
-                <Button x:Name="DonateButton" Content="Make a donation" HorizontalAlignment="Left" Margin="380,271,0,0" VerticalAlignment="Top" Width="auto"
-                    Style="{StaticResource HyperlinkLikeButton}" Click="DonateButton_Click"/>
+                <Button x:Name="DonateButton" Content="Make a donation" HorizontalAlignment="Left" Margin="380,0,0,43" Width="auto"
+                    Style="{StaticResource HyperlinkLikeButton}" Click="DonateButton_Click" Height="15" VerticalAlignment="Bottom"/>
                 <CheckBox x:Name="UseSdkCheckBox" Content="Use SDK" HorizontalAlignment="Left" Margin="270,70,0,0" VerticalAlignment="Top"
                 	ToolTip="Use the CUE SDK instead of direct hardware control."
                 	IsChecked="{Binding OptUseSdk, Mode=TwoWay, Source={x:Static p:Settings.Default}}"/>
@@ -171,29 +172,38 @@
 
                 <RadioButton x:Name="AudioOutputDeviceRadioButton" Content="Audio Output Device" HorizontalAlignment="Left" Margin="10,160,0,0" VerticalAlignment="Top"
                              ToolTip="Capture audio from an output device, such as your speakers or headphones."
-                             IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptAudioFromOutput, Mode=TwoWay}"/>
-                <ComboBox x:Name="AudioOutputDeviceComboBox" Margin="10,176,10,0" VerticalAlignment="Top" ToolTip="Select an output device to capture from."
+                             IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptAudioFromOutput, Mode=TwoWay}" Checked="AudioOutputDeviceRadioButton_Checked"/>
+                <CheckBox x:Name="UseDefaultOutputDevice" Content="Use Default Device" HorizontalAlignment="Left" Margin="23,175,0,0" VerticalAlignment="Top"
+                	ToolTip="Capture audio from an output device, such as your speakers or headphones."
+                	IsChecked="{Binding OptAudioUseDefaultOutput, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Checked="UseDefaultOutputDevice_Checked"/>
+                <ComboBox x:Name="AudioOutputDeviceComboBox" Margin="10,190,10,0" VerticalAlignment="Top" ToolTip="Select an output device to capture from."
                           DisplayMemberPath="FriendlyName"
                           SelectedValuePath="FriendlyName"
                           ItemsSource="{Binding AudioOutputDeviceList}"
-                          SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=AudioOutputDevice, Mode=TwoWay}"/>
+                          SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=AudioOutputDevice, Mode=TwoWay}"
+                          IsEnabled="{Binding Source={x:Static p:Settings.Default}, Path=OptAudioUseDefaultOutput, Mode=TwoWay, Converter={StaticResource boolSwap}}" SelectionChanged="AudioOutputDeviceComboBox_SelectionChanged"/>
 
-                <RadioButton x:Name="AudioInputDeviceRadioButton" Content="Audio Input Device" HorizontalAlignment="Left" Margin="10,210,0,0" VerticalAlignment="Top"
+                <RadioButton x:Name="AudioInputDeviceRadioButton" Content="Audio Input Device" HorizontalAlignment="Left" Margin="10,216,0,0" VerticalAlignment="Top"
                              ToolTip="Capture audio from an input device, such as a mic or line-in."
-                             IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptAudioFromInput, Mode=TwoWay}"/>
-                <ComboBox x:Name="AudioInputDeviceComboBox" Margin="10,226,10,0" VerticalAlignment="Top" ToolTip="Select an input device to capture from."
+                             IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptAudioFromInput, Mode=TwoWay}" Checked="AudioInputDeviceRadioButton_Checked"/>
+                <CheckBox x:Name="UseDefaultInputDevice" Content="Use Default Device" HorizontalAlignment="Left" Margin="23,231,0,0" VerticalAlignment="Top"
+                	ToolTip="Capture audio from an output device, such as your speakers or headphones."
+                	IsChecked="{Binding OptAudioUseDefaultInput, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Checked="UseDefaultInputDevice_Checked"/>
+                <ComboBox x:Name="AudioInputDeviceComboBox" Margin="10,246,10,0" VerticalAlignment="Top" ToolTip="Select an input device to capture from."
                           DisplayMemberPath="FriendlyName"
                           SelectedValuePath="FriendlyName"
                           ItemsSource="{Binding AudioInputDeviceList}"
-                          SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=AudioInputDevice, Mode=TwoWay}"/>
+                          SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=AudioInputDevice, Mode=TwoWay}"
+                          IsEnabled="{Binding Source={x:Static p:Settings.Default}, Path=OptAudioUseDefaultInput, 
+                            Mode=TwoWay, Converter={StaticResource boolSwap}}" SelectionChanged="AudioInputDeviceComboBox_SelectionChanged"/>
 
-                <Label Content="Frame Delay (ms)" HorizontalAlignment="Left" Margin="10,265,0,0" VerticalAlignment="Top"/>
-                <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="124,265,0,0" VerticalAlignment="Top" Width="57" Maximum="10000" Minimum="0"
+                <Label Content="Frame Delay (ms)" HorizontalAlignment="Left" Margin="10,272,0,0" VerticalAlignment="Top"/>
+                <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="124,275,0,0" VerticalAlignment="Top" Width="57" Maximum="10000" Minimum="0"
                                     Value="{Binding Source={x:Static p:Settings.Default}, Path=OptFrameDelay, Mode=TwoWay}"/>
             </Grid>
 
             <!-- Edit Grid -->
-            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Visible" Margin="0,0,0,0">
+            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Hidden" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="296*"/>
                     <ColumnDefinition Width="200*"/>
@@ -228,7 +238,7 @@
                 </Grid>
 
                 <!-- Foreground: Spectrograph -->
-                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Visible" Grid.Row="1">
+                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Hidden" Grid.Row="1">
                     <Label Content="Colour" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <ComboBox x:Name="ForegroundSpectroStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" Height="24" 
                                   ToolTip="The style of light to be used for this effect."
@@ -244,16 +254,17 @@
                                   Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
                                   HorizontalAlignment="Left" Margin="220,28,0,0" VerticalAlignment="Top" Width="50" 
                                   ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
-                    <xctk:IntegerUpDown x:Name="fftRainbowBrightness" HorizontalAlignment="Left" Margin="166,28,0,0" 
+                    <xctk:IntegerUpDown x:Name="fftRainbowBrightness" HorizontalAlignment="Left" Margin="231,28,0,0" 
                                         VerticalAlignment="Top" Width="61" Maximum="255" Minimum="0" Increment="5"
                     	                Value="{Binding FftRainbowBrightness, Mode=TwoWay, Source={x:Static p:Settings.Default}}"
                                         ToolTip="Brightness of the rainbow."/>
-                    <ComboBox x:Name="SpectroRainbowDirection" Grid.Column="0" Margin="232,26,0,0" VerticalAlignment="Top" Height="24" 
+                    <ComboBox x:Name="SpectroRainbowDirection" Grid.Column="0" Margin="165,26,0,0" VerticalAlignment="Top" Height="24" 
                                       ToolTip="The direction that the rainbow will travel."
                                       ItemsSource="{DynamicResource SpectroRainbowDirectionList}"
                                       SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=SpectroRainbowDirection, Mode=TwoWay}"
                                       HorizontalAlignment="Left" Width="61" SelectionChanged="ForegroundRandomLightsStyle_SelectionChanged"/>
-                    <Label x:Name="fftRainbowBrightnessLabel" Content="Brightness" HorizontalAlignment="Left" Margin="165,5,0,0" VerticalAlignment="Top"/>
+
+                    <Label x:Name="fftRainbowBrightnessLabel" Content="Brightness" HorizontalAlignment="Left" Margin="230,5,0,0" VerticalAlignment="Top"/>
                     <Label Content="FFT Size" Grid.Row="0" Grid.Column="0" Margin="42,53,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <ComboBox HorizontalAlignment="Left" Margin="99,55,0,0" VerticalAlignment="Top" Width="61"
                               ItemsSource="{DynamicResource FftSizeList}"
@@ -264,25 +275,25 @@
                     	ItemsSource="{DynamicResource FftBinsPerPointList}"
                     	SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=FftBinsPerPoint, Mode=TwoWay}"
                               ToolTip="Amount of samples per point of data. Higher numbers lead to more rounded corners. Default is 2."/>
-                    <Button x:Name="ApplySpectroChangesButton" Content="Apply" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Bottom" Width="75"
+                    <Button x:Name="ApplySpectroChangesButton" Content="Restart" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Bottom" Width="75"
                             Style="{StaticResource MetroButton}" Click="ApplySpectroChangesButton_Click"/>
-                    <Label Content="Decibel Range" Grid.Row="0" Grid.Column="0" Margin="9,107,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <Label Content="Decibel Range" Grid.Row="0" Grid.Column="0" Margin="9,104,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <xctk:IntegerUpDown x:Name="dbMinUpDown" HorizontalAlignment="Left" Margin="99,107,0,0" VerticalAlignment="Top" Width="61" Maximum="-10" Minimum="-120"
                     	Value="{Binding FftAmplitudeMin, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ValueChanged="dbMinUpDown_ValueChanged"
                                         ToolTip="The minimum loudness to respond to. The closer to 0, the louder a sound."/>
-                    <Label Content="to" Grid.Row="0" Grid.Column="0" Margin="165,107,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <Label Content="to" Grid.Row="0" Grid.Column="0" Margin="165,104,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <xctk:IntegerUpDown x:Name="dbMaxUpDown" HorizontalAlignment="Left" Margin="191,107,0,0" VerticalAlignment="Top" Width="61" Maximum="0" Minimum="-110"
                     	Value="{Binding FftAmplitudeMax, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ValueChanged="dbMaxUpDown_ValueChanged"
                                         ToolTip="The maximum loudness to respond to. The closer to 0, the louder a sound."/>
-                    <xctk:IntegerUpDown x:Name="freqMinUpDown" HorizontalAlignment="Left" Margin="99,137,0,0" VerticalAlignment="Top" Width="61" Maximum="19900" Minimum="0"
+                    <xctk:IntegerUpDown x:Name="freqMinUpDown" HorizontalAlignment="Left" Margin="99,131,0,0" VerticalAlignment="Top" Width="61" Maximum="19900" Minimum="0"
                     	Value="{Binding FftFrequencyMin, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ValueChanged="freqMinUpDown_ValueChanged" Increment="10"
                                         ToolTip="The lowest frequencies to respond to. These are on the furthest point left of the keyboard."/>
-                    <Label Content="to" Grid.Row="0" Grid.Column="0" Margin="165,136,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
-                    <Label Content="Frequencies" Grid.Row="0" Grid.Column="0" Margin="21,136,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
-                    <xctk:IntegerUpDown x:Name="freqMaxUpDown" HorizontalAlignment="Left" Margin="191,137,0,0" VerticalAlignment="Top" Width="61" Maximum="20000" Minimum="100"
+                    <Label Content="to" Grid.Row="0" Grid.Column="0" Margin="165,128,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <Label Content="Frequencies" Grid.Row="0" Grid.Column="0" Margin="21,128,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:IntegerUpDown x:Name="freqMaxUpDown" HorizontalAlignment="Left" Margin="191,131,0,0" VerticalAlignment="Top" Width="61" Maximum="20000" Minimum="100"
                     	Value="{Binding FftFrequencyMax, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ValueChanged="freqMaxUpDown_ValueChanged" Increment="10"
                                         ToolTip="The highest frequencies to respond to. These are on the furthest point right of the keyboard."/>
-                    <Label Content="Hz" Grid.Row="0" Grid.Column="0" Margin="257,136,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <Label Content="Hz" Grid.Row="0" Grid.Column="0" Margin="257,130,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <Label Content="Window" Grid.Row="0" Grid.Column="0" Margin="10,167,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <ComboBox x:Name="ForegroundSpectroStyle_Copy" Grid.Row="0" Grid.Column="0" Margin="10,189,0,0" VerticalAlignment="Top" Height="24" 
                     	ToolTip="The Windowing function used to shape the data. This will change the appearance of the spectro slightly."

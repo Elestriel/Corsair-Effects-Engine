@@ -8,6 +8,8 @@
 
 # Corsair Data
 CorsairDevices/
+*.bat
+*.zip
 
 # Build results
 

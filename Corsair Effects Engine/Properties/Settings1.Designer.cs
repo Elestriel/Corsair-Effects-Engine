@@ -61,7 +61,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6: Engine Output")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0: Default")]
         public string LogLevel {
             get {
                 return ((string)(this["LogLevel"]));
@@ -1028,6 +1028,30 @@ namespace Corsair_Effects_Engine.Properties {
             }
             set {
                 this["SpectroRainbowDirection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptAudioUseDefaultOutput {
+            get {
+                return ((bool)(this["OptAudioUseDefaultOutput"]));
+            }
+            set {
+                this["OptAudioUseDefaultOutput"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OptAudioUseDefaultInput {
+            get {
+                return ((bool)(this["OptAudioUseDefaultInput"]));
+            }
+            set {
+                this["OptAudioUseDefaultInput"] = value;
             }
         }
     }

@@ -21,6 +21,9 @@ using System.Windows.Shapes;
 using System.Xml;
 using System.Xml.Linq;
 
+using NAudio;
+using NAudio.CoreAudioApi;
+
 namespace Corsair_Effects_Engine
 {
     /// <summary>
@@ -28,15 +31,17 @@ namespace Corsair_Effects_Engine
     /// </summary>
     public partial class MainWindow : Window
     {
-        // Used to cleans the GDI Bitmap used in 
+        // Used to clean the GDI Bitmap
+        /*
         [System.Runtime.InteropServices.DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
+        */
 
         // Start with Windows registry key
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0034";
+        private const string VersionNumber = "0035";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -65,6 +70,7 @@ namespace Corsair_Effects_Engine
         // Threads
         Engine newEngine = new Engine();
         Task EngineTask = null;
+        System.Windows.Threading.DispatcherTimer defaultDeviceTimer = new System.Windows.Threading.DispatcherTimer();
 
         #region MainWindow Events
 
@@ -176,6 +182,27 @@ namespace Corsair_Effects_Engine
                 case "K95-RGB":
                     KeyboardMap.CanvasWidth = 104;
                     break;
+            }
+
+            // Start Default Device checker timer
+            defaultDeviceTimer.Tick += defaultDeviceTimer_Tick;
+            defaultDeviceTimer.Interval = new TimeSpan(0, 0, 2);
+            defaultDeviceTimer.Start();
+        }
+
+        private void defaultDeviceTimer_Tick(object sender, EventArgs e)
+        {
+            if (Properties.Settings.Default.OptAudioUseDefaultOutput)
+            {
+                MMDevice defaultOut = GetDefaultDevice(DataFlow.Render);
+                if (defaultOut.FriendlyName != Properties.Settings.Default.AudioOutputDevice)
+                { Properties.Settings.Default.AudioOutputDevice = defaultOut.FriendlyName; }
+            }
+            if (Properties.Settings.Default.OptAudioUseDefaultInput)
+            {
+                MMDevice defaultIn = GetDefaultDevice(DataFlow.Capture);
+                if (defaultIn.FriendlyName != Properties.Settings.Default.AudioOutputDevice)
+                { Properties.Settings.Default.AudioInputDevice = defaultIn.FriendlyName; }
             }
         }
 
@@ -434,7 +461,7 @@ namespace Corsair_Effects_Engine
             }
             catch
             {
-                UpdateStatusMessage.NewMessage(0, "Failed to launch updater.");
+                UpdateStatusMessage.NewMessage(3, "Failed to launch updater.");
                 return;
             }
 
@@ -770,6 +797,12 @@ namespace Corsair_Effects_Engine
 
         #region Settings Events
 
+        public MMDevice GetDefaultDevice(DataFlow direction)
+        {
+            MMDeviceEnumerator deviceEnum = new MMDeviceEnumerator();
+            return deviceEnum.GetDefaultAudioEndpoint(direction, Role.Multimedia);
+        }
+
         private void CuePathTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -783,6 +816,36 @@ namespace Corsair_Effects_Engine
             { 
                 Properties.Settings.Default.OptCuePath = openFileDialog.FileName;
             };
+        }
+
+        private void UseDefaultOutputDevice_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.AudioOutputDevice = GetDefaultDevice(DataFlow.Render).FriendlyName;
+        }
+
+        private void AudioOutputDeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            newEngine.RestartEngine = true;
+        }
+
+        private void UseDefaultInputDevice_Checked(object sender, RoutedEventArgs e)
+        {
+            Properties.Settings.Default.AudioInputDevice = GetDefaultDevice(DataFlow.Capture).FriendlyName;
+        }
+
+        private void AudioInputDeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            newEngine.RestartEngine = true;
+        }
+
+        private void AudioOutputDeviceRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            newEngine.RestartEngine = true;
+        }
+
+        private void AudioInputDeviceRadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            newEngine.RestartEngine = true;
         }
 
         #endregion Settings Events
@@ -1421,6 +1484,7 @@ namespace Corsair_Effects_Engine
 
         private void DrawRectangle(System.Drawing.Rectangle rect)
         {
+            /*
             // Draw the rectangle.
             using (System.Drawing.Graphics gr = System.Drawing.Graphics.FromImage(BackgroundImageSelection.NewImage))
             {
@@ -1442,11 +1506,12 @@ namespace Corsair_Effects_Engine
             }
             finally
             { DeleteObject(hBitmap); }
-
+            */
         }
 
         private void UpdateImagePreview(System.Drawing.Rectangle rect)
         {
+            /*
             if (rect.Width < 1 && rect.Height < 1) { return; }
             if (KeyboardMap.CanvasWidth == 0) { return; }
             // Adjust size of preview
@@ -1487,7 +1552,7 @@ namespace Corsair_Effects_Engine
             { DeleteObject(hBitmap); }
 
             destImage.Dispose();
-
+            */
         }
         
         #endregion Page: BackgroundEdit: Image
@@ -1583,6 +1648,7 @@ namespace Corsair_Effects_Engine
         }
         
         #endregion Pages
+
     }
 
     #region Type Converters
@@ -1686,6 +1752,24 @@ namespace Corsair_Effects_Engine
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+    }
+
+    public class BoolSwap : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            if (targetType != typeof(bool))
+                throw new InvalidOperationException("The target must be a boolean");
+
+            return !(bool)value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
         }
     }
     #endregion Type Converters

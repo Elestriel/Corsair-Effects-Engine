@@ -11,6 +11,7 @@
         <!-- Styles -->
         <!-- Window Style -->
         <local:BooleanToVisibilityConverter x:Key="bool2VisibilityConverter" />
+        <local:BoolSwap x:Key="boolSwap" />
         <Color x:Key="WindowBackgroundColor">#FF2D2D30</Color>
         <Color x:Key="HighlightColor">#FF3F3F41</Color>
         <Color x:Key="ForegroundColor">#FFF4F4F5</Color>
@@ -381,9 +382,11 @@
                     <Setter TargetName="Border" Property="Background" Value="#E0E0E0" />
                 </Trigger>
                 <Trigger Property="IsEnabled" Value="False">
+                    <!--
                     <Setter TargetName="Border" Property="Background" Value="#EEEEEE" />
                     <Setter TargetName="Border" Property="BorderBrush" Value="#AAAAAA" />
                     <Setter Property="Foreground" Value="#888888"/>
+                    -->
                     <Setter TargetName="Arrow" Property="Fill" Value="#888888" />
                 </Trigger>
             </ControlTemplate.Triggers>
@@ -1422,7 +1425,6 @@
             <sys:String>Breathe</sys:String>
             <sys:String>Spectrum Cycle</sys:String>
             <sys:String>Rainbow</sys:String>
-            <sys:String>Image</sys:String>
         </x:Array>
 
         <!-- Foreground: Spectro -->
@@ -1512,6 +1514,8 @@
                  Type="sys:String">
             <sys:String>Right</sys:String>
             <sys:String>Left</sys:String>
+            <sys:String>Up</sys:String>
+            <sys:String>Down</sys:String>
         </x:Array>
     </Application.Resources>
 </Application>

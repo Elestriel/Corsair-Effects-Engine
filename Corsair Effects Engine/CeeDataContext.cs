@@ -15,9 +15,7 @@ namespace Corsair_Effects_Engine
         // Audio Devices
         public ObservableCollection<MMDevice> AudioOutputDeviceList { get; set; }
         public ObservableCollection<MMDevice> AudioInputDeviceList { get; set; }
-
-        // Key Colour Collection
-        
+                
         public CeeDataContext()
         {
             // Audio Devices
