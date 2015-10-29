@@ -12,7 +12,7 @@ namespace Corsair_Effects_Engine.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -350,12 +350,12 @@ namespace Corsair_Effects_Engine.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public int OptFrameDelay {
+        public int OptFramesPerSecond {
             get {
-                return ((int)(this["OptFrameDelay"]));
+                return ((int)(this["OptFramesPerSecond"]));
             }
             set {
-                this["OptFrameDelay"] = value;
+                this["OptFramesPerSecond"] = value;
             }
         }
         
@@ -1052,6 +1052,90 @@ namespace Corsair_Effects_Engine.Properties {
             }
             set {
                 this["OptAudioUseDefaultInput"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF0000")]
+        public string ForegroundSpectroRow7 {
+            get {
+                return ((string)(this["ForegroundSpectroRow7"]));
+            }
+            set {
+                this["ForegroundSpectroRow7"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF0000")]
+        public string ForegroundSpectroRow6 {
+            get {
+                return ((string)(this["ForegroundSpectroRow6"]));
+            }
+            set {
+                this["ForegroundSpectroRow6"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF00")]
+        public string ForegroundSpectroRow5 {
+            get {
+                return ((string)(this["ForegroundSpectroRow5"]));
+            }
+            set {
+                this["ForegroundSpectroRow5"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF00")]
+        public string ForegroundSpectroRow4 {
+            get {
+                return ((string)(this["ForegroundSpectroRow4"]));
+            }
+            set {
+                this["ForegroundSpectroRow4"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF00")]
+        public string ForegroundSpectroRow3 {
+            get {
+                return ((string)(this["ForegroundSpectroRow3"]));
+            }
+            set {
+                this["ForegroundSpectroRow3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF00")]
+        public string ForegroundSpectroRow2 {
+            get {
+                return ((string)(this["ForegroundSpectroRow2"]));
+            }
+            set {
+                this["ForegroundSpectroRow2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF00")]
+        public string ForegroundSpectroRow1 {
+            get {
+                return ((string)(this["ForegroundSpectroRow1"]));
+            }
+            set {
+                this["ForegroundSpectroRow1"] = value;
             }
         }
     }

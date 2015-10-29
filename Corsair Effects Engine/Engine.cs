@@ -28,6 +28,13 @@ namespace Corsair_Effects_Engine
         public bool RunEngine = false;
         public bool RestartEngine = false;
 
+        // Thread timing calculations
+        private DateTime loopStart;
+        private DateTime loopEnd;
+        private TimeSpan loopTime;
+        private double desiredFrameTime;
+        private double sleepTime;
+
         // Pointers to the keyboard and mouse HIDs
         private IntPtr KeyboardPointer;
         private IntPtr MousePointer;
@@ -54,6 +61,7 @@ namespace Corsair_Effects_Engine
         // NAudio Stuff
         private static WasapiCapture audioCapture;
         private static SampleAggregator sampleAggregator;
+        private static bool CalculateFFT;
         private static int captureSampleRate;
         private static int lowestBin;
         private static int highestBin;
@@ -84,8 +92,7 @@ namespace Corsair_Effects_Engine
                 ReactiveKeys[i] = new KeyData();
                 SpectroKeys[i] = new KeyData();
             }
-
-
+            
             ClearAllKeys();
             
             while (RunEngine)
@@ -93,6 +100,25 @@ namespace Corsair_Effects_Engine
                 UpdateStatusMessage.NewMessage(5, "Initializing Devices.");
                 // Initialize keyboard
                 KeyboardPointer = DeviceInit.GetKeyboardPointer();
+
+                // Set canvas size
+                switch (Properties.Settings.Default.KeyboardModel)
+                {
+                    case "K65-RGB":
+                        KeyboardMap.CanvasWidth = 76;
+                        break;
+                    case "K70-RGB":
+                    case "STRAFE":
+                    case "STRAFE-RGB":
+                        KeyboardMap.CanvasWidth = 92;
+                        break;
+                    case "K95-RGB":
+                        KeyboardMap.CanvasWidth = 104;
+                        break;
+                    default:
+                        KeyboardMap.CanvasWidth = 3;
+                        break;
+                }
 
                 // Initialize mouse
                 MousePointer = DeviceInit.GetMousePointer();
@@ -111,6 +137,9 @@ namespace Corsair_Effects_Engine
 
                 while (!PauseEngine && RunEngine && !RestartEngine)
                 {
+                    // Grab the time now
+                    loopStart = DateTime.Now;
+
                     // Update animation sync
                     timeDifference = DateTime.Now - lastResetTime;
                     timeDifferenceMS = timeDifference.TotalMilliseconds;
@@ -128,20 +157,38 @@ namespace Corsair_Effects_Engine
                     RenderBackground();
 
                     // Render foreground layer
+                    
+                    if (Properties.Settings.Default.ForegroundEffect == "Spectrograph" &&
+                        Properties.Settings.Default.ForegroundEffectEnabled)
+                    { CalculateFFT = true; }
+                    else { CalculateFFT = false; }
                     RenderForeground();
 
                     // Blend layers
                     BlendLayers();
 
                     // Output frame to keyboard preview
+                    bool outputFrame = Properties.Settings.Default.BackgroundEffectEnabled ||
+                                        Properties.Settings.Default.ForegroundEffectEnabled ||
+                                        Properties.Settings.Default.StaticProfileEnabled;
 
                     // As long as an effect is enabled, output a frame
-                    if (Properties.Settings.Default.BackgroundEffectEnabled ||
-                         Properties.Settings.Default.ForegroundEffectEnabled ||
-                         Properties.Settings.Default.StaticProfileEnabled)
+                    if (outputFrame)
                     {
                         NoEffects = false;
+                    }
+                    else
+                    {
+                        if (!NoEffects) // Output a black frame
+                        {
+                            ClearAllKeys();
+                            NoEffects = true;
+                            outputFrame = true;
+                        }
+                    }
 
+                    if (outputFrame)
+                    {
                         // Use direct control
                         if (!Properties.Settings.Default.OptUseSdk)
                         {
@@ -161,20 +208,20 @@ namespace Corsair_Effects_Engine
                             //sdkOutput.UpdateMouse(Keys);
                             //sdkOutput.UpdateHeadset(System.Drawing.Color.Red);
                         }
+                        if (NoEffects) { outputFrame = false; };
                     }
-                    else
-                    {
-                        if (!NoEffects) // Output a black frame
-                        {
-                            ClearAllKeys();
-                            Output.UpdateKeyboard(KeyboardPointer, Keys);
-                            Output.UpdateMouse(MousePointer, Keys);
-                            NoEffects = true;
-                        }
-                    }
+                                        
+                    // Calculate the cycle time and sleep until the next frame should be processed
+                    loopEnd = DateTime.Now;
 
-                    //UpdateStatusMessage.NewMessage(5, "Engine MainLoop");
-                    Thread.Sleep(Properties.Settings.Default.OptFrameDelay);
+                    loopTime = loopEnd - loopStart;
+
+                    desiredFrameTime = 1000 / Properties.Settings.Default.OptFramesPerSecond;
+                    sleepTime = desiredFrameTime - loopTime.TotalMilliseconds;
+                    if (sleepTime < 0) sleepTime = 0;
+
+                    if (sleepTime != 0)
+                    { Thread.Sleep((int)sleepTime); }
                 }
                 if (RestartEngine)
                 {
@@ -218,6 +265,7 @@ namespace Corsair_Effects_Engine
                 double tBrightness = ((double)Properties.Settings.Default.BackgroundBrightness / 255D);
                 int refKey = 140;
                 if (Properties.Settings.Default.KeyboardModel == "K65-RGB") { refKey = 139; };
+                if (KeyboardMap.CanvasWidth == 3) { refKey = 0; };
 
                 if (LastBackgroundEffect != Properties.Settings.Default.BackgroundEffect) { ClearAllKeys(); };
                 LastBackgroundEffect = Properties.Settings.Default.BackgroundEffect;
@@ -360,11 +408,11 @@ namespace Corsair_Effects_Engine
                                                 break;
                                         }
                                         BackgroundKeys[key].KeyColor = new LightSingle(ColorFromHSV(rainbowKey * 360, 1, tBrightness));
-                                        for (int k = 0; k < 5; k++) { BackgroundKeys[144 + k].KeyColor = BackgroundKeys[refKey].KeyColor; };
                                     }
                                 }
                             }
                         }
+                        for (int k = 0; k < 5; k++) { BackgroundKeys[144 + k].KeyColor = BackgroundKeys[refKey].KeyColor; };
                         #endregion Rainbow Code
                         break;
                     case "Image":
@@ -659,6 +707,7 @@ namespace Corsair_Effects_Engine
 
         private void NAudio_DataAvailable(object sender, WaveInEventArgs e)
         {
+            if (!CalculateFFT) { return; };
             byte[] buffer = e.Buffer;
             int bytesRecorded = e.BytesRecorded;
             int bufferIncrement = audioCapture.WaveFormat.BlockAlign;
@@ -668,6 +717,7 @@ namespace Corsair_Effects_Engine
                 sampleAggregator.Add(BitConverter.ToSingle(buffer, index), 
                                      BitConverter.ToSingle(buffer, index + 4));
             }
+            CalculateFFT = false;
         }
 
         private void NAudio_StopCapture()
@@ -827,7 +877,8 @@ namespace Corsair_Effects_Engine
 
             using (System.Drawing.Graphics gr = System.Drawing.Graphics.FromImage(bmp))
             {
-                gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                //gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
 
                 Color c;
 
@@ -871,7 +922,7 @@ namespace Corsair_Effects_Engine
                     { rect = new System.Drawing.Rectangle(0, 0, 104, 7); }
                     else
                     { rect = new System.Drawing.Rectangle(0, 0, 7, 104); }
-                    System.Drawing.Drawing2D.LinearGradientBrush br = 
+                    System.Drawing.Drawing2D.LinearGradientBrush br =
                         new System.Drawing.Drawing2D.LinearGradientBrush(rect, System.Drawing.Color.Black, System.Drawing.Color.Black, 0, false);
                     System.Drawing.Drawing2D.ColorBlend cb = new System.Drawing.Drawing2D.ColorBlend();
 
@@ -886,9 +937,66 @@ namespace Corsair_Effects_Engine
 
                     gr.FillPath(br, fftPath);
                 }
+                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Spectrum Fade")
+                {
+                    double tBrightness = ((double)Properties.Settings.Default.FftRainbowBrightness / 255D);
+                    double pos = ((double)BackgroundAnim / (double)KeyboardMap.CanvasWidth);
+                    c = ColorFromHSV(pos * 360, 1, tBrightness);
+
+                    using (System.Drawing.SolidBrush br = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B)))
+                    {
+                        gr.FillPath(br, fftPath);
+                    }
+                }
+                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Defined Rows")
+                {
+                    Color rc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow1);
+                    Color rc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow2);
+                    Color rc3 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow3);
+                    Color rc4 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow4);
+                    Color rc5 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow5);
+                    Color rc6 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow6);
+                    Color rc7 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow7);
+
+                    System.Drawing.Color[] colors = new System.Drawing.Color[] {System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.FromArgb(rc1.A, rc1.R, rc1.G, rc1.B),
+                                                                                System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.FromArgb(rc2.A, rc2.R, rc2.G, rc2.B),
+                                                                                System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.FromArgb(rc3.A, rc3.R, rc3.G, rc3.B),
+                                                                                System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.FromArgb(rc4.A, rc4.R, rc4.G, rc4.B),
+                                                                                System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.FromArgb(rc5.A, rc5.R, rc5.G, rc5.B),
+                                                                                System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.FromArgb(rc6.A, rc6.R, rc6.G, rc6.B),
+                                                                                System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.FromArgb(rc7.A, rc7.R, rc7.G, rc7.B)
+                                                                                };
+                 
+                    System.Drawing.Drawing2D.ColorBlend grads = new System.Drawing.Drawing2D.ColorBlend(14);
+                    grads.Colors = colors;
+                    //grads.Positions = new float[] { 0f, 1/7f, 2/7f, 3/7f, 4/7f, 5/7f, 6/7f, 1f };
+                    grads.Positions = new float[] { 0f, 1 / 13f, 2 / 13f, 3 / 13f, 4 / 13f, 5 / 13f, 6 / 13f, 7 / 13f, 8 / 13f, 9 / 13f, 10 / 13f, 11 / 13f, 12 / 13f, 1f };
+                    //grads.Positions = new float[] { 0f, 0f, 3 / 14f, 4 / 14f, 5 / 14f, 6 / 14f, 7 / 14f, 8 / 14f, 9 / 14f, 10 / 14f, 11 / 14f, 12 / 14f, 13 / 14f, 0f, 1f };
+                    //grads.Positions = new float[] { 0f, 0, 0f, 0f, 0f, 5f / 13f, 0f, 7f / 13f, 0f, 9f / 13f, 0f, 12f / 13f, 0f, 1f };
+                    //grads.Positions = new float[] { 0f, 1 / 12f, 2 / 12f, 3 / 12f, 4 / 12f, 5 / 12f, 6 / 12f, 7 / 12f, 8 / 12f, 9 / 12f, 10 / 12f, 11 / 12f,  1f };
+                    //grads.Positions = new float[] { 0f, 1f / 7f, 6f / 7f, 1f };
+
+                    System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, KeyboardMap.CanvasWidth, 7);
+
+                    for (int i = 0; i < 14; i++)
+                    {
+                        System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, System.Drawing.Color.Black, System.Drawing.Color.Black, System.Drawing.Drawing2D.LinearGradientMode.Vertical);
+                        lbr.InterpolationColors = grads;
+                        //lbr.RotateTransform(-90);
+                        gr.FillPath(lbr, fftPath);
+                    };
+                }
 
             }
             BitmapToKeyboard(bmp, "Spectro");
+            
         }
 
         #endregion NAudio Methods

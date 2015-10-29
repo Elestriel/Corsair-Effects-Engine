@@ -83,7 +83,7 @@
     <Setting Name="ForegroundRandomLightsStyle" Type="System.String" Scope="User">
       <Value Profile="(Default)">Fade</Value>
     </Setting>
-    <Setting Name="OptFrameDelay" Type="System.Int32" Scope="User">
+    <Setting Name="OptFramesPerSecond" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="ForegroundRandomLightsStartType" Type="System.String" Scope="User">
@@ -259,6 +259,27 @@
     </Setting>
     <Setting Name="OptAudioUseDefaultInput" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="ForegroundSpectroRow7" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFF0000</Value>
+    </Setting>
+    <Setting Name="ForegroundSpectroRow6" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFF0000</Value>
+    </Setting>
+    <Setting Name="ForegroundSpectroRow5" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF00</Value>
+    </Setting>
+    <Setting Name="ForegroundSpectroRow4" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF00</Value>
+    </Setting>
+    <Setting Name="ForegroundSpectroRow3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF00FF00</Value>
+    </Setting>
+    <Setting Name="ForegroundSpectroRow2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF00FF00</Value>
+    </Setting>
+    <Setting Name="ForegroundSpectroRow1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FF00FF00</Value>
     </Setting>
   </Settings>
 </SettingsFile>

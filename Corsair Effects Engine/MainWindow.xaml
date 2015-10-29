@@ -105,7 +105,7 @@
             </Grid>
 
             <!-- Settings -->
-            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Visible">
+            <Grid x:Name="GridLeftSettings" Grid.Column="0" Visibility="Hidden">
                 <CheckBox x:Name="CheckMinimizeToTray" Content="Minimize to System Tray" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
                           ToolTip="Minimize to the System Tray instead of the Task Bar."
                           IsChecked="{Binding Source={x:Static p:Settings.Default}, Path=OptMinimizeToTray, Mode=TwoWay}"/>
@@ -197,13 +197,16 @@
                           IsEnabled="{Binding Source={x:Static p:Settings.Default}, Path=OptAudioUseDefaultInput, 
                             Mode=TwoWay, Converter={StaticResource boolSwap}}" SelectionChanged="AudioInputDeviceComboBox_SelectionChanged"/>
 
-                <Label Content="Frame Delay (ms)" HorizontalAlignment="Left" Margin="10,272,0,0" VerticalAlignment="Top"/>
-                <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="124,275,0,0" VerticalAlignment="Top" Width="57" Maximum="10000" Minimum="0"
-                                    Value="{Binding Source={x:Static p:Settings.Default}, Path=OptFrameDelay, Mode=TwoWay}"/>
+                <Label Content="Frames per Second" HorizontalAlignment="Left" Margin="9,275,0,0" VerticalAlignment="Top"/>
+                <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="124,275,0,0" VerticalAlignment="Top" Width="57" Maximum="120" Minimum="1"
+                                    Value="{Binding Source={x:Static p:Settings.Default}, Path=OptFramesPerSecond, Mode=TwoWay}"/>
+                <Button x:Name="ApplySpectroChangesButton" Content="Restart Engine" HorizontalAlignment="Left" Margin="74,0,0,2" VerticalAlignment="Bottom" Width="107"
+                            Style="{StaticResource MetroButton}" Click="ApplySpectroChangesButton_Click"
+                        ToolTip="If something went wrong when changing hardware, re-initialize everything."/>
             </Grid>
 
             <!-- Edit Grid -->
-            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Hidden" Margin="0,0,0,0">
+            <Grid x:Name="GridLeftEdit" Grid.Column="0" Visibility="Visible" Margin="0,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="296*"/>
                     <ColumnDefinition Width="200*"/>
@@ -238,8 +241,8 @@
                 </Grid>
 
                 <!-- Foreground: Spectrograph -->
-                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Hidden" Grid.Row="1">
-                    <Label Content="Colour" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Visible" Grid.Row="1">
+                    <Label Content="Style" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <ComboBox x:Name="ForegroundSpectroStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" Height="24" 
                                   ToolTip="The style of light to be used for this effect."
                                   ItemsSource="{DynamicResource ForegroundSpectroStyleList}"
@@ -275,8 +278,6 @@
                     	ItemsSource="{DynamicResource FftBinsPerPointList}"
                     	SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=FftBinsPerPoint, Mode=TwoWay}"
                               ToolTip="Amount of samples per point of data. Higher numbers lead to more rounded corners. Default is 2."/>
-                    <Button x:Name="ApplySpectroChangesButton" Content="Restart" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Bottom" Width="75"
-                            Style="{StaticResource MetroButton}" Click="ApplySpectroChangesButton_Click"/>
                     <Label Content="Decibel Range" Grid.Row="0" Grid.Column="0" Margin="9,104,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <xctk:IntegerUpDown x:Name="dbMinUpDown" HorizontalAlignment="Left" Margin="99,107,0,0" VerticalAlignment="Top" Width="61" Maximum="-10" Minimum="-120"
                     	Value="{Binding FftAmplitudeMin, Mode=TwoWay, Source={x:Static p:Settings.Default}}" ValueChanged="dbMinUpDown_ValueChanged"
@@ -295,7 +296,7 @@
                                         ToolTip="The highest frequencies to respond to. These are on the furthest point right of the keyboard."/>
                     <Label Content="Hz" Grid.Row="0" Grid.Column="0" Margin="257,130,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <Label Content="Window" Grid.Row="0" Grid.Column="0" Margin="10,167,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
-                    <ComboBox x:Name="ForegroundSpectroStyle_Copy" Grid.Row="0" Grid.Column="0" Margin="10,189,0,0" VerticalAlignment="Top" Height="24" 
+                    <ComboBox x:Name="ForegroundWindowingStyle" Grid.Row="0" Grid.Column="0" Margin="10,189,0,0" VerticalAlignment="Top" Height="24" 
                     	ToolTip="The Windowing function used to shape the data. This will change the appearance of the spectro slightly."
                     	ItemsSource="{DynamicResource FftWindowingModeList}"
                     	SelectedValue="{Binding FftWindowingMode, Mode=TwoWay, Source={x:Static p:Settings.Default}}"
@@ -313,11 +314,50 @@
                     <CheckBox Content="Boost Higher Frequencies" HorizontalAlignment="Left" Margin="80,260,0,0" VerticalAlignment="Top"
                     	IsChecked="{Binding FftUseFrequencyBoost, Mode=TwoWay, Source={x:Static p:Settings.Default}}"
                               ToolTip="Creates a slope that gradually increases amplification towards the right side of the keyboard."/>
-                    <ComboBox x:Name="ForegroundSpectroStyle_Copy1" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" Height="24" 
-                    	ToolTip="The style of light to be used for this effect."
-                    	ItemsSource="{DynamicResource ForegroundSpectroStyleList}"
-                    	SelectedValue="{Binding ForegroundSpectroStyle, Mode=TwoWay, Source={x:Static p:Settings.Default}}"
-                    	HorizontalAlignment="Left" Width="150" SelectionChanged="ForegroundSpectroStyle_SelectionChanged"/>
+                    <Grid x:Name="GridForegroundSpectroPerRow" Visibility="Visible" Grid.Row="0" Margin="300,10,58,75">
+                        <xctk:ColorPicker x:Name="fftRow7Picker"  
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroRow7,
+                                  Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                        <xctk:ColorPicker x:Name="fftRow6Picker"  
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroRow6,
+                                  Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                        <xctk:ColorPicker x:Name="fftRow5Picker"  
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroRow5,
+                                  Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                        <xctk:ColorPicker x:Name="fftRow4Picker"  
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroRow4,
+                                  Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="10,91,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                        <xctk:ColorPicker x:Name="fftRow3Picker"  
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroRow3,
+                                  Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="10,118,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                        <xctk:ColorPicker x:Name="fftRow2Picker"  
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroRow2,
+                                  Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="10,145,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                        <xctk:ColorPicker x:Name="fftRow1Picker"  
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroRow1,
+                                  Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
+                                  HorizontalAlignment="Left" Margin="10,172,0,0" VerticalAlignment="Top" Width="50" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
+                        <Label Content="Row 7" HorizontalAlignment="Left" Margin="65,9,0,0" VerticalAlignment="Top"/>
+                        <Label Content="Row 6" HorizontalAlignment="Left" Margin="65,36,0,0" VerticalAlignment="Top"/>
+                        <Label Content="Row 5" HorizontalAlignment="Left" Margin="65,63,0,0" VerticalAlignment="Top"/>
+                        <Label Content="Row 4" HorizontalAlignment="Left" Margin="65,90,0,0" VerticalAlignment="Top"/>
+                        <Label Content="Row 3" HorizontalAlignment="Left" Margin="65,117,0,0" VerticalAlignment="Top"/>
+                        <Label Content="Row 2" HorizontalAlignment="Left" Margin="65,144,0,0" VerticalAlignment="Top"/>
+                        <Label Content="Row 1" HorizontalAlignment="Left" Margin="65,171,0,0" VerticalAlignment="Top"/>
+                    </Grid>
                 </Grid>
 
                 <!-- Foreground: Random Lights -->

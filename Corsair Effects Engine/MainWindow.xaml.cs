@@ -41,7 +41,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0035";
+        private const string VersionNumber = "0036";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -825,7 +825,9 @@ namespace Corsair_Effects_Engine
 
         private void AudioOutputDeviceComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            newEngine.RestartEngine = true;
+            if (Properties.Settings.Default.ForegroundEffect == "Spectrograph" &&
+                Properties.Settings.Default.ForegroundEffectEnabled == true)
+            { newEngine.RestartEngine = true; }
         }
 
         private void UseDefaultInputDevice_Checked(object sender, RoutedEventArgs e)
@@ -987,11 +989,12 @@ namespace Corsair_Effects_Engine
             string Model = (KeyboardModelComboBox as ComboBox).SelectedItem.ToString();
             string Region = (KeyboardLayoutComboBox as ComboBox).SelectedItem.ToString();
             if (Model == "" || Region == "") { return; };
-            if (Model == "None" || Region == "None") { DrawButtonsOnKeyboard(Clear: true); return; };
-
-            //Engine.RestartEngine = true;
+            //if (Model == "None" || Region == "None") { DrawButtonsOnKeyboard(Clear: true); };
+            
             newEngine.RestartEngine = true;
         }
+
+
 
         #endregion Live Keyboard Preview
 
@@ -1013,6 +1016,7 @@ namespace Corsair_Effects_Engine
                     fftRainbowBrightness.Visibility = System.Windows.Visibility.Hidden;
                     fftRainbowBrightnessLabel.Visibility = System.Windows.Visibility.Hidden;
                     SpectroRainbowDirection.Visibility = System.Windows.Visibility.Hidden;
+                    GridForegroundSpectroPerRow.Visibility = System.Windows.Visibility.Hidden;
                 }
                 else if (Properties.Settings.Default.ForegroundSpectroStyle == "Rainbow")
                 {
@@ -1021,14 +1025,34 @@ namespace Corsair_Effects_Engine
                     fftRainbowBrightness.Visibility = System.Windows.Visibility.Visible;
                     fftRainbowBrightnessLabel.Visibility = System.Windows.Visibility.Visible;
                     SpectroRainbowDirection.Visibility = System.Windows.Visibility.Visible;
+                    GridForegroundSpectroPerRow.Visibility = System.Windows.Visibility.Hidden;
                 }
-                else // Solid
+                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Solid")
                 {
                     fftColorPicker.Visibility = System.Windows.Visibility.Visible;
                     fftColorPicker_Gradient.Visibility = System.Windows.Visibility.Hidden;
                     fftRainbowBrightness.Visibility = System.Windows.Visibility.Hidden;
                     fftRainbowBrightnessLabel.Visibility = System.Windows.Visibility.Hidden;
                     SpectroRainbowDirection.Visibility = System.Windows.Visibility.Hidden;
+                    GridForegroundSpectroPerRow.Visibility = System.Windows.Visibility.Hidden;
+                }
+                else if  (Properties.Settings.Default.ForegroundSpectroStyle == "Spectrum Fade")
+                {
+                    fftColorPicker.Visibility = System.Windows.Visibility.Hidden;
+                    fftColorPicker_Gradient.Visibility = System.Windows.Visibility.Hidden;
+                    fftRainbowBrightness.Visibility = System.Windows.Visibility.Visible;
+                    fftRainbowBrightnessLabel.Visibility = System.Windows.Visibility.Visible;
+                    SpectroRainbowDirection.Visibility = System.Windows.Visibility.Hidden;
+                    GridForegroundSpectroPerRow.Visibility = System.Windows.Visibility.Hidden;
+                }
+                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Defined Rows")
+                {
+                    fftColorPicker.Visibility = System.Windows.Visibility.Hidden;
+                    fftColorPicker_Gradient.Visibility = System.Windows.Visibility.Hidden;
+                    fftRainbowBrightness.Visibility = System.Windows.Visibility.Hidden;
+                    fftRainbowBrightnessLabel.Visibility = System.Windows.Visibility.Hidden;
+                    SpectroRainbowDirection.Visibility = System.Windows.Visibility.Hidden;
+                    GridForegroundSpectroPerRow.Visibility = System.Windows.Visibility.Visible;
                 }
             }
             catch { }
@@ -1780,7 +1804,7 @@ namespace Corsair_Effects_Engine
     {
         public static byte[] Positions;
         public static float[] Sizes;
-        public static int CanvasWidth;
+        public static int CanvasWidth = 3;
         public static byte[,] LedMatrix = new byte[7, 104];
     }
 

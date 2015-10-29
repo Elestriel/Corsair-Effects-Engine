@@ -95,7 +95,7 @@ namespace Corsair_Effects_Engine.EngineComponents
         {
             if (!CheckForCUEError()) { return; }
             CorsairKeyboardKeyId ckey;
-            sdkKeyboard.Color = System.Drawing.Color.Transparent;
+            //sdkKeyboard.Color = System.Drawing.Color.Transparent;
             
             for (int i = 0; i < 144; i++)
             {
@@ -107,6 +107,7 @@ namespace Corsair_Effects_Engine.EngineComponents
                         (byte)((double)Keys[i].KeyColor.LightColor.R * (opacityMultiplier)),
                         (byte)((double)Keys[i].KeyColor.LightColor.G * (opacityMultiplier)),
                         (byte)((double)Keys[i].KeyColor.LightColor.B * (opacityMultiplier)));
+
                     if (sdkKeyboard[ckey] != null)
                     {
                         if (ckey == CorsairKeyboardKeyId.M1 && Properties.Settings.Default.OptInvertM1)
@@ -117,7 +118,8 @@ namespace Corsair_Effects_Engine.EngineComponents
                     }
                 }
             }
-            sdkKeyboard.UpdateLeds();
+            sdkKeyboard.Update();
+            //sdkKeyboard.UpdateLeds();
         }
 
         public void UpdateMouse(KeyData[] Keys)

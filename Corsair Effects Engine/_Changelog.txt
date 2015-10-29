@@ -1,4 +1,20 @@
-﻿Build 0035
+﻿Build 0036
+- Built a custom CUE.NET and set the project back to targetting .NET 4.5.2.
+- Prevented Spectro from starting itself when devices automatically change.
+- Fixed an issue where Spectro tried to overlay itself into other effects.
+- Added Spectrum Fade to the Spectro styles list.
+- Added Defined Rows to the Spectro styles list but it's still totally broken so it's disabled right now.
+- Renamed the 'Colour' label in Spectro to 'Styles'.
+- Changed spectro smoothing from high quality to high speed.
+- When all layers are disabled, a black frame is sent to devices, then nothing else is sent to them.
+- Built a new frame timing routine. Frames can now be selected by Frames per Second. If you choose a higher FPS than your machine can handle, it will simply run as fast as it can.
+- Spectro only calculates on request from a frame. This improves performance somewhat, but more improvements are coming.
+- Changed Frame Delay label to Frames per Second, and adjusted positioning so it lines up with the UpDown.
+- Allowed effects to be sent only to mice, when no keyboards are selected.
+- - Deselecting a keyboard can cause some weird behaviour. Until this is fixed, hit Restart Engine to correct everything.
+- Starting effects without having selected a device should no longer crash the program.
+
+Build 0035
 - Removed the "Image" background effect. This may eventually be re-implemented in a better way later on.
 - Added up and down directions for background rainbow.
 - Added "Default Device" options for input and output.

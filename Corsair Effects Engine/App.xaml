@@ -7,7 +7,7 @@
              xmlns:Themes="clr-namespace:Xceed.Wpf.Toolkit.Themes;assembly=Xceed.Wpf.Toolkit"
              xmlns:p="clr-namespace:Corsair_Effects_Engine.Properties"
              StartupUri="MainWindow.xaml">
-    <Application.Resources>        
+    <Application.Resources>
         <!-- Styles -->
         <!-- Window Style -->
         <local:BooleanToVisibilityConverter x:Key="bool2VisibilityConverter" />
@@ -164,7 +164,7 @@
             <Setter Property="Foreground" Value="{StaticResource AccentColorBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource AccentColorBrush}"/>
         </Style>
-        
+
         <!-- ContextMenu -->
         <Style x:Key="{x:Type ContextMenu}" TargetType="{x:Type ContextMenu}">
             <Setter Property="Background" Value="{StaticResource WindowBackgroundColorBrush}"/>
@@ -247,7 +247,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <!-- Hyperlink-like Button -->
         <ControlTemplate x:Key="HyperlinkLikeButtonTemplate" TargetType="{x:Type Button}">
             <TextBlock x:Name="innerText" Foreground="{StaticResource AccentColorBrush}" Cursor="Hand" >
@@ -268,7 +268,7 @@
         <Style x:Key="HyperlinkLikeButton" TargetType="{x:Type Button}">
             <Setter Property="Template" Value="{StaticResource HyperlinkLikeButtonTemplate}" />
         </Style>
-        
+
         <!-- Big Text-Only Button -->
         <ControlTemplate x:Key="BigTextOnlyButtonTemplate" TargetType="{x:Type Button}">
             <TextBlock x:Name="innerText" Foreground="{StaticResource AccentColorBrush}" Cursor="Hand" FontSize="20">
@@ -289,7 +289,7 @@
         <Style x:Key="BigTextOnlyButton" TargetType="{x:Type Button}">
             <Setter Property="Template" Value="{StaticResource BigTextOnlyButtonTemplate}" />
         </Style>
-        
+
         <!-- Flat Buttons -->
         <Style
         x:Key="ButtonFocusVisual">
@@ -344,7 +344,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <!-- Flat Combobox -->
         <ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
             <Grid>
@@ -621,7 +621,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <!-- XCTK IntegerUpDown -->
         <Style x:Key="{x:Type xctk:IntegerUpDown}" TargetType="{x:Type xctk:IntegerUpDown}">
             <Setter Property="Background" Value="{StaticResource ControlBackgroundColorBrush}"/>
@@ -725,7 +725,7 @@
                                     <RepeatButton x:Name="PART_IncreaseButton" 
                                                   IsTabStop="{TemplateBinding IsTabStop}" 
                                                   Background="{StaticResource ControlBackgroundColorBrush}">
-                                                  <!--Style="{DynamicResource {ComponentResourceKey ResourceId=SpinnerButtonStyleKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}"-->
+                                        <!--Style="{DynamicResource {ComponentResourceKey ResourceId=SpinnerButtonStyleKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}"-->
                                         <RepeatButton.ContentTemplate>
                                             <DataTemplate>
                                                 <Path Data="M 0 4 L 4 0 L 8 4 Z" 
@@ -743,7 +743,7 @@
                                                   IsTabStop="{TemplateBinding IsTabStop}" 
                                                   Grid.Row="1"
                                                   Background="{StaticResource ControlBackgroundColorBrush}">
-                                                  <!--<Style="{DynamicResource {ComponentResourceKey ResourceId=SpinnerButtonStyleKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}">-->
+                                        <!--<Style="{DynamicResource {ComponentResourceKey ResourceId=SpinnerButtonStyleKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}">-->
                                         <RepeatButton.ContentTemplate>
                                             <DataTemplate>
                                                 <Path Data="M 0 0 L 4 4 L 8 0 Z" 
@@ -858,7 +858,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <!-- XCTK ColorPicker -->
         <Style x:Key="{x:Type xctk:ColorPicker}" TargetType="{x:Type xctk:ColorPicker}">
             <Setter Property="Background" Value="{StaticResource ControlBackgroundColorBrush}"/>
@@ -1357,8 +1357,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
-        
+
+
         <!-- Data -->
         <!-- Settings Data -->
         <x:Array x:Key="KeyboardModelList" 
@@ -1370,7 +1370,7 @@
             <sys:String>STRAFE</sys:String>
             <sys:String>STRAFE-RGB</sys:String>
         </x:Array>
-        
+
         <x:Array x:Key="KeyboardLayoutList" 
                  Type="sys:String">
             <sys:String>None</sys:String>
@@ -1418,7 +1418,7 @@
             <sys:String>Reactive Typing</sys:String>
             <sys:String>Heatmap</sys:String>
         </x:Array>
-        
+
         <x:Array x:Key="BackgroundEffectsList" 
                  Type="sys:String">
             <sys:String>Solid</sys:String>
@@ -1436,12 +1436,14 @@
             <sys:String>Up</sys:String>
             <sys:String>Down</sys:String>
         </x:Array>
-        
+
         <x:Array x:Key="ForegroundSpectroStyleList" Type="sys:String">
             <sys:String>Solid</sys:String>
             <sys:String>Gradient Horizontal</sys:String>
             <sys:String>Gradient Vertical</sys:String>
             <sys:String>Rainbow</sys:String>
+            <sys:String>Spectrum Fade</sys:String>
+            <!--<sys:String>Defined Rows</sys:String>-->
         </x:Array>
 
         <x:Array x:Key="FftSizeList" Type="sys:String">
@@ -1453,7 +1455,7 @@
             <sys:String>4096</sys:String>
             <sys:String>8192</sys:String>
         </x:Array>
-        
+
         <x:Array x:Key="FftBinsPerPointList" Type="sys:String">
             <sys:String>1</sys:String>
             <sys:String>2</sys:String>
@@ -1475,20 +1477,20 @@
             <sys:String>Switch</sys:String>
             <sys:String>Fade</sys:String>
         </x:Array>
-        
+
         <x:Array x:Key="ForegroundRandomLightsStartTypeList"
                  Type="sys:String">
             <sys:String>Defined Colour</sys:String>
             <sys:String>Random Colour</sys:String>
         </x:Array>
-        
+
         <x:Array x:Key="ForegroundRandomLightsEndTypeList"
                  Type="sys:String">
             <sys:String>None</sys:String>
             <sys:String>Defined Colour</sys:String>
             <sys:String>Random Colour</sys:String>
         </x:Array>
-        
+
         <!-- Foreground: Reactive -->
         <x:Array x:Key="ForegroundReactiveStyleList"
                  Type="sys:String">
