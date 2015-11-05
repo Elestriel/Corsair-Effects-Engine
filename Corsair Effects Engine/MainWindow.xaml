@@ -257,17 +257,25 @@
                                   Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"
                                   HorizontalAlignment="Left" Margin="220,28,0,0" VerticalAlignment="Top" Width="50" 
                                   ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"/>
-                    <xctk:IntegerUpDown x:Name="fftRainbowBrightness" HorizontalAlignment="Left" Margin="231,28,0,0" 
+                    <xctk:IntegerUpDown x:Name="fftRainbowBrightness" HorizontalAlignment="Left" Margin="166,29,0,0" 
                                         VerticalAlignment="Top" Width="61" Maximum="255" Minimum="0" Increment="5"
                     	                Value="{Binding FftRainbowBrightness, Mode=TwoWay, Source={x:Static p:Settings.Default}}"
                                         ToolTip="Brightness of the rainbow."/>
-                    <ComboBox x:Name="SpectroRainbowDirection" Grid.Column="0" Margin="165,26,0,0" VerticalAlignment="Top" Height="24" 
+                    <Label x:Name="SpectroRainbowDirectionLabel" Content="Direction" Grid.Column="0" VerticalAlignment="Top" 
+                    	Width="auto" Height="26" HorizontalAlignment="Left" Margin="307,5,0,0"/>
+                    <ComboBox x:Name="SpectroRainbowDirection" Grid.Column="0" Margin="307,26,0,0" VerticalAlignment="Top" Height="24" 
                                       ToolTip="The direction that the rainbow will travel."
                                       ItemsSource="{DynamicResource SpectroRainbowDirectionList}"
                                       SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=SpectroRainbowDirection, Mode=TwoWay}"
                                       HorizontalAlignment="Left" Width="61" SelectionChanged="ForegroundRandomLightsStyle_SelectionChanged"/>
+                    <Label x:Name="SpectroCycleLabel" Content="Cycle" Grid.Column="0" VerticalAlignment="Top" 
+                           Width="auto" Height="26" HorizontalAlignment="Left" Margin="235,6,0,0"/>
+                    <xctk:IntegerUpDown x:Name="SpectroCycleUpDown" HorizontalAlignment="Left" Margin="237,29,0,0" VerticalAlignment="Top" Width="65"
+                    	Value="{Binding BackgroundRepeatTime, Mode=TwoWay, Source={x:Static p:Settings.Default}}" 
+                                        Minimum="200" Maximum="60000" Increment="100" Height="20"
+                                        ToolTip="Time in milliseconds before the effect repeats. This is synced with Background effects."/>
 
-                    <Label x:Name="fftRainbowBrightnessLabel" Content="Brightness" HorizontalAlignment="Left" Margin="230,5,0,0" VerticalAlignment="Top"/>
+                    <Label x:Name="fftRainbowBrightnessLabel" Content="Brightness" HorizontalAlignment="Left" Margin="165,6,0,0" VerticalAlignment="Top"/>
                     <Label Content="FFT Size" Grid.Row="0" Grid.Column="0" Margin="42,53,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <ComboBox HorizontalAlignment="Left" Margin="99,55,0,0" VerticalAlignment="Top" Width="61"
                               ItemsSource="{DynamicResource FftSizeList}"

@@ -1,4 +1,11 @@
-﻿Build 0036
+﻿Build 0037
+- Fixed a bug that would cause crashes when running the program for the first time.
+- Adjusted the size and positioning of the SpinButtons in UpDown controls so the arrows are centered and borders line up with ComboBoxes.
+- Changed default frames per second to 30.
+- Implemented per-row lighting options for the Spectro.
+- Included the Rainbow cycle time options on the appropriate Spectro settings.
+
+Build 0036
 - Built a custom CUE.NET and set the project back to targetting .NET 4.5.2.
 - Prevented Spectro from starting itself when devices automatically change.
 - Fixed an issue where Spectro tried to overlay itself into other effects.

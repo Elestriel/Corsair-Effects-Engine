@@ -17,6 +17,7 @@
         <Color x:Key="ForegroundColor">#FFF4F4F5</Color>
         <Color x:Key="ControlBackgroundColor">#FF4D4D50</Color>
         <Color x:Key="ControlBackgroundHoverColor">#FF7D7D80</Color>
+        <Color x:Key="ControlBackgroundDisabledColor">#FF00FF00</Color>
         <Color x:Key="TextColor">#F0F0F0</Color>
         <Color x:Key="TextDisabledColor">#909090</Color>
         <Color x:Key="BorderColor">#FF404040</Color>
@@ -26,6 +27,7 @@
         <SolidColorBrush x:Key="ForegroundColorBrush" Color="{StaticResource ForegroundColor}"/>
         <SolidColorBrush x:Key="ControlBackgroundColorBrush" Color="{StaticResource ControlBackgroundColor}"/>
         <SolidColorBrush x:Key="ControlBackgroundHoverColorBrush" Color="{StaticResource ControlBackgroundHoverColor}"/>
+        <SolidColorBrush x:Key="ControlBackgroundDisabledColorBrush" Color="{StaticResource ControlBackgroundDisabledColor}"/>
         <SolidColorBrush x:Key="TextColorBrush" Color="{StaticResource TextColor}"/>
         <SolidColorBrush x:Key="TextDisabledColorBrush" Color="{StaticResource TextDisabledColor}"/>
         <SolidColorBrush x:Key="BorderColorBrush" Color="{StaticResource BorderColor}"/>
@@ -365,13 +367,14 @@
                   Margin="1" 
                   Background="{StaticResource ControlBackgroundColorBrush}" 
                   BorderBrush="#404040"
-                  BorderThickness="0,0,1,0" />
+                  BorderThickness="0,0,1,0"/>
                 <Path 
                   x:Name="Arrow"
                   Grid.Column="1"     
                   Fill="{StaticResource AccentColorBrush}"
                   HorizontalAlignment="Center"
                   VerticalAlignment="Center"
+                  Width="9"
                   Data="M 0 0 L 4 4 L 8 0 Z"/>
             </Grid>
             <ControlTemplate.Triggers>
@@ -635,7 +638,7 @@
             <Setter Property="WatermarkTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <ContentControl Content="{Binding}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Focusable="False" Margin="0,0,3,0"/>
+                        <ContentControl Content="{Binding}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Focusable="False" Margin="0,0,0,0"/>
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -707,14 +710,14 @@
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="20"/>
                                 </Grid.ColumnDefinitions>
                                 <ContentPresenter Content="{TemplateBinding Content}" 
                                                   Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                                   Margin="{TemplateBinding Padding}" 
                                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                <Grid Grid.Column="1" Margin="0,1,0,0" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}">
+                                <Grid Grid.Column="1" Margin="0,0,0,0" Width="20">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
@@ -724,14 +727,14 @@
                                     </Grid.Visibility>
                                     <RepeatButton x:Name="PART_IncreaseButton" 
                                                   IsTabStop="{TemplateBinding IsTabStop}" 
-                                                  Background="{StaticResource ControlBackgroundColorBrush}">
+                                                  Background="{StaticResource ControlBackgroundColorBrush}"
+                                                  Margin="0,0,0,0">
                                         <!--Style="{DynamicResource {ComponentResourceKey ResourceId=SpinnerButtonStyleKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}"-->
                                         <RepeatButton.ContentTemplate>
                                             <DataTemplate>
                                                 <Path Data="M 0 4 L 4 0 L 8 4 Z" 
                                                       Focusable="False" 
                                                       Fill="{StaticResource AccentColorBrush}" 
-                                                      HorizontalAlignment="Center" 
                                                       Height="4" 
                                                       SnapsToDevicePixels="True" 
                                                       VerticalAlignment="Center" 
@@ -742,14 +745,14 @@
                                     <RepeatButton x:Name="PART_DecreaseButton" 
                                                   IsTabStop="{TemplateBinding IsTabStop}" 
                                                   Grid.Row="1"
-                                                  Background="{StaticResource ControlBackgroundColorBrush}">
+                                                  Background="{StaticResource ControlBackgroundColorBrush}"
+                                                  Margin="0,1,0,0">
                                         <!--<Style="{DynamicResource {ComponentResourceKey ResourceId=SpinnerButtonStyleKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}">-->
                                         <RepeatButton.ContentTemplate>
                                             <DataTemplate>
                                                 <Path Data="M 0 0 L 4 4 L 8 0 Z" 
                                                       Focusable="False" 
                                                       Fill="{StaticResource AccentColorBrush}" 
-                                                      HorizontalAlignment="Center" 
                                                       Height="4" 
                                                       SnapsToDevicePixels="True" 
                                                       VerticalAlignment="Center" 
@@ -774,7 +777,9 @@
                                 <Setter Property="ContentTemplate" TargetName="PART_IncreaseButton">
                                     <Setter.Value>
                                         <DataTemplate>
-                                            <Path Data="M0,3C0,3 0,4 0,4 0,4 3,4 3,4 3,4 3,3 3,3 3,3 4,3 4,3 4,3 4,4 4,4 4,4 7,4 7,4 7,4 7,3 7,3 7,3 6,3 6,3 6,3 6,2 6,2 6,2 5,2 5,2 5,2 5,1 5,1 5,1 4,1 4,1 4,1 4,0 4,0 4,0 3,0 3,0 3,0 3,1 3,1 3,1 2,1 2,1 2,1 2,2 2,2 2,2 1,2 1,2 1,2 1,3 1,3 1,3 0,3 0,3z" Focusable="False" Fill="{DynamicResource {ComponentResourceKey ResourceId=GlyphDisabledForegroundKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}" HorizontalAlignment="Center" Height="4" SnapsToDevicePixels="True" VerticalAlignment="Center" Width="7"/>
+                                            <Path Data="M 0 4 L 4 0 L 8 4 Z" 
+                                                  Focusable="False" Fill="{StaticResource AccentColorBrush}" 
+                                                  HorizontalAlignment="Center" Height="4" SnapsToDevicePixels="True" VerticalAlignment="Center" Width="8"/>
                                         </DataTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -783,7 +788,9 @@
                                 <Setter Property="ContentTemplate" TargetName="PART_DecreaseButton">
                                     <Setter.Value>
                                         <DataTemplate>
-                                            <Path Data="M0,1C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1z" Focusable="False" Fill="{DynamicResource {ComponentResourceKey ResourceId=GlyphDisabledForegroundKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}" HorizontalAlignment="Center" Height="4" SnapsToDevicePixels="True" VerticalAlignment="Center" Width="7"/>
+                                            <Path Data="M 0 0 L 4 4 L 8 0 Z" 
+                                                  Focusable="False" Fill="{StaticResource AccentColorBrush}" 
+                                                  HorizontalAlignment="Center" Height="4" SnapsToDevicePixels="True" VerticalAlignment="Center" Width="8"/>
                                         </DataTemplate>
                                     </Setter.Value>
                                 </Setter>
@@ -808,7 +815,7 @@
             <Setter Property="WatermarkTemplate">
                 <Setter.Value>
                     <DataTemplate>
-                        <ContentControl Content="{Binding}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Focusable="False" Margin="0,0,3,0"/>
+                        <ContentControl Content="{Binding}" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Focusable="False" Margin="0,0,0,0"/>
                     </DataTemplate>
                 </Setter.Value>
             </Setter>
@@ -1428,7 +1435,6 @@
         </x:Array>
 
         <!-- Foreground: Spectro -->
-
         <x:Array x:Key="SpectroRainbowDirectionList"
                  Type="sys:String">
             <sys:String>Right</sys:String>
@@ -1442,8 +1448,8 @@
             <sys:String>Gradient Horizontal</sys:String>
             <sys:String>Gradient Vertical</sys:String>
             <sys:String>Rainbow</sys:String>
-            <sys:String>Spectrum Fade</sys:String>
-            <!--<sys:String>Defined Rows</sys:String>-->
+            <sys:String>Spectrum Cycle</sys:String>
+            <sys:String>Defined Rows</sys:String>
         </x:Array>
 
         <x:Array x:Key="FftSizeList" Type="sys:String">

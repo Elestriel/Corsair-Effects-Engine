@@ -303,7 +303,7 @@ namespace Corsair_Effects_Engine.EngineComponents
         /// <returns>True for success, false for failure.</returns>
         private bool InitiateLookupTable()
         {
-            LoadSizePositionMaps();
+            if (!LoadSizePositionMaps()) { return false; };
 
             var keys = KeyboardMap.Positions.GetEnumerator();
             keys.MoveNext();
@@ -363,7 +363,7 @@ namespace Corsair_Effects_Engine.EngineComponents
         /// <returns>True for success, false for failure.</returns>
         private bool LoadSizePositionMaps()
         {
-            // Break if there's no keyboard layout selected
+            // Break if there's no keyboard layout/model selected
             if (Properties.Settings.Default.KeyboardModel == "None" || Properties.Settings.Default.KeyboardLayout == "None")
             {
                 UpdateStatusMessage.NewMessage(3, "Invalid keyboard selection.");

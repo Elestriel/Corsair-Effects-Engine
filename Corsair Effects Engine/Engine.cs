@@ -937,7 +937,7 @@ namespace Corsair_Effects_Engine
 
                     gr.FillPath(br, fftPath);
                 }
-                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Spectrum Fade")
+                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Spectrum Cycle")
                 {
                     double tBrightness = ((double)Properties.Settings.Default.FftRainbowBrightness / 255D);
                     double pos = ((double)BackgroundAnim / (double)KeyboardMap.CanvasWidth);
@@ -950,38 +950,34 @@ namespace Corsair_Effects_Engine
                 }
                 else if (Properties.Settings.Default.ForegroundSpectroStyle == "Defined Rows")
                 {
-                    Color rc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow1);
-                    Color rc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow2);
-                    Color rc3 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow3);
+                    Color rc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow7);
+                    Color rc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow6);
+                    Color rc3 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow5);
                     Color rc4 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow4);
-                    Color rc5 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow5);
-                    Color rc6 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow6);
-                    Color rc7 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow7);
+                    Color rc5 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow3);
+                    Color rc6 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow2);
+                    Color rc7 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow1);
 
-                    System.Drawing.Color[] colors = new System.Drawing.Color[] {System.Drawing.Color.Black,
-                                                                                System.Drawing.Color.FromArgb(rc1.A, rc1.R, rc1.G, rc1.B),
-                                                                                System.Drawing.Color.Black,
+                    System.Drawing.Color[] colors = new System.Drawing.Color[] {System.Drawing.Color.FromArgb(rc1.A, rc1.R, rc1.G, rc1.B),
+                                                                                System.Drawing.Color.Transparent,
                                                                                 System.Drawing.Color.FromArgb(rc2.A, rc2.R, rc2.G, rc2.B),
-                                                                                System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.Transparent,
                                                                                 System.Drawing.Color.FromArgb(rc3.A, rc3.R, rc3.G, rc3.B),
-                                                                                System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.Transparent,
                                                                                 System.Drawing.Color.FromArgb(rc4.A, rc4.R, rc4.G, rc4.B),
-                                                                                System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.Transparent,
                                                                                 System.Drawing.Color.FromArgb(rc5.A, rc5.R, rc5.G, rc5.B),
-                                                                                System.Drawing.Color.Black,
+                                                                                System.Drawing.Color.Transparent,
                                                                                 System.Drawing.Color.FromArgb(rc6.A, rc6.R, rc6.G, rc6.B),
-                                                                                System.Drawing.Color.Black,
-                                                                                System.Drawing.Color.FromArgb(rc7.A, rc7.R, rc7.G, rc7.B)
+                                                                                System.Drawing.Color.Transparent,
+                                                                                System.Drawing.Color.FromArgb(rc7.A, rc7.R, rc7.G, rc7.B),
+                                                                                System.Drawing.Color.Transparent
                                                                                 };
                  
                     System.Drawing.Drawing2D.ColorBlend grads = new System.Drawing.Drawing2D.ColorBlend(14);
                     grads.Colors = colors;
-                    //grads.Positions = new float[] { 0f, 1/7f, 2/7f, 3/7f, 4/7f, 5/7f, 6/7f, 1f };
-                    grads.Positions = new float[] { 0f, 1 / 13f, 2 / 13f, 3 / 13f, 4 / 13f, 5 / 13f, 6 / 13f, 7 / 13f, 8 / 13f, 9 / 13f, 10 / 13f, 11 / 13f, 12 / 13f, 1f };
-                    //grads.Positions = new float[] { 0f, 0f, 3 / 14f, 4 / 14f, 5 / 14f, 6 / 14f, 7 / 14f, 8 / 14f, 9 / 14f, 10 / 14f, 11 / 14f, 12 / 14f, 13 / 14f, 0f, 1f };
-                    //grads.Positions = new float[] { 0f, 0, 0f, 0f, 0f, 5f / 13f, 0f, 7f / 13f, 0f, 9f / 13f, 0f, 12f / 13f, 0f, 1f };
-                    //grads.Positions = new float[] { 0f, 1 / 12f, 2 / 12f, 3 / 12f, 4 / 12f, 5 / 12f, 6 / 12f, 7 / 12f, 8 / 12f, 9 / 12f, 10 / 12f, 11 / 12f,  1f };
-                    //grads.Positions = new float[] { 0f, 1f / 7f, 6f / 7f, 1f };
+                    grads.Positions = new float[] { 0f, 1 / 14f, 2 / 14f, 3 / 14f, 4 / 14f, 5 / 14f, 6 / 14f, 
+                                                7 / 14f, 8 / 14f, 9 / 14f, 10 / 14f, 11 / 14f, 12 / 14f, 1f };
 
                     System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, KeyboardMap.CanvasWidth, 7);
 
@@ -989,11 +985,9 @@ namespace Corsair_Effects_Engine
                     {
                         System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, System.Drawing.Color.Black, System.Drawing.Color.Black, System.Drawing.Drawing2D.LinearGradientMode.Vertical);
                         lbr.InterpolationColors = grads;
-                        //lbr.RotateTransform(-90);
                         gr.FillPath(lbr, fftPath);
                     };
                 }
-
             }
             BitmapToKeyboard(bmp, "Spectro");
             

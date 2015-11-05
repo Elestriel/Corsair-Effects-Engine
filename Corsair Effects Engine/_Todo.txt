@@ -1,5 +1,4 @@
-﻿- Build new timing for the engine, allowing a frames-per-second option.
-- - Have the Spectro only update on a new frame, not every time new data is available.
+﻿- Automatically check for updates once per hour.
 - Help with development of the .NET wrapper.
 - Add the ability to switch effects to the right-click menu.
 - Make the heatmap update on changes, and not require a new keystroke.
