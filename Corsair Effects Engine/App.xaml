@@ -717,7 +717,7 @@
                                                   Margin="{TemplateBinding Padding}" 
                                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
                                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-                                <Grid Grid.Column="1" Margin="0,0,0,0" Width="20">
+                                <Grid Grid.Column="1" Margin="0,0,0,0" Width="20" Height="19">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*"/>
                                         <RowDefinition Height="*"/>
@@ -732,10 +732,10 @@
                                         <!--Style="{DynamicResource {ComponentResourceKey ResourceId=SpinnerButtonStyleKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}"-->
                                         <RepeatButton.ContentTemplate>
                                             <DataTemplate>
-                                                <Path Data="M 0 4 L 4 0 L 8 4 Z" 
+                                                <Path Data="M 0 3 L 4 0 L 8 3 Z" 
                                                       Focusable="False" 
                                                       Fill="{StaticResource AccentColorBrush}" 
-                                                      Height="4" 
+                                                      Height="3" 
                                                       SnapsToDevicePixels="True" 
                                                       VerticalAlignment="Center" 
                                                       Width="8"/>
@@ -746,14 +746,14 @@
                                                   IsTabStop="{TemplateBinding IsTabStop}" 
                                                   Grid.Row="1"
                                                   Background="{StaticResource ControlBackgroundColorBrush}"
-                                                  Margin="0,1,0,0">
+                                                  Margin="0,0,0,0">
                                         <!--<Style="{DynamicResource {ComponentResourceKey ResourceId=SpinnerButtonStyleKey, TypeInTargetAssembly={x:Type Themes:ResourceKeys}}}">-->
                                         <RepeatButton.ContentTemplate>
                                             <DataTemplate>
-                                                <Path Data="M 0 0 L 4 4 L 8 0 Z" 
+                                                <Path Data="M 0 0 L 4 3 L 8 0 Z" 
                                                       Focusable="False" 
                                                       Fill="{StaticResource AccentColorBrush}" 
-                                                      Height="4" 
+                                                      Height="3" 
                                                       SnapsToDevicePixels="True" 
                                                       VerticalAlignment="Center" 
                                                       Width="8"/>

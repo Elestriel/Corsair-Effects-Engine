@@ -1,4 +1,5 @@
-﻿- Automatically check for updates once per hour.
+﻿- Rendering engine overhaul to decrease CPU usage.
+- Automatically check for updates once per hour.
 - Help with development of the .NET wrapper.
 - Add the ability to switch effects to the right-click menu.
 - Make the heatmap update on changes, and not require a new keystroke.
@@ -6,7 +7,6 @@
 - - Automatic volume control based on peak
 - Audio effects:
 - - Spectrograph
-- - - Allow each row's colour to be customized
 - - - Mouse support
 - - - Headset support
 - - VU Meter

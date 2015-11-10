@@ -36,7 +36,7 @@
       <Value Profile="(Default)">None</Value>
     </Setting>
     <Setting Name="AudioInputDevice" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Headphones (Realtek High Definition Audio)</Value>
+      <Value Profile="(Default)">None</Value>
     </Setting>
     <Setting Name="OptMinimizeToTray" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -237,7 +237,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="OptUseSdk" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="FftBoostHighFrequencies" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.5</Value>

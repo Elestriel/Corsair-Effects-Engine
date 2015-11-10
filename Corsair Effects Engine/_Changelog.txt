@@ -1,4 +1,12 @@
-﻿Build 0037
+﻿Build 0038
+- Further changed the look and feel of controls on the Spectro page.
+- Changes to the base styles have led to small changes on all pages.
+- The Fn key on the STRAFE and STRAFE-RGB should now light up correctly when in SDK mode.
+- The Corsair Logo on the STRAFE and STRAFE-RGB should now light up correctly when in SDK mode.
+- Switched the default Log level back to 6, since it's pretty useless at 0 if there's a problem on first launch.
+- Fixed a crash.
+
+Build 0037
 - Fixed a bug that would cause crashes when running the program for the first time.
 - Adjusted the size and positioning of the SpinButtons in UpDown controls so the arrows are centered and borders line up with ComboBoxes.
 - Changed default frames per second to 30.

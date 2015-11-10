@@ -107,13 +107,19 @@ namespace Corsair_Effects_Engine.EngineComponents
                         (byte)((double)Keys[i].KeyColor.LightColor.R * (opacityMultiplier)),
                         (byte)((double)Keys[i].KeyColor.LightColor.G * (opacityMultiplier)),
                         (byte)((double)Keys[i].KeyColor.LightColor.B * (opacityMultiplier)));
-
+                    if ((Properties.Settings.Default.KeyboardModel == "STRAFE" ||
+                         Properties.Settings.Default.KeyboardModel == "STRAFE-RGB") &&
+                         ckey == CorsairKeyboardKeyId.RightGui)
+                    {
+                        ckey = CorsairKeyboardKeyId.Fn;
+                    }
                     if (sdkKeyboard[ckey] != null)
                     {
                         if (ckey == CorsairKeyboardKeyId.M1 && Properties.Settings.Default.OptInvertM1)
                         {
                             keyColor = System.Drawing.Color.FromArgb(255, Math.Abs(255 - keyColor.R), Math.Abs(255 - keyColor.G), Math.Abs(255 - keyColor.B));
                         }
+
                         { sdkKeyboard[ckey].Led.Color = keyColor; }
                     }
                 }
@@ -271,7 +277,7 @@ public class CorsairKeyCodes
         sdkKeyDict.Add(122, CorsairKeyboardKeyId.P);
         sdkKeyDict.Add(123, CorsairKeyboardKeyId.SemicolonAndColon);
         sdkKeyDict.Add(124, CorsairKeyboardKeyId.PeriodAndBiggerThan);
-        sdkKeyDict.Add(125, CorsairKeyboardKeyId.Invalid);
+        sdkKeyDict.Add(125, CorsairKeyboardKeyId.CLK_Logo);
         sdkKeyDict.Add(126, CorsairKeyboardKeyId.Enter);
         sdkKeyDict.Add(127, CorsairKeyboardKeyId.DownArrow);
         sdkKeyDict.Add(128, CorsairKeyboardKeyId.KeypadPlus);
