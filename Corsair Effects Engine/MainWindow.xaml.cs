@@ -41,7 +41,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0038";
+        private const string VersionNumber = "0039";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -1469,6 +1469,7 @@ namespace Corsair_Effects_Engine
 
         private void BackgroundImageCanvas_MouseMove(object sender, MouseEventArgs e)
         {
+            /*
             if (BackgroundImageSelection.IsEditing)
             {
                 BackgroundImageSelection.NewImage = new System.Drawing.Bitmap(BackgroundImageSelection.OriginalImage);
@@ -1519,6 +1520,7 @@ namespace Corsair_Effects_Engine
                 DrawRectangle(rect);
                 BackgroundImageSelection.NewImage.Dispose();
             }
+             * */
         }
 
         private void DrawRectangle(System.Drawing.Rectangle rect)
@@ -1591,7 +1593,7 @@ namespace Corsair_Effects_Engine
             { DeleteObject(hBitmap); }
 
             destImage.Dispose();
-            */
+             * */
         }
         
         #endregion Page: BackgroundEdit: Image

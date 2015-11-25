@@ -1,10 +1,14 @@
-﻿Build 0038
+﻿Build 0039
+- Fixed an issue that would cause the spectro effect to be clipped off at the bottom with some settings.
+
+Build 0038
 - Further changed the look and feel of controls on the Spectro page.
 - Changes to the base styles have led to small changes on all pages.
 - The Fn key on the STRAFE and STRAFE-RGB should now light up correctly when in SDK mode.
 - The Corsair Logo on the STRAFE and STRAFE-RGB should now light up correctly when in SDK mode.
 - Switched the default Log level back to 6, since it's pretty useless at 0 if there's a problem on first launch.
 - Fixed a crash.
+- Found an issue where weird stuff happens when minimum sensitivity is set really low. Will attempt to fix in the next build.
 
 Build 0037
 - Fixed a bug that would cause crashes when running the program for the first time.

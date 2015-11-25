@@ -35,6 +35,9 @@ namespace Corsair_Effects_Engine
         private double desiredFrameTime;
         private double sleepTime;
 
+        // Performace Stuff
+        PerformanceCounter cpuCounter;
+
         // Pointers to the keyboard and mouse HIDs
         private IntPtr KeyboardPointer;
         private IntPtr MousePointer;
@@ -92,7 +95,12 @@ namespace Corsair_Effects_Engine
                 ReactiveKeys[i] = new KeyData();
                 SpectroKeys[i] = new KeyData();
             }
-            
+
+            cpuCounter = new PerformanceCounter();
+            cpuCounter.CategoryName = "Processor";
+            cpuCounter.CounterName = "% Processor Time";
+            cpuCounter.InstanceName = "_Total";
+
             ClearAllKeys();
             
             while (RunEngine)
@@ -417,6 +425,14 @@ namespace Corsair_Effects_Engine
                         break;
                     case "Image":
                         if (MainWindow.BackgroundImageSelection.OutputImage != null) { BitmapToKeyboard(MainWindow.BackgroundImageSelection.OutputImage, "Background"); }
+                        break;
+                    case "CpuUsage":
+                        double cpuUsage = (cpuCounter.NextValue() / 100);
+                        for (int i = 0; i < 149; i++)
+                        {
+                            BackgroundKeys[i].KeyColor = new LightSingle(
+                              lightColor: Color.FromArgb(255, (byte)(255 * cpuUsage), 0, 0));
+                        }
                         break;
                 }
             }
@@ -752,7 +768,7 @@ namespace Corsair_Effects_Engine
             else
             {
                 if (multiplier <= 0.01) { return 0; }
-                else if (multiplier >= 1) { return 1; }
+                else if (multiplier >= 1) { return maxWidth; }
                 else { return (int)((1 + Math.Log(multiplier, 100)) * maxWidth); }
             }
         }
