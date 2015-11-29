@@ -193,7 +193,7 @@ public class CorsairKeyCodes
         sdkKeyDict.Add(38, CorsairKeyboardKeyId.E);
         sdkKeyDict.Add(39, CorsairKeyboardKeyId.D);
         sdkKeyDict.Add(40, CorsairKeyboardKeyId.X);
-        sdkKeyDict.Add(41, CorsairKeyboardKeyId.Invalid);
+        sdkKeyDict.Add(41, CorsairKeyboardKeyId.International1); // Need to verify
         sdkKeyDict.Add(42, CorsairKeyboardKeyId.PauseBreak);
         sdkKeyDict.Add(43, CorsairKeyboardKeyId.Delete);
         sdkKeyDict.Add(44, CorsairKeyboardKeyId.ScanPreviousTrack);
@@ -217,7 +217,7 @@ public class CorsairKeyCodes
         sdkKeyDict.Add(62, CorsairKeyboardKeyId.T);
         sdkKeyDict.Add(63, CorsairKeyboardKeyId.G);
         sdkKeyDict.Add(64, CorsairKeyboardKeyId.V);
-        sdkKeyDict.Add(65, CorsairKeyboardKeyId.Invalid);
+        sdkKeyDict.Add(65, CorsairKeyboardKeyId.International2); // Need to verify
         sdkKeyDict.Add(66, CorsairKeyboardKeyId.Home);
         sdkKeyDict.Add(67, CorsairKeyboardKeyId.PageDown);
         sdkKeyDict.Add(68, CorsairKeyboardKeyId.ScanNextTrack);
@@ -229,7 +229,7 @@ public class CorsairKeyCodes
         sdkKeyDict.Add(74, CorsairKeyboardKeyId.Y);
         sdkKeyDict.Add(75, CorsairKeyboardKeyId.H);
         sdkKeyDict.Add(76, CorsairKeyboardKeyId.B);
-        sdkKeyDict.Add(77, CorsairKeyboardKeyId.Invalid);
+        sdkKeyDict.Add(77, CorsairKeyboardKeyId.International3); // Need to verify
         sdkKeyDict.Add(78, CorsairKeyboardKeyId.PageUp);
         sdkKeyDict.Add(79, CorsairKeyboardKeyId.RightShift);
         sdkKeyDict.Add(80, CorsairKeyboardKeyId.NumLock);

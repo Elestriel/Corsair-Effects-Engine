@@ -41,7 +41,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0039";
+        private const string VersionNumber = "0040";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -348,7 +348,6 @@ namespace Corsair_Effects_Engine
                 case "STRAFE-RGB": DeviceHID.Keyboard = 0x1B20; break;
                 default: DeviceHID.Keyboard = 0x0; break;
             }
-
             switch (Properties.Settings.Default.MouseModel)
             {
                 case "M65 RGB": DeviceHID.Mouse = 0x1B12; break;

@@ -1,4 +1,9 @@
-﻿Build 0039
+﻿Build 0040 - Released
+- Updated all keyboard maps to include Japanese layout support.
+- Updated the Strafe RGB map to include the Sails logo. Not sure when it got removed, but it shouldn't happen again.
+- Updated the SDK output dictionary to include Japanese keys. These might be all wrong, however, so verification is needed.
+
+Build 0039
 - Fixed an issue that would cause the spectro effect to be clipped off at the bottom with some settings.
 
 Build 0038

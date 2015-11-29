@@ -5,14 +5,16 @@
 *.suo
 *.user
 *.sln.docstates
+*.dll
+*.exe
 
 # Corsair Data
 CorsairDevices/
 *.bat
 *.zip
+CEE-Build*/
 
 # Build results
-
 [Dd]ebug/
 [Rr]elease/
 x64/
