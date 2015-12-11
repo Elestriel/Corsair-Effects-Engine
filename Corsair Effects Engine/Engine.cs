@@ -35,19 +35,19 @@ namespace Corsair_Effects_Engine
         private double desiredFrameTime;
         private double sleepTime;
 
-        // Performace Stuff
-        PerformanceCounter cpuCounter;
-
         // Pointers to the keyboard and mouse HIDs
         private IntPtr KeyboardPointer;
         private IntPtr MousePointer;
 
         // Key Data
         private static KeyData[] BackgroundKeys = new KeyData[149];
-        private KeyData[] ForegroundKeys = new KeyData[149];
+        private static KeyData[] ForegroundKeys = new KeyData[149];
         private KeyData[] ReactiveKeys = new KeyData[149];
         private static KeyData[] SpectroKeys = new KeyData[149];
         private KeyData[] Keys = MainWindow.keyData;
+
+        // CPU Performance
+        CpuUsageClass CpuUsage = new CpuUsageClass();
 
         // Effect variables
         private double BackgroundAnim = 0;
@@ -96,10 +96,6 @@ namespace Corsair_Effects_Engine
                 SpectroKeys[i] = new KeyData();
             }
 
-            cpuCounter = new PerformanceCounter();
-            cpuCounter.CategoryName = "Processor";
-            cpuCounter.CounterName = "% Processor Time";
-            cpuCounter.InstanceName = "_Total";
 
             ClearAllKeys();
             
@@ -426,12 +422,35 @@ namespace Corsair_Effects_Engine
                     case "Image":
                         if (MainWindow.BackgroundImageSelection.OutputImage != null) { BitmapToKeyboard(MainWindow.BackgroundImageSelection.OutputImage, "Background"); }
                         break;
-                    case "CpuUsage":
-                        double cpuUsage = (cpuCounter.NextValue() / 100);
+                    case "CPU Usage":
+                        double cpuUsage = CpuUsage.GetUsage();
+                        Color cpuColor;
+
+                        if (cpuUsage <= .25) {
+                            cpuColor = BlendColors((Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor0),
+                                                   (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor25),
+                                                   (cpuUsage * 4d));
+                        }
+                        else if (cpuUsage > .25 && cpuUsage <= .5) {
+                            cpuColor = BlendColors((Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor25),
+                                                   (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor50),
+                                                   ((cpuUsage - .25) * 4d));
+                        }
+                        else if (cpuUsage > .5 && cpuUsage <= .75) {
+                            cpuColor = BlendColors((Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor50),
+                                                   (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor75),
+                                                   ((cpuUsage - .5) * 4d));
+                        }
+                        else /* if (cpuUsage > .75 && cpuUsage <= 1) */ {
+                        cpuColor = BlendColors((Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor75),
+                                                   (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor100),
+                                                   ((cpuUsage - .75) * 4d));
+                        }
+
                         for (int i = 0; i < 149; i++)
                         {
                             BackgroundKeys[i].KeyColor = new LightSingle(
-                              lightColor: Color.FromArgb(255, (byte)(255 * cpuUsage), 0, 0));
+                              lightColor: Color.FromArgb(cpuColor.A, cpuColor.R, cpuColor.G, cpuColor.B));
                         }
                         break;
                 }
@@ -526,6 +545,69 @@ namespace Corsair_Effects_Engine
                     case "Heatmap":
                         ForegroundKeys = ReactiveKeys; // Defer to reactive map
                         break;
+                    case "CPU Usage Bar":
+                        #region CPU Usage Bar Code
+                        double cpuUsage = CpuUsage.GetUsage();
+                        Color cpuColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundCpuBarColor0);
+                        
+                        System.Drawing.Bitmap cpuBmp = new System.Drawing.Bitmap(KeyboardMap.CanvasWidth, 7);
+                        System.Drawing.Drawing2D.GraphicsPath cpuBarPath = new System.Drawing.Drawing2D.GraphicsPath(System.Drawing.Drawing2D.FillMode.Winding);
+
+                        if (!(cpuUsage > 0) && !(cpuUsage < 1)) { cpuUsage = 0; };
+
+                        System.Drawing.Point cpuTL = new System.Drawing.Point(0, 0);
+                        System.Drawing.Point cpuBL = new System.Drawing.Point(0, 0);
+                        System.Drawing.Point cpuTR = new System.Drawing.Point(0, 0);
+                        System.Drawing.Point cpuBR = new System.Drawing.Point(0, 0);
+                        
+                        switch (Properties.Settings.Default.ForegroundCpuBarDirection)
+                        {
+                            case "Up":
+                                cpuTL = new System.Drawing.Point(0, (int)(cpuBmp.Height - (cpuBmp.Height * cpuUsage)));
+                                cpuBL = new System.Drawing.Point(0, cpuBmp.Height);
+                                cpuTR = new System.Drawing.Point(cpuBmp.Width, (int)(cpuBmp.Height - (cpuBmp.Height * cpuUsage)));
+                                cpuBR = new System.Drawing.Point(cpuBmp.Width, cpuBmp.Height);
+                                break;
+                            case "Down":
+                                cpuTL = new System.Drawing.Point(cpuBmp.Width, 1 + (int)(cpuBmp.Height * cpuUsage));
+                                cpuBL = new System.Drawing.Point(cpuBmp.Width, 0);
+                                cpuTR = new System.Drawing.Point(0, 1 + (int)(cpuBmp.Height * cpuUsage));
+                                cpuBR = new System.Drawing.Point(0, 0);
+                                break;
+                            case "Right":
+                                cpuTL = new System.Drawing.Point(0, 0);
+                                cpuBL = new System.Drawing.Point(0, cpuBmp.Height);
+                                cpuTR = new System.Drawing.Point((int)(cpuBmp.Width * cpuUsage), 0);
+                                cpuBR = new System.Drawing.Point((int)(cpuBmp.Width * cpuUsage), cpuBmp.Height);
+                                break;
+                            case "Left":
+                                cpuTL = new System.Drawing.Point((int)(cpuBmp.Width - (cpuBmp.Width * cpuUsage)), cpuBmp.Height);
+                                cpuBL = new System.Drawing.Point(cpuBmp.Width, cpuBmp.Height);
+                                cpuTR = new System.Drawing.Point((int)(cpuBmp.Width - (cpuBmp.Width * cpuUsage)), 0);
+                                cpuBR = new System.Drawing.Point(cpuBmp.Width, 0);
+                                break;
+                        }
+
+
+                        cpuBarPath.AddLine(cpuTL, cpuTR);
+                        cpuBarPath.AddLine(cpuTR, cpuBR);
+                        cpuBarPath.AddLine(cpuBR, cpuBL);
+                        cpuBarPath.AddLine(cpuBL, cpuTL);
+
+                        cpuBarPath.CloseFigure();
+
+                        using (System.Drawing.Graphics gr = System.Drawing.Graphics.FromImage(cpuBmp))
+                        {
+                            gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+
+                            Color c = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundCpuBarColor0);
+                            using (System.Drawing.SolidBrush br = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B)))
+                            { gr.FillPath(br, cpuBarPath); }
+                        }
+
+                        BitmapToKeyboard(cpuBmp, "Foreground");
+                        #endregion CPU Usage Bar Code
+                        break;
                 }
             }
             else
@@ -533,6 +615,26 @@ namespace Corsair_Effects_Engine
                 for (int i = 0; i < 149; i++)
                 { ForegroundKeys[i].KeyColor = new LightSingle(lightColor: Color.FromArgb(0, 0, 0, 0)); }
             }
+        }
+
+        /// <summary>
+        /// Returns a colour based on the blend bias of the two provided colours.
+        /// </summary>
+        /// <param name="C1"></param>
+        /// <param name="C2"></param>
+        /// <param name="Bias">0 for full C1 bias, 1 for full C2 bias, .5 for 50/50.</param>
+        /// <returns></returns>
+        private Color BlendColors(Color C1, Color C2, double Bias)
+        {
+            byte newA = (byte)(((double)C1.A * (1 - Bias)) + ((double)C2.A * Bias));
+            byte newR = (byte)(((double)C1.R * (1 - Bias)) + ((double)C2.R * Bias));
+            byte newG = (byte)(((double)C1.G * (1 - Bias)) + ((double)C2.G * Bias));
+            byte newB = (byte)(((double)C1.B * (1 - Bias)) + ((double)C2.B * Bias));
+
+            return Color.FromArgb((byte)(newA),
+                                  (byte)(newR),
+                                  (byte)(newG),
+                                  (byte)(newB));
         }
 
         private Color AlphaBlend(Color SRC, Color DST)
@@ -1026,7 +1128,7 @@ namespace Corsair_Effects_Engine
                                                       bmp.GetPixel(c, r).B);
                         if (keySet == "Background") { BackgroundKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
                         if (keySet == "Spectro") { SpectroKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
-
+                        if (keySet == "Foreground") { ForegroundKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
                     }
                 }
             }
@@ -1206,5 +1308,44 @@ namespace Corsair_Effects_Engine
         
         public int GetKeyCodeFromDict(int mcode, int vkey, int flag, bool numLock)
         { return (keyDict[Tuple.Create((byte)mcode, (byte)vkey, (byte)flag, numLock)]); }
+    }
+
+    public class CpuUsageClass
+    {
+        // Performace Stuff
+        private PerformanceCounter cpuCounter;
+        private double CurrentValue = 0;
+        private DateTime LastUpdateTime = DateTime.Now;
+        private TimeSpan TimeSinceLastUpdate;
+        private int CumulativeSamples = 0;
+        private double CumulativeValue = 0;
+
+        public CpuUsageClass()
+        {
+            cpuCounter = new PerformanceCounter();
+            cpuCounter.CategoryName = "Processor";
+            cpuCounter.CounterName = "% Processor Time";
+            cpuCounter.InstanceName = "_Total";
+        }
+
+        public double GetUsage()
+        {
+            if (LastUpdateTime == null) { LastUpdateTime = DateTime.Now; }
+            TimeSinceLastUpdate = DateTime.Now - LastUpdateTime;
+
+            if (TimeSinceLastUpdate.TotalMilliseconds < Properties.Settings.Default.CpuUpdateTime)
+            {
+                CumulativeValue += (cpuCounter.NextValue() / 100);
+                CumulativeSamples += 1;
+            }
+            else
+            {
+                LastUpdateTime = DateTime.Now;
+                CurrentValue = (CumulativeValue / CumulativeSamples);
+                CumulativeSamples = 0;
+                CumulativeValue = 0;
+            }
+            return CurrentValue;
+        }
     }
 }

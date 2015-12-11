@@ -1,4 +1,11 @@
-﻿Build 0040 - Released
+﻿Build 0041
+- Implemented CPU usage background indicator.
+- Implemented CPU usage meter foreground.
+- Selecting 'Done' when editing any effects causes program settings to be saved, preventing possible settings loss from crashes.
+- [TODO] Finished Japanese map.
+- [BUG] Running the CPU Usage foreground and background effects at the same time causes the effects to seem like the CPU usage is way higher than it really is. This might cause a crash at high enough loads to return a value greater than 1.
+
+Build 0040 - Released
 - Updated all keyboard maps to include Japanese layout support.
 - Updated the Strafe RGB map to include the Sails logo. Not sure when it got removed, but it shouldn't happen again.
 - Updated the SDK output dictionary to include Japanese keys. These might be all wrong, however, so verification is needed.

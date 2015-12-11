@@ -1138,5 +1138,101 @@ namespace Corsair_Effects_Engine.Properties {
                 this["ForegroundSpectroRow1"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF00")]
+        public string BackgroundCpuColor0 {
+            get {
+                return ((string)(this["BackgroundCpuColor0"]));
+            }
+            set {
+                this["BackgroundCpuColor0"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF88FF00")]
+        public string BackgroundCpuColor25 {
+            get {
+                return ((string)(this["BackgroundCpuColor25"]));
+            }
+            set {
+                this["BackgroundCpuColor25"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF00")]
+        public string BackgroundCpuColor50 {
+            get {
+                return ((string)(this["BackgroundCpuColor50"]));
+            }
+            set {
+                this["BackgroundCpuColor50"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF8800")]
+        public string BackgroundCpuColor75 {
+            get {
+                return ((string)(this["BackgroundCpuColor75"]));
+            }
+            set {
+                this["BackgroundCpuColor75"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF0000")]
+        public string BackgroundCpuColor100 {
+            get {
+                return ((string)(this["BackgroundCpuColor100"]));
+            }
+            set {
+                this["BackgroundCpuColor100"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
+        public int CpuUpdateTime {
+            get {
+                return ((int)(this["CpuUpdateTime"]));
+            }
+            set {
+                this["CpuUpdateTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Right")]
+        public string ForegroundCpuBarDirection {
+            get {
+                return ((string)(this["ForegroundCpuBarDirection"]));
+            }
+            set {
+                this["ForegroundCpuBarDirection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFFFF")]
+        public string ForegroundCpuBarColor0 {
+            get {
+                return ((string)(this["ForegroundCpuBarColor0"]));
+            }
+            set {
+                this["ForegroundCpuBarColor0"] = value;
+            }
+        }
     }
 }

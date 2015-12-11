@@ -41,7 +41,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0040";
+        private const string VersionNumber = "0041";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -695,6 +695,9 @@ namespace Corsair_Effects_Engine
                         case "Heatmap":
                             GridForegroundHeatmap.Visibility = System.Windows.Visibility.Visible;
                             break;
+                        case "CPU Usage Bar":
+                            GridForegroundCpuBar.Visibility = System.Windows.Visibility.Visible;
+                            break;
                     }
                     break;
                 #endregion Foreground
@@ -729,6 +732,9 @@ namespace Corsair_Effects_Engine
                             break;
                         case "Image":
                             GridBackgroundImage.Visibility = System.Windows.Visibility.Visible;
+                            break;
+                        case "CPU Usage":
+                            GridBackgroundCpu.Visibility = System.Windows.Visibility.Visible;
                             break;
                     }
                     break;
@@ -779,6 +785,7 @@ namespace Corsair_Effects_Engine
             GridForegroundRandomLights.Visibility = System.Windows.Visibility.Hidden;
             GridForegroundReactive.Visibility = System.Windows.Visibility.Hidden;
             GridForegroundHeatmap.Visibility = System.Windows.Visibility.Hidden;
+            GridForegroundCpuBar.Visibility = System.Windows.Visibility.Hidden;
 
             // Edit: Background
             GridBackground.Visibility = System.Windows.Visibility.Hidden;
@@ -786,6 +793,7 @@ namespace Corsair_Effects_Engine
             GridBackgroundBreathe.Visibility = System.Windows.Visibility.Hidden;
             GridBackgroundRainbow.Visibility = System.Windows.Visibility.Hidden;
             GridBackgroundImage.Visibility = System.Windows.Visibility.Hidden;
+            GridBackgroundCpu.Visibility = System.Windows.Visibility.Hidden;
 
             // Full Keyboard
             GridKeyboard.Visibility = System.Windows.Visibility.Hidden;
@@ -1387,6 +1395,9 @@ namespace Corsair_Effects_Engine
         private void PageBeingEditedDoneBotton_Click(object sender, RoutedEventArgs e)
         {
             SetWindowLayout("Settings");
+
+            // Save settings
+            Properties.Settings.Default.Save();
         }
 
         #endregion ForegroundEdit

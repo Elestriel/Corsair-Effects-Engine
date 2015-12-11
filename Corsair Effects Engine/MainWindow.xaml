@@ -522,6 +522,23 @@
                             Margin="10,104,0,0" VerticalAlignment="Top" Width="167" Style="{StaticResource MetroButton}" Click="HeatmapResetCountButton_Click"/>
                 </Grid>
 
+                <!-- Foreground: CPU Usage Bar -->
+                <Grid x:Name="GridForegroundCpuBar" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                    <Label Content="Colour" Margin="10,9,0,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Left" Width="auto"/>
+                    <xctk:ColorPicker x:Name="ForegroundCpuBarColor0"
+                                  HorizontalAlignment="Left" Height="24" Margin="110,10,0,0" VerticalAlignment="Top" Width="60" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundCpuBarColor0, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
+                    <Label Content="Refresh (ms)" Margin="10,37,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="110,39,0,0" VerticalAlignment="Top" Width="60" Maximum="5000" Minimum="100"
+                    	Value="{Binding CpuUpdateTime, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Increment="100"/>
+                    <Label Content="Growth Direction" Margin="10,68,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <ComboBox x:Name="ForegroundCpuBarDirectionDropDown" Margin="10,94,96,0" VerticalAlignment="Top" Height="24" ToolTip="Direction to grow the bar."
+                    	ItemsSource="{DynamicResource BackgroundRainbowDirectionList}"
+                    	SelectedValue="{Binding ForegroundCpuBarDirection, Mode=TwoWay, Source={x:Static p:Settings.Default}}"/>
+                </Grid>
+
                 <!-- Backround: Solid Colour -->
                 <Grid x:Name="GridBackgroundSolid" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
                     <Label Content="Colour" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left" Margin="10,8,0,0"/>
@@ -591,6 +608,43 @@
                             Style="{StaticResource MetroButton}" Click="BackgroundImageBrowseButton_Click"/>
                     <Canvas x:Name="BackgroundImageCanvas" HorizontalAlignment="Left" Height="240" Margin="10,38,0,0" VerticalAlignment="Top" Width="459" MouseMove="BackgroundImageCanvas_MouseMove" MouseDown="BackgroundImageCanvas_MouseDown" MouseUp="BackgroundImageCanvas_MouseUp"/>
                     <Canvas x:Name="BackgroundImageResizedCanvas" HorizontalAlignment="Left" Height="7" Margin="126,26,0,0" VerticalAlignment="Top" Width="104"/>
+                </Grid>
+
+                <!-- Background: CPU Usage -->
+                <Grid x:Name="GridBackgroundCpu" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                    <Label Content="Colour for 0%" Margin="10,9,0,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Left" Width="auto"/>
+                    <xctk:ColorPicker x:Name="BackgroundCpuColor0"
+                                  HorizontalAlignment="Left" Height="24" Margin="110,10,0,0" VerticalAlignment="Top" Width="60" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundCpuColor0, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
+                    <Label Content="Colour for 25%" Margin="10,38,0,0" VerticalAlignment="Top" Height="26" HorizontalAlignment="Left" Width="auto"/>
+                    <xctk:ColorPicker x:Name="BackgroundCpuColor25"
+                    	HorizontalAlignment="Left" Height="24" Margin="110,39,0,0" VerticalAlignment="Top" Width="60" 
+                    	ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundCpuColor25, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
+                    <Label Content="Colour for 50%" Margin="10,67,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:ColorPicker x:Name="BackgroundCpuColor50"
+                                  HorizontalAlignment="Left" Height="24" Margin="110,68,0,0" VerticalAlignment="Top" Width="60" 
+                                  ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundCpuColor50, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
+                    <Label Content="Colour for 75%" Margin="10,96,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:ColorPicker x:Name="BackgroundCpuColor75"
+                    	HorizontalAlignment="Left" Height="24" Margin="110,97,0,0" VerticalAlignment="Top" Width="60" 
+                    	ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundCpuColor75, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
+                    <Label Content="Colour for 100%" Margin="10,125,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:ColorPicker x:Name="BackgroundCpuColor100"
+                    	HorizontalAlignment="Left" Height="24" Margin="110,126,0,0" VerticalAlignment="Top" Width="60" 
+                    	ColorMode="ColorCanvas" ShowDropDownButton="False" ShowAdvancedButton="False"
+                                  SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundCpuColor100, 
+                                    Mode=TwoWay, Converter={StaticResource ColorToStringConverter}}"/>
+                    <Label Content="Refresh (ms)" Margin="10,156,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="110,158,0,0" VerticalAlignment="Top" Width="60" Maximum="5000" Minimum="100"
+                    	Value="{Binding CpuUpdateTime, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Increment="100"/>
                 </Grid>
             </Grid>
         </Grid>

@@ -1424,6 +1424,7 @@
             <sys:String>Random Lights</sys:String>
             <sys:String>Reactive Typing</sys:String>
             <sys:String>Heatmap</sys:String>
+            <sys:String>CPU Usage Bar</sys:String>
         </x:Array>
 
         <x:Array x:Key="BackgroundEffectsList" 
@@ -1432,6 +1433,7 @@
             <sys:String>Breathe</sys:String>
             <sys:String>Spectrum Cycle</sys:String>
             <sys:String>Rainbow</sys:String>
+            <sys:String>CPU Usage</sys:String>
         </x:Array>
 
         <!-- Foreground: Spectro -->
