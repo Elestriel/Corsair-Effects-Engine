@@ -12,6 +12,7 @@ namespace Corsair_Effects_Engine
     {
         Color LightColor { get; set; }
         bool EffectInProgress { get; set; }
+        byte Intensity { get; set; }
     }
 
     /// <summary>
@@ -44,6 +45,12 @@ namespace Corsair_Effects_Engine
                 else
                 { return false; };
             }
+            set { }
+        }
+
+        public byte Intensity
+        {
+            get { return 0; }
             set { }
         }
 
@@ -110,6 +117,12 @@ namespace Corsair_Effects_Engine
             set { }
         }
 
+        public byte Intensity
+        {
+            get { return 0; }
+            set { }
+        }
+
         private DateTime StartTime;
         private double SolidDuration;
         private double TotalDuration;
@@ -141,10 +154,83 @@ namespace Corsair_Effects_Engine
             set { }
         }
 
+        public byte Intensity
+        {
+            get { return 0; }
+            set { }
+        }
+
         private Color keyLight;
 
         public LightSingle(Color lightColor) {
-            this.keyLight = lightColor;
+            keyLight = lightColor;
+        }
+    }
+
+    class IntensityLight : ILight
+    {
+        public Color LightColor
+        {
+            get
+            {
+                TimeSpan Difference = DateTime.Now - StartTime;
+
+                double sA, sR, sG, sB, eA, eR, eG, eB;
+                sA = StartColor.A;
+                sR = StartColor.R;
+                sG = StartColor.G;
+                sB = StartColor.B;
+                eA = EndColor.A;
+                eR = EndColor.R;
+                eG = EndColor.G;
+                eB = EndColor.B;
+
+                if (Difference.TotalMilliseconds >= FadeTime) {
+                    Intensity = 0;
+                    return EndColor;
+                };
+
+                byte nA, nR, nG, nB;
+                double StepMultiplier = Difference.TotalMilliseconds / FadeTime;
+                nA = (byte)(sA - ((sA - eA) * StepMultiplier));
+                nR = (byte)(sR - ((sR - eR) * StepMultiplier));
+                nG = (byte)(sG - ((sG - eG) * StepMultiplier));
+                nB = (byte)(sB - ((sB - eB) * StepMultiplier));
+
+                Intensity = (byte)(255 * StepMultiplier);
+                return Color.FromArgb(nA, nR, nG, nB);
+            }
+            set { }
+        }
+
+        public bool EffectInProgress
+        {
+            get { return false; }
+            set { }
+        }
+
+        public byte Intensity {
+            get
+            {
+                TimeSpan Difference = DateTime.Now - StartTime;
+                return (byte)(255 * (Difference.TotalMilliseconds / FadeTime));
+            }
+            set { }
+        }
+
+        private DateTime StartTime;
+        private Color StartColor;
+        private Color EndColor;
+        private byte StartIntensity;
+        private double FadeTime;
+
+        public IntensityLight(Color lightColor, byte intensity, double fadeTime)
+        {
+            this.StartTime = DateTime.Now;
+            this.StartColor = lightColor;
+            this.EndColor = Color.FromArgb(255, 0, 0, 0);
+            this.StartIntensity = intensity;
+            this.FadeTime = fadeTime;
         }
     }
 }

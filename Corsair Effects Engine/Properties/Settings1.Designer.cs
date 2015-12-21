@@ -1234,5 +1234,17 @@ namespace Corsair_Effects_Engine.Properties {
                 this["ForegroundCpuBarColor0"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ForegroundSpectroOnMouse {
+            get {
+                return ((bool)(this["ForegroundSpectroOnMouse"]));
+            }
+            set {
+                this["ForegroundSpectroOnMouse"] = value;
+            }
+        }
     }
 }

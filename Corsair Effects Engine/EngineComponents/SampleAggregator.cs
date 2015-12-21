@@ -12,7 +12,7 @@ namespace Corsair_Effects_Engine
         private float maxValue;
         private float minValue;
 
-        public int NotificationCount { get; set; }
+        public int NotificationCount { get; set; } = 100;
         int count;
 
         // FFT
@@ -70,7 +70,8 @@ namespace Corsair_Effects_Engine
                 }
             }
 
-            maxValue = Math.Max(maxValue, valueMixed);
+            //maxValue = Math.Max(maxValue, valueMixed);
+            maxValue = valueMixed;
             minValue = Math.Min(minValue, valueMixed);
             count++;
             if (count >= NotificationCount && NotificationCount > 0)
@@ -86,23 +87,23 @@ namespace Corsair_Effects_Engine
 
     public class MaxSampleEventArgs : EventArgs
     {
-        [DebuggerStepThrough]
-        public MaxSampleEventArgs(float minValue, float maxValue)
+        [DebuggerStepThrough()]
+        public MaxSampleEventArgs(double minValue, double maxValue)
         {
             this.MaxSample = maxValue;
             this.MinSample = minValue;
         }
-        public float MaxSample { get; private set; }
-        public float MinSample { get; private set; }
+        public double MaxSample { get; set; }
+        public double MinSample { get; set; }
     }
 
     public class FftEventArgs : EventArgs
     {
-        [DebuggerStepThrough]
+        [DebuggerStepThrough()]
         public FftEventArgs(Complex[] result)
         {
             this.Result = result;
         }
-        public Complex[] Result { get; private set; }
+        public Complex[] Result { get; set; }
     }
 }

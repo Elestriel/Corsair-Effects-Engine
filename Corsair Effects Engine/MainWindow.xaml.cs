@@ -741,7 +741,8 @@ namespace Corsair_Effects_Engine
                 #endregion Foreground
                 #region Static
                 case "StaticEdit":
-
+                    //GridKeyboard.Visibility = System.Windows.Visibility.Visible;
+                    //KeyboardImage.Visibility = System.Windows.Visibility.Visible;
                     break;
                 #endregion Foreground
             }

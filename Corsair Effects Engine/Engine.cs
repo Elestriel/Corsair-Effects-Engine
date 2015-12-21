@@ -57,6 +57,8 @@ namespace Corsair_Effects_Engine
         private DateTime BreatheStartTime;
         Random rnd = new Random();
 
+
+        // CLEAN THIS UP!
         private string LastForegroundEffect = "";
         private string LastBackgroundEffect = "";
         //private string LastStaticProfile = "";
@@ -70,6 +72,10 @@ namespace Corsair_Effects_Engine
         private static int highestBin;
         private static float[] spectroRainbowPositions;
         private static System.Drawing.Color[] spectroRainbowColors;
+        private static byte mouseIntensity = 0;
+        int refKey = 140;
+
+        
 
         public Engine()
         {
@@ -98,7 +104,7 @@ namespace Corsair_Effects_Engine
 
 
             ClearAllKeys();
-            
+
             while (RunEngine)
             {
                 UpdateStatusMessage.NewMessage(5, "Initializing Devices.");
@@ -161,7 +167,7 @@ namespace Corsair_Effects_Engine
                     RenderBackground();
 
                     // Render foreground layer
-                    
+
                     if (Properties.Settings.Default.ForegroundEffect == "Spectrograph" &&
                         Properties.Settings.Default.ForegroundEffectEnabled)
                     { CalculateFFT = true; }
@@ -214,7 +220,7 @@ namespace Corsair_Effects_Engine
                         }
                         if (NoEffects) { outputFrame = false; };
                     }
-                                        
+
                     // Calculate the cycle time and sleep until the next frame should be processed
                     loopEnd = DateTime.Now;
 
@@ -267,7 +273,6 @@ namespace Corsair_Effects_Engine
             if (Properties.Settings.Default.BackgroundEffectEnabled)
             {
                 double tBrightness = ((double)Properties.Settings.Default.BackgroundBrightness / 255D);
-                int refKey = 140;
                 if (Properties.Settings.Default.KeyboardModel == "K65-RGB") { refKey = 139; };
                 if (KeyboardMap.CanvasWidth == 3) { refKey = 0; };
 
@@ -277,9 +282,9 @@ namespace Corsair_Effects_Engine
                 switch (Properties.Settings.Default.BackgroundEffect)
                 {
                     case "Solid":
-                        for (int i = 0; i < 149; i++) 
+                        for (int i = 0; i < 149; i++)
                         { BackgroundKeys[i].KeyColor = new LightSingle(
-                            lightColor:  (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundSolidColor)); }
+                            lightColor: (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundSolidColor)); }
                         break;
                     case "Breathe":
                         #region Breathe Code
@@ -308,7 +313,7 @@ namespace Corsair_Effects_Engine
                                 if (Difference.TotalMilliseconds >= Step1T) { BreatheStep = 2; };
                                 break;
                             case 2:
-                                StartColor= (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundBreatheStepOneColor);
+                                StartColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundBreatheStepOneColor);
                                 EndColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundBreatheStepTwoColor);
 
                                 sA = StartColor.A;
@@ -319,7 +324,7 @@ namespace Corsair_Effects_Engine
                                 eR = EndColor.R;
                                 eG = EndColor.G;
                                 eB = EndColor.B;
-                                
+
                                 if (Difference.TotalMilliseconds < (Step1T + TransT))
                                 {
                                     StepMultiplier = Math.Abs(Difference.TotalMilliseconds - (Step1T + TransT)) / ((Step1T + TransT + Step2T) - (Step1T + TransT));
@@ -329,7 +334,7 @@ namespace Corsair_Effects_Engine
                                     nB = (byte)(eB - ((eB - sB) * StepMultiplier));
                                     breatheColor = Color.FromArgb(nA, nR, nG, nB);
                                 }
-                                else 
+                                else
                                 {
                                     breatheColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundBreatheStepTwoColor);
                                     BreatheStep = 3;
@@ -340,7 +345,7 @@ namespace Corsair_Effects_Engine
                                 if (Difference.TotalMilliseconds >= (Step1T + TransT + Step2T)) { BreatheStep = 4; };
                                 break;
                             case 4:
-                                StartColor= (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundBreatheStepTwoColor);
+                                StartColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundBreatheStepTwoColor);
                                 EndColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundBreatheStepOneColor);
 
                                 sA = StartColor.A;
@@ -360,11 +365,11 @@ namespace Corsair_Effects_Engine
                                     nG = (byte)(eG - ((eG - sG) * StepMultiplier));
                                     nB = (byte)(eB - ((eB - sB) * StepMultiplier));
                                     breatheColor = Color.FromArgb(nA, nR, nG, nB);
-                                } 
+                                }
                                 else
                                 {
                                     breatheColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundBreatheStepOneColor);
-                                    BreatheStep = 0; 
+                                    BreatheStep = 0;
                                 };
                                 break;
                         }
@@ -373,7 +378,7 @@ namespace Corsair_Effects_Engine
                         { BackgroundKeys[i].KeyColor = new LightSingle(lightColor: breatheColor); };
 
                         break;
-                        #endregion Breathe Code
+                    #endregion Breathe Code
                     case "Spectrum Cycle":
                         for (int i = 0; i < 149; i++)
                         { BackgroundKeys[i].KeyColor = new LightSingle(
@@ -442,9 +447,9 @@ namespace Corsair_Effects_Engine
                                                    ((cpuUsage - .5) * 4d));
                         }
                         else /* if (cpuUsage > .75 && cpuUsage <= 1) */ {
-                        cpuColor = BlendColors((Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor75),
-                                                   (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor100),
-                                                   ((cpuUsage - .75) * 4d));
+                            cpuColor = BlendColors((Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor75),
+                                                       (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.BackgroundCpuColor100),
+                                                       ((cpuUsage - .75) * 4d));
                         }
 
                         for (int i = 0; i < 149; i++)
@@ -466,15 +471,15 @@ namespace Corsair_Effects_Engine
         {
             if (Properties.Settings.Default.ForegroundEffectEnabled)
             {
-                Color SL =  (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartLower);
-                Color SU =  (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartUpper);
-                Color EL =  (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndLower);
-                Color EU =  (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndUpper);
+                Color SL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartLower);
+                Color SU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorStartUpper);
+                Color EL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndLower);
+                Color EU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsColorEndUpper);
                 Color startColor = Color.FromArgb(255, 255, 255, 255);
                 Color endColor = Color.FromArgb(0, 0, 0, 0);
 
-                if (LastForegroundEffect != Properties.Settings.Default.ForegroundEffect) 
-                { 
+                if (LastForegroundEffect != Properties.Settings.Default.ForegroundEffect)
+                {
                     ClearAllKeys();
                     if (LastForegroundEffect == "Spectrograph")
                     {
@@ -502,7 +507,7 @@ namespace Corsair_Effects_Engine
                             switch (Properties.Settings.Default.ForegroundRandomLightsStartType)
                             {
                                 case "Defined Colour":
-                                    startColor =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart);
+                                    startColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorStart);
                                     break;
                                 case "Random Colour":
                                     startColor = Color.FromArgb(255, (byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
@@ -515,7 +520,7 @@ namespace Corsair_Effects_Engine
                                     endColor = Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
                                     break;
                                 case "Defined Colour":
-                                    endColor =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorEnd);
+                                    endColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundRandomLightsSwitchColorEnd);
                                     break;
                                 case "Random Colour":
                                     endColor = Color.FromArgb(255, (byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
@@ -549,7 +554,7 @@ namespace Corsair_Effects_Engine
                         #region CPU Usage Bar Code
                         double cpuUsage = CpuUsage.GetUsage();
                         Color cpuColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundCpuBarColor0);
-                        
+
                         System.Drawing.Bitmap cpuBmp = new System.Drawing.Bitmap(KeyboardMap.CanvasWidth, 7);
                         System.Drawing.Drawing2D.GraphicsPath cpuBarPath = new System.Drawing.Drawing2D.GraphicsPath(System.Drawing.Drawing2D.FillMode.Winding);
 
@@ -559,7 +564,7 @@ namespace Corsair_Effects_Engine
                         System.Drawing.Point cpuBL = new System.Drawing.Point(0, 0);
                         System.Drawing.Point cpuTR = new System.Drawing.Point(0, 0);
                         System.Drawing.Point cpuBR = new System.Drawing.Point(0, 0);
-                        
+
                         switch (Properties.Settings.Default.ForegroundCpuBarDirection)
                         {
                             case "Up":
@@ -651,12 +656,12 @@ namespace Corsair_Effects_Engine
 
         private void BlendLayers()
         {
-            
+
             Color FG;
             Color BG;
             Color newColor;
             double alphaDifference;
-            
+
 
             for (int i = 0; i < 149; i++)
             {
@@ -666,7 +671,7 @@ namespace Corsair_Effects_Engine
                 newColor = Color.FromRgb((byte)(FG.R - ((FG.R - BG.R) * alphaDifference)),
                                          (byte)(FG.G - ((FG.G - BG.G) * alphaDifference)),
                                          (byte)(FG.B - ((FG.B - BG.B) * alphaDifference)));
-                
+
                 Keys[i].KeyColor = new LightSingle(lightColor: AlphaBlend(ForegroundKeys[i].KeyColor.LightColor, BackgroundKeys[i].KeyColor.LightColor));
             }
         }
@@ -681,17 +686,17 @@ namespace Corsair_Effects_Engine
             if (Properties.Settings.Default.ForegroundEffect == "Reactive Typing")
             {
                 #region Reactive Typing
-                Color SL =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartLower);
-                Color SU =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartUpper);
-                Color EL =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndLower);
-                Color EU =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndUpper);
+                Color SL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartLower);
+                Color SU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorStartUpper);
+                Color EL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndLower);
+                Color EU = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveColorEndUpper);
                 Color startColor = Color.FromRgb(255, 255, 255);
                 Color endColor = Color.FromRgb(0, 0, 0);
 
                 switch (Properties.Settings.Default.ForegroundReactiveStartType)
                 {
                     case "Defined Colour":
-                        startColor =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorStart);
+                        startColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorStart);
                         break;
                     case "Random Colour":
                         startColor = Color.FromRgb((byte)rnd.Next(SL.R, SU.R), (byte)rnd.Next(SL.G, SU.G), (byte)rnd.Next(SL.B, SU.B));
@@ -704,7 +709,7 @@ namespace Corsair_Effects_Engine
                         endColor = Color.FromArgb(0, startColor.R, startColor.G, startColor.B);
                         break;
                     case "Defined Colour":
-                        endColor =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorEnd);
+                        endColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundReactiveSwitchColorEnd);
                         break;
                     case "Random Colour":
                         endColor = Color.FromRgb((byte)rnd.Next(EL.R, EU.R), (byte)rnd.Next(EL.G, EU.G), (byte)rnd.Next(EL.B, EU.B));
@@ -726,12 +731,12 @@ namespace Corsair_Effects_Engine
                         break;
                 }
                 #endregion Reactive Typing
-            } 
+            }
             else if (Properties.Settings.Default.ForegroundEffect == "Heatmap")
             {
                 #region Heatmap
-                Color CM =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorMost);
-                Color CL =  (Color) ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorLeast);
+                Color CM = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorMost);
+                Color CL = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundHeatmapColorLeast);
 
                 double keyIntensity;
                 HeatmapStrikeCount[keyLight] += 1;
@@ -746,18 +751,18 @@ namespace Corsair_Effects_Engine
                     else if (!Properties.Settings.Default.Opt16MColours && keyIntensity > .85 && HeatmapStrikeCount[i] > 0)
                     { keyIntensity = .85; }
 
-                    Color newColor = Color.FromArgb(255, 
+                    Color newColor = Color.FromArgb(255,
                                                     (byte)(CM.R - ((CM.R - CL.R) * keyIntensity)),
                                                     (byte)(CM.G - ((CM.G - CL.G) * keyIntensity)),
                                                     (byte)(CM.B - ((CM.B - CL.B) * keyIntensity)));
-                    
+
                     if (HeatmapStrikeCount[i] == 0)
                     { newColor = Color.FromArgb(0, 0, 0, 0); }
 
                     ReactiveKeys[i].KeyColor = new LightSingle(lightColor: newColor);
-                #endregion Heatmap
+                    #endregion Heatmap
                 }
-            } 
+            }
         }
 
         public static Color ColorFromHSV(double hue, double saturation, double value)
@@ -801,7 +806,7 @@ namespace Corsair_Effects_Engine
             foreach (MMDevice dev in AudioDeviceList)
             {
                 if (dev.FriendlyName == Properties.Settings.Default.AudioOutputDevice &&
-                    Properties.Settings.Default.OptAudioFromOutput) 
+                    Properties.Settings.Default.OptAudioFromOutput)
                 {
                     audioCapture = new WasapiLoopbackCapture(dev);
                 }
@@ -811,15 +816,16 @@ namespace Corsair_Effects_Engine
             }
 
             if (audioCapture == null) { return; };
-            
+
             UpdateStatusMessage.NewMessage(4, "Audio Channels: " + audioCapture.WaveFormat.Channels.ToString());
             captureSampleRate = audioCapture.WaveFormat.SampleRate;
 
             sampleAggregator = new SampleAggregator(Int32.Parse(Properties.Settings.Default.FftSize));
             sampleAggregator.FftCalculated += new EventHandler<FftEventArgs>(FftCalculated);
+            sampleAggregator.MaximumCalculated += new EventHandler<MaxSampleEventArgs>(MaxCalculated);
 
             audioCapture.DataAvailable += new EventHandler<WaveInEventArgs>(NAudio_DataAvailable);
-            
+
             audioCapture.StartRecording();
         }
 
@@ -832,7 +838,7 @@ namespace Corsair_Effects_Engine
 
             for (int index = 0; index < bytesRecorded; index += bufferIncrement)
             {
-                sampleAggregator.Add(BitConverter.ToSingle(buffer, index), 
+                sampleAggregator.Add(BitConverter.ToSingle(buffer, index),
                                      BitConverter.ToSingle(buffer, index + 4));
             }
             CalculateFFT = false;
@@ -933,7 +939,7 @@ namespace Corsair_Effects_Engine
         private void AddResult(int index, double power, System.Drawing.Drawing2D.GraphicsPath path)
         {
             int binToUse = CalculateBinPos(index, lowestBin, highestBin, KeyboardMap.CanvasWidth);
-            
+
             path.AddLine(binToUse, (int)power, binToUse, (int)power);
         }
 
@@ -951,7 +957,7 @@ namespace Corsair_Effects_Engine
             Color tc;
             double pos;
 
-            for (int i = 0; i < KeyboardMap.CanvasWidth; i++) 
+            for (int i = 0; i < KeyboardMap.CanvasWidth; i++)
             {
 
                 if (direction == "Right" || direction == "Down")
@@ -1091,10 +1097,10 @@ namespace Corsair_Effects_Engine
                                                                                 System.Drawing.Color.FromArgb(rc7.A, rc7.R, rc7.G, rc7.B),
                                                                                 System.Drawing.Color.Transparent
                                                                                 };
-                 
+
                     System.Drawing.Drawing2D.ColorBlend grads = new System.Drawing.Drawing2D.ColorBlend(14);
                     grads.Colors = colors;
-                    grads.Positions = new float[] { 0f, 1 / 14f, 2 / 14f, 3 / 14f, 4 / 14f, 5 / 14f, 6 / 14f, 
+                    grads.Positions = new float[] { 0f, 1 / 14f, 2 / 14f, 3 / 14f, 4 / 14f, 5 / 14f, 6 / 14f,
                                                 7 / 14f, 8 / 14f, 9 / 14f, 10 / 14f, 11 / 14f, 12 / 14f, 1f };
 
                     System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, KeyboardMap.CanvasWidth, 7);
@@ -1108,7 +1114,47 @@ namespace Corsair_Effects_Engine
                 }
             }
             BitmapToKeyboard(bmp, "Spectro");
+
+        }
+
+        private void MaxCalculated(object sender, MaxSampleEventArgs e)
+        {
+            if (!(Properties.Settings.Default.ForegroundSpectroOnMouse)) { return; };
+            double intensityDB = 10 * Math.Log(Math.Abs(e.MaxSample));
+            double minDB = (double)Properties.Settings.Default.FftAmplitudeMin;
+            double maxDB = (double)Properties.Settings.Default.FftAmplitudeMax;
+
+            if (intensityDB < minDB) { intensityDB = minDB; }
+            if (intensityDB > maxDB) { intensityDB = maxDB; }
+
+            // Linear
+            double intensityPercent = 1 - (intensityDB - maxDB) / (minDB - maxDB);
+
+            // Logarithmic
+            if (Properties.Settings.Default.FftUseLogY)
+            {
+                if (intensityPercent != 0)
+                {
+                    intensityPercent = 1 + Math.Log(intensityPercent, 100);
+                }
+            }
+
+            byte intensity = (byte)(Math.Abs(intensityPercent) * 255);
             
+            if (mouseIntensity < 0) { mouseIntensity = 0; };
+            if (mouseIntensity > 255) { mouseIntensity = 255; };
+            mouseIntensity = (byte)((mouseIntensity + intensity) / 2);
+
+            if (mouseIntensity - 30 > SpectroKeys[144].KeyColor.Intensity) {
+                Color refColor = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
+                for (int i = 144; i < 149; i++)
+                {
+                    SpectroKeys[i].KeyColor = new IntensityLight(lightColor: Color.FromArgb(refColor.A, refColor.R, refColor.G, refColor.B),
+                                                                 intensity: mouseIntensity,
+                                                                 fadeTime: 100);
+                }
+            }
+
         }
 
         #endregion NAudio Methods
@@ -1118,7 +1164,7 @@ namespace Corsair_Effects_Engine
             int key;
             for (int c = 0; c < bmp.Width; c++)
             {
-                for (int r = 0; r < bmp.Height ; r++)
+                for (int r = 0; r < bmp.Height; r++)
                 {
                     key = KeyboardMap.LedMatrix[r, c];
                     if (key >= 0 && key < 144) {
@@ -1138,9 +1184,9 @@ namespace Corsair_Effects_Engine
     public class RawInputKeyCodes
     {
         Dictionary<Tuple<byte, byte, byte, bool>, int> keyDict;
-        
+
         public RawInputKeyCodes() {
-            keyDict = new Dictionary<Tuple<byte,byte,byte,bool>,int>();
+            keyDict = new Dictionary<Tuple<byte, byte, byte, bool>, int>();
 
             // Letters
             keyDict.Add(Tuple.Create((byte)0x1E, (byte)0x41, (byte)0x01, (true || false)), 15); //A
@@ -1305,7 +1351,7 @@ namespace Corsair_Effects_Engine
             keyDict.Add(Tuple.Create((byte)0x00, (byte)0xB0, (byte)0x03, (true || false)), 68); //Next
             keyDict.Add(Tuple.Create((byte)0x00, (byte)0xAD, (byte)0x03, (true || false)), 20); //Mute
         }
-        
+
         public int GetKeyCodeFromDict(int mcode, int vkey, int flag, bool numLock)
         { return (keyDict[Tuple.Create((byte)mcode, (byte)vkey, (byte)flag, numLock)]); }
     }

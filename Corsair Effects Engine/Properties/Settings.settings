@@ -305,5 +305,8 @@
     <Setting Name="ForegroundCpuBarColor0" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FFFFFFFF</Value>
     </Setting>
+    <Setting Name="ForegroundSpectroOnMouse" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
