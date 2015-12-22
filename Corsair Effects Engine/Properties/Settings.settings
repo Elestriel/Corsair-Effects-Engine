@@ -282,16 +282,16 @@
       <Value Profile="(Default)">#FF00FF00</Value>
     </Setting>
     <Setting Name="BackgroundCpuColor0" Type="System.String" Scope="User">
-      <Value Profile="(Default)">#FF00FF00</Value>
+      <Value Profile="(Default)">#FF000000</Value>
     </Setting>
     <Setting Name="BackgroundCpuColor25" Type="System.String" Scope="User">
-      <Value Profile="(Default)">#FF88FF00</Value>
+      <Value Profile="(Default)">#FF0080FF</Value>
     </Setting>
     <Setting Name="BackgroundCpuColor50" Type="System.String" Scope="User">
-      <Value Profile="(Default)">#FFFFFF00</Value>
+      <Value Profile="(Default)">#FF00FF80</Value>
     </Setting>
     <Setting Name="BackgroundCpuColor75" Type="System.String" Scope="User">
-      <Value Profile="(Default)">#FFFF8800</Value>
+      <Value Profile="(Default)">#FFFFFF17</Value>
     </Setting>
     <Setting Name="BackgroundCpuColor100" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FFFF0000</Value>

@@ -324,7 +324,7 @@
                               ToolTip="Creates a slope that gradually increases amplification towards the right side of the keyboard."/>
                     <CheckBox Content="Effects on Mouse" HorizontalAlignment="Left" Margin="11,290,0,0" VerticalAlignment="Top"
                     	IsChecked="{Binding ForegroundSpectroOnMouse, Mode=TwoWay, Source={x:Static p:Settings.Default}}"
-                    	ToolTip="Show loudness along the height of the keyboard on a logarithmic or linear scale."/>
+                    	ToolTip="Show loudness along the height of the keyboard on a logarithmic or linear scale." IsEnabled="False"/>
                     <Grid x:Name="GridForegroundSpectroPerRow" Visibility="Visible" Grid.Row="0" Margin="300,10,58,75">
                         <xctk:ColorPicker x:Name="fftRow7Picker"  
                                   SelectedColor="{Binding Source={x:Static p:Settings.Default}, Path=ForegroundSpectroRow7,

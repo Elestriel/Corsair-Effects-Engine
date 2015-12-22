@@ -12,7 +12,7 @@ namespace Corsair_Effects_Engine
         private float maxValue;
         private float minValue;
 
-        public int NotificationCount { get; set; } = 100;
+        public int NotificationCount = 100;
         int count;
 
         // FFT

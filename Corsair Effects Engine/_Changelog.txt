@@ -2,8 +2,8 @@
 - Implemented CPU usage background indicator.
 - Implemented CPU usage meter foreground.
 - Selecting 'Done' when editing any effects causes program settings to be saved, preventing possible settings loss from crashes.
-- [TODO] Finished Japanese map.
-- [BUG] Running the CPU Usage foreground and background effects at the same time causes the effects to seem like the CPU usage is way higher than it really is. This might cause a crash at high enough loads to return a value greater than 1.
+- Finished Japanese map.
+- Started implementing Mouse Spectro effects.
 
 Build 0040 - Released
 - Updated all keyboard maps to include Japanese layout support.

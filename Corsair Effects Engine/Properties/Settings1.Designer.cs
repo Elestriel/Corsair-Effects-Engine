@@ -12,7 +12,7 @@ namespace Corsair_Effects_Engine.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -1141,7 +1141,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF00")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF000000")]
         public string BackgroundCpuColor0 {
             get {
                 return ((string)(this["BackgroundCpuColor0"]));
@@ -1153,7 +1153,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FF88FF00")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF0080FF")]
         public string BackgroundCpuColor25 {
             get {
                 return ((string)(this["BackgroundCpuColor25"]));
@@ -1165,7 +1165,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF00")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FF00FF80")]
         public string BackgroundCpuColor50 {
             get {
                 return ((string)(this["BackgroundCpuColor50"]));
@@ -1177,7 +1177,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFFF8800")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF17")]
         public string BackgroundCpuColor75 {
             get {
                 return ((string)(this["BackgroundCpuColor75"]));
