@@ -22,7 +22,7 @@ namespace Corsair_Effects_Engine
         // RawInput
         public static RawInputHook InputHook = new RawInputHook();
         static RawInputKeyCodes InputKeys = new RawInputKeyCodes();
-
+        
         // Public thread control variables
         public bool PauseEngine = false;
         public bool RunEngine = false;
@@ -38,6 +38,14 @@ namespace Corsair_Effects_Engine
         // Pointers to the keyboard and mouse HIDs
         private IntPtr KeyboardPointer;
         private IntPtr MousePointer;
+
+        // Properties.Settings Variables
+        double settingFftBoostHighFrequencies;
+        bool settingFftUseFrequencyBoost;
+        double settingFftAmplitudeMax;
+        double settingFftAmplitudeMin;
+        bool settingFftUseLogY;
+        bool settingFftUseLogX;
 
         // Key Data
         private static KeyData[] BackgroundKeys = new KeyData[149];
@@ -129,6 +137,14 @@ namespace Corsair_Effects_Engine
                         KeyboardMap.CanvasWidth = 3;
                         break;
                 }
+
+                // Get Properties.Settings Variables
+                settingFftBoostHighFrequencies = Properties.Settings.Default.FftBoostHighFrequencies;
+                settingFftUseFrequencyBoost = Properties.Settings.Default.FftUseFrequencyBoost;
+                settingFftAmplitudeMax = Properties.Settings.Default.FftAmplitudeMax;
+                settingFftAmplitudeMin = Properties.Settings.Default.FftAmplitudeMin;
+                settingFftUseLogY = Properties.Settings.Default.FftUseLogY;
+                settingFftUseLogX = Properties.Settings.Default.FftUseLogX;
 
                 // Initialize mouse
                 MousePointer = DeviceInit.GetMousePointer();
@@ -871,7 +887,7 @@ namespace Corsair_Effects_Engine
             double multiplier;
             multiplier = ((double)col - (double)first) / ((double)last - 1 - (double)first);
 
-            if (Properties.Settings.Default.FftUseLogX)
+            if (settingFftUseLogX)
             { return (int)(multiplier * maxWidth); }
             else
             {
@@ -907,16 +923,16 @@ namespace Corsair_Effects_Engine
         private double GetYPosLog(Complex c, int maxWidth, int xPos)
         {
             double intensityDB = 10 * Math.Log10(Math.Sqrt(c.X * c.X + c.Y * c.Y));
-            double minDB = (double)Properties.Settings.Default.FftAmplitudeMin;
-            double maxDB = (double)Properties.Settings.Default.FftAmplitudeMax;
+            double minDB = settingFftAmplitudeMin;
+            double maxDB = settingFftAmplitudeMax;
 
-            if (Properties.Settings.Default.FftUseFrequencyBoost)
+            if (settingFftUseFrequencyBoost)
             {
                 double position;
-                if (Properties.Settings.Default.FftUseLogX)
+                if (settingFftUseLogX)
                 { position = Math.Log((double)xPos, (double)maxWidth) / ((double)highestBin - (double)lowestBin); }
                 else { position = (double)xPos / ((double)highestBin - (double)lowestBin); }
-                intensityDB += (position * (double)Properties.Settings.Default.FftBoostHighFrequencies);
+                intensityDB += (position * settingFftBoostHighFrequencies);
             }
 
             if (intensityDB < minDB) { intensityDB = minDB; }
@@ -926,7 +942,7 @@ namespace Corsair_Effects_Engine
             double intensityPercent = (intensityDB - maxDB) / (minDB - maxDB);
 
             // Logarithmic
-            if (Properties.Settings.Default.FftUseLogY)
+            if (settingFftUseLogY)
             {
                 if (intensityPercent != 0)
                 {
@@ -971,6 +987,40 @@ namespace Corsair_Effects_Engine
 
         private void FftCalculated(object sender, FftEventArgs e)
         {
+            /*
+            KeyboardCanvasClass keyCanvas = new KeyboardCanvasClass(KeyboardMap.CanvasWidth, 8);
+            
+
+            lowestBin = FindLowestBin(captureSampleRate, e.Result.Length, Properties.Settings.Default.FftFrequencyMin);
+            highestBin = FindHighestBin(captureSampleRate, e.Result.Length, Properties.Settings.Default.FftFrequencyMax);
+            int binsPerPoint = Int32.Parse(Properties.Settings.Default.FftBinsPerPoint);
+
+            int prevX = 0;
+            int prevY = 0;            
+
+            for (int n = lowestBin; n < highestBin; n += binsPerPoint)
+            {
+                // Average the bins
+                double yPos = 0;
+                for (int b = 0; b < binsPerPoint; b++)
+                {
+                    yPos += GetYPosLog(e.Result[n + b], KeyboardMap.CanvasWidth, n);
+                }
+
+                int binToUse = CalculateBinPos(n, lowestBin, highestBin, KeyboardMap.CanvasWidth);
+                int power = (int)(yPos / binsPerPoint);
+                if (power < 0) { power = 0; }
+                if (power > 7) { power = 7; }
+                keyCanvas.AddLine(prevX, prevY, binToUse, power, 255);
+                prevX = binToUse;
+                prevY = power;
+            }
+
+            keyCanvas.Colorize();
+            CanvasToKeyboard(keyCanvas, "Spectro");
+            
+            */
+            
             System.Drawing.Drawing2D.GraphicsPath fftPath;
             System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(KeyboardMap.CanvasWidth, 7);
             fftPath = new System.Drawing.Drawing2D.GraphicsPath(System.Drawing.Drawing2D.FillMode.Winding);
@@ -1114,15 +1164,14 @@ namespace Corsair_Effects_Engine
                 }
             }
             BitmapToKeyboard(bmp, "Spectro");
-
         }
 
         private void MaxCalculated(object sender, MaxSampleEventArgs e)
         {
             if (!(Properties.Settings.Default.ForegroundSpectroOnMouse)) { return; };
             double intensityDB = 10 * Math.Log(Math.Abs(e.MaxSample));
-            double minDB = (double)Properties.Settings.Default.FftAmplitudeMin;
-            double maxDB = (double)Properties.Settings.Default.FftAmplitudeMax;
+            double minDB = settingFftAmplitudeMin;
+            double maxDB = settingFftAmplitudeMax;
 
             if (intensityDB < minDB) { intensityDB = minDB; }
             if (intensityDB > maxDB) { intensityDB = maxDB; }
@@ -1131,7 +1180,7 @@ namespace Corsair_Effects_Engine
             double intensityPercent = 1 - (intensityDB - maxDB) / (minDB - maxDB);
 
             // Logarithmic
-            if (Properties.Settings.Default.FftUseLogY)
+            if (settingFftUseLogY)
             {
                 if (intensityPercent != 0)
                 {
@@ -1172,6 +1221,28 @@ namespace Corsair_Effects_Engine
                                                       bmp.GetPixel(c, r).R,
                                                       bmp.GetPixel(c, r).G,
                                                       bmp.GetPixel(c, r).B);
+                        if (keySet == "Background") { BackgroundKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
+                        if (keySet == "Spectro") { SpectroKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
+                        if (keySet == "Foreground") { ForegroundKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
+                    }
+                }
+            }
+        }
+
+        private void CanvasToKeyboard(KeyboardCanvasClass keyCanvas, string keySet)
+        {
+            int key;
+            for (int c = 0; c < keyCanvas.Width; c++)
+            {
+                for (int r = 0; r < keyCanvas.Height - 1; r++)
+                {
+                    key = KeyboardMap.LedMatrix[r, c];
+                    if (key >= 0 && key < 144)
+                    {
+                        Color keyCol = Color.FromArgb(keyCanvas.GetPixel(c, r).A,
+                                                      keyCanvas.GetPixel(c, r).R,
+                                                      keyCanvas.GetPixel(c, r).G,
+                                                      keyCanvas.GetPixel(c, r).B);
                         if (keySet == "Background") { BackgroundKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
                         if (keySet == "Spectro") { SpectroKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
                         if (keySet == "Foreground") { ForegroundKeys[key].KeyColor = new LightSingle(lightColor: keyCol); }
@@ -1392,6 +1463,97 @@ namespace Corsair_Effects_Engine
                 CumulativeValue = 0;
             }
             return CurrentValue;
+        }
+    }
+
+    public class KeyboardCanvasClass
+    {
+        public byte[,] Mask;
+        public Color[,] Canvas;
+        public int Width, Height;
+
+        public KeyboardCanvasClass(int width, int height)
+        {
+            Width = width;
+            Height = height;
+
+            Mask = new byte[width, height];
+            Canvas = new Color[width, height];
+        }
+
+        public Color GetPixel(int c, int r)
+        {
+            if ((c < 0 || c > Width) || (r < 0 || r > Height)) { return Color.FromArgb(0, 0, 0, 0); };
+            return Canvas[c, r];
+        }
+
+        public bool DrawPixel(int x, int y, Color color)
+        {
+            if ((x < 0 || x > Width) || (y < 0 || y > Height)) { return false; };
+
+            Canvas[x, y] = color;
+            return true;
+        }
+
+        public bool AddPixel(int x, int y, byte lum)
+        {
+            if ((x < 0 || x > Width) || (y < 0 || y > Height)) { return false; };
+
+            Mask[x, y] = lum;
+            return true;
+        }
+
+        public void AddLine(int x1, int y1, int x2, int y2, byte lum)
+        {
+            if (x1 == x2 && y1 == y2) { return; }
+            int w = x2 - x1;
+            int h = y2 - y1;
+            int dx1 = 0, dy1 = 0, dx2 = 0, dy2 = 0;
+            if (w < 0) dx1 = -1; else if (w > 0) dx1 = 1;
+            if (h < 0) dy1 = -1; else if (h > 0) dy1 = 1;
+            if (w < 0) dx2 = -1; else if (w > 0) dx2 = 1;
+            int longest = Math.Abs(w);
+            int shortest = Math.Abs(h);
+            if (!(longest > shortest))
+            {
+                longest = Math.Abs(h);
+                shortest = Math.Abs(w);
+                if (h < 0) dy2 = -1; else if (h > 0) dy2 = 1;
+                dx2 = 0;
+            }
+            int numerator = longest >> 1;
+            for (int i = 0; i <= longest; i++)
+            {
+                Mask[x1, y1] = lum;
+
+                numerator += shortest;
+                if (!(numerator < longest))
+                {
+                    numerator -= longest;
+                    x1 += dx1;
+                    y1 += dy1;
+                }
+                else
+                {
+                    x1 += dx2;
+                    y1 += dy2;
+                }
+            }
+        }
+
+        public void Colorize()
+        {
+            for (int x = 0; x < Width; x++)
+            {
+                for (int y = 1; y < Height; y++)
+                {
+                    byte thisPixel = Mask[x, y];
+                    if (thisPixel > 0)
+                    {
+                        Canvas[x, y] = Color.FromArgb(thisPixel, 255, 0, 255);
+                    }
+                }
+            }
         }
     }
 }

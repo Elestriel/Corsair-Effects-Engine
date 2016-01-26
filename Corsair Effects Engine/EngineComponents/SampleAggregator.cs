@@ -22,6 +22,7 @@ namespace Corsair_Effects_Engine
         private int fftPos;
         private int fftLength;
         private int m;
+        private string WindowingMode = Properties.Settings.Default.FftWindowingMode;
 
         public SampleAggregator(int fftLength = 1024)
         {
@@ -52,7 +53,7 @@ namespace Corsair_Effects_Engine
             float valueMixed = .5f * (left + right);
             if (FftCalculated != null)
             {
-                switch (Properties.Settings.Default.FftWindowingMode)
+                switch (WindowingMode)
                 {
                     default:
                     case "Hann": fftBuffer[fftPos].X = Convert.ToSingle(valueMixed * FastFourierTransform.HannWindow(fftPos, fftBuffer.Length)); break;

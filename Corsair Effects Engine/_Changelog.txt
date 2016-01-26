@@ -1,4 +1,8 @@
-﻿Build 0041
+﻿Build 0042
+- Changed some variable calls, improved performance by up to 175%.
+- Started building alternative rendering engine. Nothing is implemented in this build, though.
+
+Build 0041
 - Implemented CPU usage background indicator.
 - Implemented CPU usage meter foreground.
 - Selecting 'Done' when editing any effects causes program settings to be saved, preventing possible settings loss from crashes.
