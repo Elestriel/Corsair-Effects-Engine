@@ -1,4 +1,8 @@
-﻿Build 0042
+﻿Build 0043
+- Checking the Freqency and Amplitude settings once per frame instead of only at start. These settings will now work without having to hit 'Restart Engine'.
+- Checking the Bins Per Point setting only at start. This will now only work when hitting 'Restart Engine'. Roughly .1% performance increase.
+
+Build 0042
 - Changed some variable calls, improved performance by up to 175%.
 - Started building alternative rendering engine. Nothing is implemented in this build, though.
 

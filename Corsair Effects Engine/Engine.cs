@@ -19,6 +19,8 @@ namespace Corsair_Effects_Engine
 {
     public class Engine
     {
+        bool useNewEngine = true;
+
         // RawInput
         public static RawInputHook InputHook = new RawInputHook();
         static RawInputKeyCodes InputKeys = new RawInputKeyCodes();
@@ -46,6 +48,9 @@ namespace Corsair_Effects_Engine
         double settingFftAmplitudeMin;
         bool settingFftUseLogY;
         bool settingFftUseLogX;
+        string settingFftBinsPerPoint;
+        int settingFftFrequencyMax;
+        int settingFftFrequencyMin;
 
         // Key Data
         private static KeyData[] BackgroundKeys = new KeyData[149];
@@ -141,10 +146,9 @@ namespace Corsair_Effects_Engine
                 // Get Properties.Settings Variables
                 settingFftBoostHighFrequencies = Properties.Settings.Default.FftBoostHighFrequencies;
                 settingFftUseFrequencyBoost = Properties.Settings.Default.FftUseFrequencyBoost;
-                settingFftAmplitudeMax = Properties.Settings.Default.FftAmplitudeMax;
-                settingFftAmplitudeMin = Properties.Settings.Default.FftAmplitudeMin;
                 settingFftUseLogY = Properties.Settings.Default.FftUseLogY;
                 settingFftUseLogX = Properties.Settings.Default.FftUseLogX;
+                settingFftBinsPerPoint = Properties.Settings.Default.FftBinsPerPoint;
 
                 // Initialize mouse
                 MousePointer = DeviceInit.GetMousePointer();
@@ -165,6 +169,12 @@ namespace Corsair_Effects_Engine
                 {
                     // Grab the time now
                     loopStart = DateTime.Now;
+
+                    // Update Variables
+                    settingFftAmplitudeMax = Properties.Settings.Default.FftAmplitudeMax;
+                    settingFftAmplitudeMin = Properties.Settings.Default.FftAmplitudeMin;
+                    settingFftFrequencyMax = Properties.Settings.Default.FftFrequencyMax;
+                    settingFftFrequencyMin = Properties.Settings.Default.FftFrequencyMin;
 
                     // Update animation sync
                     timeDifference = DateTime.Now - lastResetTime;
@@ -987,152 +997,153 @@ namespace Corsair_Effects_Engine
 
         private void FftCalculated(object sender, FftEventArgs e)
         {
-            /*
-            KeyboardCanvasClass keyCanvas = new KeyboardCanvasClass(KeyboardMap.CanvasWidth, 8);
-            
-
-            lowestBin = FindLowestBin(captureSampleRate, e.Result.Length, Properties.Settings.Default.FftFrequencyMin);
-            highestBin = FindHighestBin(captureSampleRate, e.Result.Length, Properties.Settings.Default.FftFrequencyMax);
-            int binsPerPoint = Int32.Parse(Properties.Settings.Default.FftBinsPerPoint);
-
-            int prevX = 0;
-            int prevY = 0;            
-
-            for (int n = lowestBin; n < highestBin; n += binsPerPoint)
+            if (useNewEngine)
             {
-                // Average the bins
-                double yPos = 0;
-                for (int b = 0; b < binsPerPoint; b++)
+                KeyboardCanvasClass keyCanvas = new KeyboardCanvasClass(KeyboardMap.CanvasWidth, 8);
+
+
+                lowestBin = FindLowestBin(captureSampleRate, e.Result.Length, settingFftFrequencyMin);
+                highestBin = FindHighestBin(captureSampleRate, e.Result.Length, settingFftFrequencyMax);
+                int binsPerPoint = Int32.Parse(Properties.Settings.Default.FftBinsPerPoint);
+
+                int prevX = 0;
+                int prevY = 0;
+
+                for (int n = lowestBin; n < highestBin; n += binsPerPoint)
                 {
-                    yPos += GetYPosLog(e.Result[n + b], KeyboardMap.CanvasWidth, n);
-                }
-
-                int binToUse = CalculateBinPos(n, lowestBin, highestBin, KeyboardMap.CanvasWidth);
-                int power = (int)(yPos / binsPerPoint);
-                if (power < 0) { power = 0; }
-                if (power > 7) { power = 7; }
-                keyCanvas.AddLine(prevX, prevY, binToUse, power, 255);
-                prevX = binToUse;
-                prevY = power;
-            }
-
-            keyCanvas.Colorize();
-            CanvasToKeyboard(keyCanvas, "Spectro");
-            
-            */
-            
-            System.Drawing.Drawing2D.GraphicsPath fftPath;
-            System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(KeyboardMap.CanvasWidth, 7);
-            fftPath = new System.Drawing.Drawing2D.GraphicsPath(System.Drawing.Drawing2D.FillMode.Winding);
-
-            fftPath.AddLine(0, bmp.Height, 0, bmp.Height);
-
-            lowestBin = FindLowestBin(captureSampleRate, e.Result.Length, Properties.Settings.Default.FftFrequencyMin);
-            highestBin = FindHighestBin(captureSampleRate, e.Result.Length, Properties.Settings.Default.FftFrequencyMax);
-            int binsPerPoint = Int32.Parse(Properties.Settings.Default.FftBinsPerPoint);
-
-            for (int n = lowestBin; n < highestBin; n += binsPerPoint)
-            {
-                // Average the bins
-                double yPos = 0;
-                for (int b = 0; b < binsPerPoint; b++)
-                {
-                    yPos += GetYPosLog(e.Result[n + b], KeyboardMap.CanvasWidth, n);
-                }
-                //AddResult(n / binsPerPoint, yPos / binsPerPoint, (Single)XPos);
-                AddResult(n, yPos / binsPerPoint, fftPath);
-            }
-
-            // Add end point.
-            fftPath.AddLine(bmp.Width, bmp.Height, bmp.Width, bmp.Height);
-
-            // Close image
-            fftPath.CloseFigure();
-
-            using (System.Drawing.Graphics gr = System.Drawing.Graphics.FromImage(bmp))
-            {
-                //gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
-
-                Color c;
-
-                if (Properties.Settings.Default.ForegroundSpectroStyle == "Solid")
-                {
-                    c = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
-                    using (System.Drawing.SolidBrush br = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B)))
+                    // Average the bins
+                    double yPos = 0;
+                    for (int b = 0; b < binsPerPoint; b++)
                     {
+                        yPos += GetYPosLog(e.Result[n + b], KeyboardMap.CanvasWidth, n);
+                    }
+
+                    int binToUse = CalculateBinPos(n, lowestBin, highestBin, KeyboardMap.CanvasWidth);
+                    int power = (int)(yPos / binsPerPoint);
+                    if (power < 0) { power = 0; }
+                    if (power > 7) { power = 7; }
+                    keyCanvas.AddLine(prevX, prevY, binToUse, power, 255);
+                    prevX = binToUse;
+                    prevY = power;
+                }
+
+                keyCanvas.Colorize();
+                CanvasToKeyboard(keyCanvas, "Spectro");
+            }
+            else // OLD ENGINE
+            {
+                System.Drawing.Drawing2D.GraphicsPath fftPath;
+                System.Drawing.Bitmap bmp = new System.Drawing.Bitmap(KeyboardMap.CanvasWidth, 7);
+                fftPath = new System.Drawing.Drawing2D.GraphicsPath(System.Drawing.Drawing2D.FillMode.Winding);
+
+                fftPath.AddLine(0, bmp.Height, 0, bmp.Height);
+
+                lowestBin = FindLowestBin(captureSampleRate, e.Result.Length, settingFftFrequencyMin);
+                highestBin = FindHighestBin(captureSampleRate, e.Result.Length, settingFftFrequencyMax);
+                int binsPerPoint = Int32.Parse(settingFftBinsPerPoint);
+
+                for (int n = lowestBin; n < highestBin; n += binsPerPoint)
+                {
+                    // Average the bins
+                    double yPos = 0;
+                    for (int b = 0; b < binsPerPoint; b++)
+                    {
+                        yPos += GetYPosLog(e.Result[n + b], KeyboardMap.CanvasWidth, n);
+                    }
+                    //AddResult(n / binsPerPoint, yPos / binsPerPoint, (Single)XPos);
+                    AddResult(n, yPos / binsPerPoint, fftPath);
+                }
+
+                // Add end point.
+                fftPath.AddLine(bmp.Width, bmp.Height, bmp.Width, bmp.Height);
+
+                // Close image
+                fftPath.CloseFigure();
+
+                using (System.Drawing.Graphics gr = System.Drawing.Graphics.FromImage(bmp))
+                {
+                    //gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                    gr.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighSpeed;
+
+                    Color c;
+
+                    if (Properties.Settings.Default.ForegroundSpectroStyle == "Solid")
+                    {
+                        c = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
+                        using (System.Drawing.SolidBrush br = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B)))
+                        {
+                            gr.FillPath(br, fftPath);
+                        }
+                    }
+                    else if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient Horizontal")
+                    {
+                        Color tc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
+                        Color tc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColorGradient);
+                        System.Drawing.Color c1 = System.Drawing.Color.FromArgb(tc1.A, tc1.R, tc1.G, tc1.B);
+                        System.Drawing.Color c2 = System.Drawing.Color.FromArgb(tc2.A, tc2.R, tc2.G, tc2.B);
+                        System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 104, 7);
+                        using (System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, c1, c2, (Single)0))
+                        {
+                            gr.FillPath(lbr, fftPath);
+                        }
+                    }
+                    else if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient Vertical")
+                    {
+                        Color tc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
+                        Color tc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColorGradient);
+                        System.Drawing.Color c1 = System.Drawing.Color.FromArgb(tc1.A, tc1.R, tc1.G, tc1.B);
+                        System.Drawing.Color c2 = System.Drawing.Color.FromArgb(tc2.A, tc2.R, tc2.G, tc2.B);
+                        System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 104, 7);
+                        using (System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, c1, c2, (Single)90))
+                        {
+                            gr.FillPath(lbr, fftPath);
+                        }
+                    }
+                    else if (Properties.Settings.Default.ForegroundSpectroStyle == "Rainbow")
+                    {
+                        System.Drawing.Rectangle rect;
+                        if (Properties.Settings.Default.SpectroRainbowDirection == "Left" ||
+                            Properties.Settings.Default.SpectroRainbowDirection == "Right")
+                        { rect = new System.Drawing.Rectangle(0, 0, 104, 7); }
+                        else
+                        { rect = new System.Drawing.Rectangle(0, 0, 7, 104); }
+                        System.Drawing.Drawing2D.LinearGradientBrush br =
+                            new System.Drawing.Drawing2D.LinearGradientBrush(rect, System.Drawing.Color.Black, System.Drawing.Color.Black, 0, false);
+                        System.Drawing.Drawing2D.ColorBlend cb = new System.Drawing.Drawing2D.ColorBlend();
+
+                        cb.Positions = spectroRainbowPositions;
+                        RainbowSpectroColors(Properties.Settings.Default.SpectroRainbowDirection);
+                        cb.Colors = spectroRainbowColors;
+                        br.InterpolationColors = cb;
+
+                        if (Properties.Settings.Default.SpectroRainbowDirection == "Up" ||
+                            Properties.Settings.Default.SpectroRainbowDirection == "Down")
+                        { br.RotateTransform(90); }
+
                         gr.FillPath(br, fftPath);
                     }
-                }
-                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient Horizontal")
-                {
-                    Color tc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
-                    Color tc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColorGradient);
-                    System.Drawing.Color c1 = System.Drawing.Color.FromArgb(tc1.A, tc1.R, tc1.G, tc1.B);
-                    System.Drawing.Color c2 = System.Drawing.Color.FromArgb(tc2.A, tc2.R, tc2.G, tc2.B);
-                    System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 104, 7);
-                    using (System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, c1, c2, (Single)0))
+                    else if (Properties.Settings.Default.ForegroundSpectroStyle == "Spectrum Cycle")
                     {
-                        gr.FillPath(lbr, fftPath);
+                        double tBrightness = ((double)Properties.Settings.Default.FftRainbowBrightness / 255D);
+                        double pos = ((double)BackgroundAnim / (double)KeyboardMap.CanvasWidth);
+                        c = ColorFromHSV(pos * 360, 1, tBrightness);
+
+                        using (System.Drawing.SolidBrush br = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B)))
+                        {
+                            gr.FillPath(br, fftPath);
+                        }
                     }
-                }
-                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Gradient Vertical")
-                {
-                    Color tc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColor);
-                    Color tc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroColorGradient);
-                    System.Drawing.Color c1 = System.Drawing.Color.FromArgb(tc1.A, tc1.R, tc1.G, tc1.B);
-                    System.Drawing.Color c2 = System.Drawing.Color.FromArgb(tc2.A, tc2.R, tc2.G, tc2.B);
-                    System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, 104, 7);
-                    using (System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, c1, c2, (Single)90))
+                    else if (Properties.Settings.Default.ForegroundSpectroStyle == "Defined Rows")
                     {
-                        gr.FillPath(lbr, fftPath);
-                    }
-                }
-                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Rainbow")
-                {
-                    System.Drawing.Rectangle rect;
-                    if (Properties.Settings.Default.SpectroRainbowDirection == "Left" ||
-                        Properties.Settings.Default.SpectroRainbowDirection == "Right")
-                    { rect = new System.Drawing.Rectangle(0, 0, 104, 7); }
-                    else
-                    { rect = new System.Drawing.Rectangle(0, 0, 7, 104); }
-                    System.Drawing.Drawing2D.LinearGradientBrush br =
-                        new System.Drawing.Drawing2D.LinearGradientBrush(rect, System.Drawing.Color.Black, System.Drawing.Color.Black, 0, false);
-                    System.Drawing.Drawing2D.ColorBlend cb = new System.Drawing.Drawing2D.ColorBlend();
+                        Color rc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow7);
+                        Color rc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow6);
+                        Color rc3 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow5);
+                        Color rc4 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow4);
+                        Color rc5 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow3);
+                        Color rc6 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow2);
+                        Color rc7 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow1);
 
-                    cb.Positions = spectroRainbowPositions;
-                    RainbowSpectroColors(Properties.Settings.Default.SpectroRainbowDirection);
-                    cb.Colors = spectroRainbowColors;
-                    br.InterpolationColors = cb;
-
-                    if (Properties.Settings.Default.SpectroRainbowDirection == "Up" ||
-                        Properties.Settings.Default.SpectroRainbowDirection == "Down")
-                    { br.RotateTransform(90); }
-
-                    gr.FillPath(br, fftPath);
-                }
-                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Spectrum Cycle")
-                {
-                    double tBrightness = ((double)Properties.Settings.Default.FftRainbowBrightness / 255D);
-                    double pos = ((double)BackgroundAnim / (double)KeyboardMap.CanvasWidth);
-                    c = ColorFromHSV(pos * 360, 1, tBrightness);
-
-                    using (System.Drawing.SolidBrush br = new System.Drawing.SolidBrush(System.Drawing.Color.FromArgb(c.A, c.R, c.G, c.B)))
-                    {
-                        gr.FillPath(br, fftPath);
-                    }
-                }
-                else if (Properties.Settings.Default.ForegroundSpectroStyle == "Defined Rows")
-                {
-                    Color rc1 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow7);
-                    Color rc2 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow6);
-                    Color rc3 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow5);
-                    Color rc4 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow4);
-                    Color rc5 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow3);
-                    Color rc6 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow2);
-                    Color rc7 = (Color)ColorConverter.ConvertFromString(Properties.Settings.Default.ForegroundSpectroRow1);
-
-                    System.Drawing.Color[] colors = new System.Drawing.Color[] {System.Drawing.Color.FromArgb(rc1.A, rc1.R, rc1.G, rc1.B),
+                        System.Drawing.Color[] colors = new System.Drawing.Color[] {System.Drawing.Color.FromArgb(rc1.A, rc1.R, rc1.G, rc1.B),
                                                                                 System.Drawing.Color.Transparent,
                                                                                 System.Drawing.Color.FromArgb(rc2.A, rc2.R, rc2.G, rc2.B),
                                                                                 System.Drawing.Color.Transparent,
@@ -1148,22 +1159,23 @@ namespace Corsair_Effects_Engine
                                                                                 System.Drawing.Color.Transparent
                                                                                 };
 
-                    System.Drawing.Drawing2D.ColorBlend grads = new System.Drawing.Drawing2D.ColorBlend(14);
-                    grads.Colors = colors;
-                    grads.Positions = new float[] { 0f, 1 / 14f, 2 / 14f, 3 / 14f, 4 / 14f, 5 / 14f, 6 / 14f,
+                        System.Drawing.Drawing2D.ColorBlend grads = new System.Drawing.Drawing2D.ColorBlend(14);
+                        grads.Colors = colors;
+                        grads.Positions = new float[] { 0f, 1 / 14f, 2 / 14f, 3 / 14f, 4 / 14f, 5 / 14f, 6 / 14f,
                                                 7 / 14f, 8 / 14f, 9 / 14f, 10 / 14f, 11 / 14f, 12 / 14f, 1f };
 
-                    System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, KeyboardMap.CanvasWidth, 7);
+                        System.Drawing.Rectangle rect = new System.Drawing.Rectangle(0, 0, KeyboardMap.CanvasWidth, 7);
 
-                    for (int i = 0; i < 14; i++)
-                    {
-                        System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, System.Drawing.Color.Black, System.Drawing.Color.Black, System.Drawing.Drawing2D.LinearGradientMode.Vertical);
-                        lbr.InterpolationColors = grads;
-                        gr.FillPath(lbr, fftPath);
-                    };
+                        for (int i = 0; i < 14; i++)
+                        {
+                            System.Drawing.Drawing2D.LinearGradientBrush lbr = new System.Drawing.Drawing2D.LinearGradientBrush(rect, System.Drawing.Color.Black, System.Drawing.Color.Black, System.Drawing.Drawing2D.LinearGradientMode.Vertical);
+                            lbr.InterpolationColors = grads;
+                            gr.FillPath(lbr, fftPath);
+                        };
+                    }
                 }
+                BitmapToKeyboard(bmp, "Spectro");
             }
-            BitmapToKeyboard(bmp, "Spectro");
         }
 
         private void MaxCalculated(object sender, MaxSampleEventArgs e)
