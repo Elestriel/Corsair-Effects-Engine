@@ -183,10 +183,13 @@ namespace Corsair_Effects_Engine.EngineComponents
 
         private int InitDevice(uint DeviceID, string DeviceName, string DeviceType)
         {
-            UpdateStatusMessage.NewMessage(4, "Searching for " + DeviceName + " (" + DeviceID.ToString("X") + ").");
-
+            UpdateStatusMessage.NewMessage(4, "[1.x] Searching for " + DeviceName + " (" + DeviceID.ToString("X") + ").");
             this.UsbDevice = this.GetDeviceHandle(0x1B1C, DeviceID, 0x3);
+            if (this.UsbDevice == IntPtr.Zero)
+            { UpdateStatusMessage.NewMessage(3, FirstLetterToUpper(DeviceType) + " not found."); }
 
+            UpdateStatusMessage.NewMessage(4, "[2.x] Searching for " + DeviceName + " (" + DeviceID.ToString("X") + ").");
+            this.UsbDevice = this.GetDeviceHandle(0x1B1C, DeviceID, 0x2);
             if (this.UsbDevice == IntPtr.Zero)
             {
                 UpdateStatusMessage.NewMessage(3, FirstLetterToUpper(DeviceType) + " not found.");

@@ -241,7 +241,7 @@
                 </Grid>
 
                 <!-- Foreground: Spectrograph -->
-                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Hidden" Grid.Row="1">
+                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Visible" Grid.Row="1">
                     <Label Content="Style" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <ComboBox x:Name="ForegroundSpectroStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" 
                                   ToolTip="The style of light to be used for this effect." 

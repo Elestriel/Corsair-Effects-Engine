@@ -1,11 +1,14 @@
-﻿Build 0043
+﻿Build 0044
+- Implemented support for 2.x firmwares.
+
+Build 0043
 - Checking the Freqency and Amplitude settings once per frame instead of only at start. These settings will now work without having to hit 'Restart Engine'.
 - Checking the Bins Per Point setting only at start. This will now only work when hitting 'Restart Engine'. Roughly .1% performance increase.
 - Added "Invert Phase" checkbox in the Background Spectrum Cycle settings. Enabling this allows Background and Spectro to operate in Spectrum Cycle modes together in contrasting colours.
-- Added new Background effect that changes the colour of the keyboard to the Windows Accent colour.
+- Added new Background effect that changes the colour of the keyboard to the Windows Accent colour. This will probably only work in Windows 10 for now. 7, 8, and 8.1 support to be added!
 
 Build 0042
-- Changed some variable calls, improved performance by up to 175%.
+- Changed some variable calls, massive performance improvement (up to 175% less CPU usage).
 - Started building alternative rendering engine. Nothing is implemented in this build, though.
 
 Build 0041

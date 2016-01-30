@@ -12,7 +12,7 @@ namespace Corsair_Effects_Engine.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "14.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "12.0.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -853,7 +853,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-20")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-18")]
         public int FftAmplitudeMax {
             get {
                 return ((int)(this["FftAmplitudeMax"]));
@@ -865,7 +865,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-60")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-40")]
         public int FftAmplitudeMin {
             get {
                 return ((int)(this["FftAmplitudeMin"]));
@@ -913,7 +913,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("17000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("15000")]
         public int FftFrequencyMax {
             get {
                 return ((int)(this["FftFrequencyMax"]));
@@ -925,7 +925,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("60")]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
         public int FftFrequencyMin {
             get {
                 return ((int)(this["FftFrequencyMin"]));
@@ -973,7 +973,7 @@ namespace Corsair_Effects_Engine.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.5")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
         public double FftBoostHighFrequencies {
             get {
                 return ((double)(this["FftBoostHighFrequencies"]));
