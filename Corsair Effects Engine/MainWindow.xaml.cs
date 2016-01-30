@@ -41,7 +41,7 @@ namespace Corsair_Effects_Engine
         RegistryKey rkApp = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
         // Application variables
-        private const string VersionNumber = "0042.1";
+        private const string VersionNumber = "0043";
         private string NewVersionNumber;
         private bool WindowInitialized = false;
         private bool WindowClosing = false;
@@ -725,6 +725,7 @@ namespace Corsair_Effects_Engine
                             break;
                         case "Spectrum Cycle":
                             GridBackground.Visibility = System.Windows.Visibility.Visible;
+                            GridBackgroundSpectrum.Visibility = System.Windows.Visibility.Visible;
                             break;
                         case "Rainbow":
                             GridBackground.Visibility = System.Windows.Visibility.Visible;
@@ -735,6 +736,9 @@ namespace Corsair_Effects_Engine
                             break;
                         case "CPU Usage":
                             GridBackgroundCpu.Visibility = System.Windows.Visibility.Visible;
+                            break;
+                        case "Windows Accent":
+                            GridBackgroundWinAccent.Visibility = System.Windows.Visibility.Visible;
                             break;
                     }
                     break;
@@ -792,9 +796,11 @@ namespace Corsair_Effects_Engine
             GridBackground.Visibility = System.Windows.Visibility.Hidden;
             GridBackgroundSolid.Visibility = System.Windows.Visibility.Hidden;
             GridBackgroundBreathe.Visibility = System.Windows.Visibility.Hidden;
+            GridBackgroundSpectrum.Visibility = System.Windows.Visibility.Hidden;
             GridBackgroundRainbow.Visibility = System.Windows.Visibility.Hidden;
             GridBackgroundImage.Visibility = System.Windows.Visibility.Hidden;
             GridBackgroundCpu.Visibility = System.Windows.Visibility.Hidden;
+            GridBackgroundWinAccent.Visibility = System.Windows.Visibility.Hidden;
 
             // Full Keyboard
             GridKeyboard.Visibility = System.Windows.Visibility.Hidden;

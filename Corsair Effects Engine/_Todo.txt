@@ -1,4 +1,4 @@
-﻿- Rendering engine overhaul to decrease CPU usage.
+﻿- Rendering engine overhaul to allow masking layers.
 - Automatically check for updates once per hour.
 - Add the ability to switch effects to the right-click menu.
 - Make the heatmap update on changes, and not require a new keystroke.

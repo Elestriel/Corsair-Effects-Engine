@@ -1434,6 +1434,7 @@
             <sys:String>Spectrum Cycle</sys:String>
             <sys:String>Rainbow</sys:String>
             <sys:String>CPU Usage</sys:String>
+            <sys:String>Windows Accent</sys:String>
         </x:Array>
 
         <!-- Foreground: Spectro -->

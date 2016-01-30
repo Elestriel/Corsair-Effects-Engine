@@ -19,7 +19,7 @@ namespace Corsair_Effects_Engine
 {
     public class Engine
     {
-        bool useNewEngine = true;
+        bool useNewEngine = false;
 
         // RawInput
         public static RawInputHook InputHook = new RawInputHook();
@@ -70,6 +70,8 @@ namespace Corsair_Effects_Engine
         private DateTime BreatheStartTime;
         Random rnd = new Random();
 
+        // Windows Accent Colour
+        WindowsAccentClass WindowsAccentColor = new WindowsAccentClass();
 
         // CLEAN THIS UP!
         private string LastForegroundEffect = "";
@@ -406,9 +408,15 @@ namespace Corsair_Effects_Engine
                         break;
                     #endregion Breathe Code
                     case "Spectrum Cycle":
+                        double colorPosition = (BackgroundAnim / KeyboardMap.CanvasWidth) * 360;
+                        if (Properties.Settings.Default.BackgroundSpectrumInvert)
+                        {
+                            colorPosition += 180;
+                            if (colorPosition > 360) { colorPosition -= 360; };
+                        }
                         for (int i = 0; i < 149; i++)
                         { BackgroundKeys[i].KeyColor = new LightSingle(
-                            lightColor: ColorFromHSV((BackgroundAnim / KeyboardMap.CanvasWidth) * 360, 1, tBrightness)); }
+                            lightColor: ColorFromHSV(colorPosition, 1, tBrightness)); }
                         break;
                     case "Rainbow":
                         #region Rainbow Code
@@ -482,6 +490,15 @@ namespace Corsair_Effects_Engine
                         {
                             BackgroundKeys[i].KeyColor = new LightSingle(
                               lightColor: Color.FromArgb(cpuColor.A, cpuColor.R, cpuColor.G, cpuColor.B));
+                        }
+                        break;
+                    case "Windows Accent":
+                        Color winAccentColor = WindowsAccentColor.GetColor();
+
+                        for (int i = 0; i < 149; i++)
+                        {
+                            BackgroundKeys[i].KeyColor = new LightSingle(
+                              lightColor: Color.FromArgb(winAccentColor.A, winAccentColor.R, winAccentColor.G, winAccentColor.B));
                         }
                         break;
                 }
@@ -1566,6 +1583,33 @@ namespace Corsair_Effects_Engine
                     }
                 }
             }
+        }
+    }
+
+    public class WindowsAccentClass
+    {
+        private Color accentColor = Color.FromArgb(255, 255, 0, 0);
+        private DateTime lastUpdateTime;
+        private TimeSpan timeSinceLastUpdate;
+
+        public Color GetColor()
+        {
+            timeSinceLastUpdate = DateTime.Now - lastUpdateTime;
+            if (timeSinceLastUpdate.TotalSeconds > Properties.Settings.Default.BackgroundWinAccentRefresh)
+            { UpdateColor(); }
+
+            return accentColor;
+        }
+
+        private void UpdateColor()
+        {
+            string keyName = "HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Accent";
+            int keyColor = (int)Microsoft.Win32.Registry.GetValue(keyName, "StartColorMenu", 00000000);
+
+            byte[] bytes = BitConverter.GetBytes(keyColor);
+            
+            lastUpdateTime = DateTime.Now;
+            accentColor = Color.FromArgb(bytes[3], bytes[0], bytes[1], bytes[2]);
         }
     }
 }

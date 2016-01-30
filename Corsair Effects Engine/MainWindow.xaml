@@ -241,7 +241,7 @@
                 </Grid>
 
                 <!-- Foreground: Spectrograph -->
-                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Visible" Grid.Row="1">
+                <Grid x:Name="GridForegroundSpectro" Grid.ColumnSpan="2" Visibility="Hidden" Grid.Row="1">
                     <Label Content="Style" Grid.Row="0" Grid.Column="0" Margin="10,5,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <ComboBox x:Name="ForegroundSpectroStyle" Grid.Row="0" Grid.Column="0" Margin="10,26,0,0" VerticalAlignment="Top" 
                                   ToolTip="The style of light to be used for this effect." 
@@ -603,6 +603,11 @@
                                       SelectedValue="{Binding Source={x:Static p:Settings.Default}, Path=BackgroundRainbowDirection, Mode=TwoWay}"
                                       HorizontalAlignment="Left" Width="150" SelectionChanged="ForegroundRandomLightsStyle_SelectionChanged"/>
                     </Grid>
+                    <Grid x:Name="GridBackgroundSpectrum" Grid.Row="1">
+                        <CheckBox x:Name="BackgroundSpectrumPhaseInvert" Content="Invert Phase" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"
+                	    ToolTip="Capture audio from an output device, such as your speakers or headphones."
+                	    IsChecked="{Binding BackgroundSpectrumInvert, Mode=TwoWay, Source={x:Static p:Settings.Default}}"/>
+                    </Grid>
                 </Grid>
 
                 <!-- Background: Image -->
@@ -648,6 +653,13 @@
                     <Label Content="Refresh (ms)" Margin="10,156,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
                     <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="110,158,0,0" VerticalAlignment="Top" Width="60" Maximum="5000" Minimum="100"
                     	Value="{Binding CpuUpdateTime, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Increment="100"/>
+                </Grid>
+
+                <!-- Background: Windows Accent -->
+                <Grid x:Name="GridBackgroundWinAccent" Grid.Column="0" Visibility="Hidden" Grid.Row="1">
+                    <Label Content="Refresh (seconds)" Margin="10,10,0,0" VerticalAlignment="Top" Width="auto" Height="26" HorizontalAlignment="Left"/>
+                    <xctk:IntegerUpDown HorizontalAlignment="Left" Margin="118,12,0,0" VerticalAlignment="Top" Width="60" Maximum="60" Minimum="1"
+                    	Value="{Binding BackgroundWinAccentRefresh, Mode=TwoWay, Source={x:Static p:Settings.Default}}" Increment="1"/>
                 </Grid>
             </Grid>
         </Grid>
