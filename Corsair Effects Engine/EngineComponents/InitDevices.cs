@@ -186,16 +186,16 @@ namespace Corsair_Effects_Engine.EngineComponents
             UpdateStatusMessage.NewMessage(4, "[1.x] Searching for " + DeviceName + " (" + DeviceID.ToString("X") + ").");
             this.UsbDevice = this.GetDeviceHandle(0x1B1C, DeviceID, 0x3);
             if (this.UsbDevice == IntPtr.Zero)
-            { UpdateStatusMessage.NewMessage(3, FirstLetterToUpper(DeviceType) + " not found."); }
+            { UpdateStatusMessage.NewMessage(3, FirstLetterToUpper(DeviceType) + " not found."); 
 
-            UpdateStatusMessage.NewMessage(4, "[2.x] Searching for " + DeviceName + " (" + DeviceID.ToString("X") + ").");
-            this.UsbDevice = this.GetDeviceHandle(0x1B1C, DeviceID, 0x2);
-            if (this.UsbDevice == IntPtr.Zero)
-            {
-                UpdateStatusMessage.NewMessage(3, FirstLetterToUpper(DeviceType) + " not found.");
-                return 1;
+                UpdateStatusMessage.NewMessage(4, "[2.x] Searching for " + DeviceName + " (" + DeviceID.ToString("X") + ").");
+                this.UsbDevice = this.GetDeviceHandle(0x1B1C, DeviceID, 0x2);
+                if (this.UsbDevice == IntPtr.Zero)
+                {
+                    UpdateStatusMessage.NewMessage(3, FirstLetterToUpper(DeviceType) + " not found.");
+                    return 1;
+                }
             }
-
             UpdateStatusMessage.NewMessage(4, FirstLetterToUpper(DeviceType) + " found.");
 
             if (DeviceType == "keyboard")

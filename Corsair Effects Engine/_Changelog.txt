@@ -1,4 +1,7 @@
-﻿Build 0044
+﻿Build 0045
+- Fixed a bug with 2.x firmware support, causing anyone on 1.x to no longer function.
+
+Build 0044
 - Implemented support for 2.x firmwares.
 
 Build 0043
